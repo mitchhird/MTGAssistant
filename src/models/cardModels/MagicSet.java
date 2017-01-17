@@ -2,6 +2,8 @@ package models.cardModels;
 
 import java.util.List;
 
+import util.JSONCard;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
@@ -11,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Set {
+public class MagicSet {
   private String name;
   private String code;
   private String gathererCode;
@@ -19,7 +21,7 @@ public class Set {
   private String releaseDate;
   private String magicCardsInfoCode;
   private List<String> booster;
-
+  private List<JSONCard> cards;
   /**
    * @return the name
    */
@@ -118,4 +120,19 @@ public class Set {
     this.magicCardsInfoCode = magicCardsInfoCode;
   }
 
+  /**
+   * @return the cards
+   */
+  public List<JSONCard> getCards() {
+    return cards;
+  }
+
+  /**
+   * @param cards the cards to set
+   */
+  public void setCards(List<JSONCard> cards) {
+    this.cards = cards;
+  }
+
+  
 }

@@ -5,25 +5,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import models.cardModels.Set;
+import models.cardModels.MagicSet;
 
 public class JSONFileReader {
 
-	private static void readJSONFile (Path fileToRead) throws Exception {
-		if (Files.exists(fileToRead)) {	
-			Set testSet = ModelHelper.toModelFromJSONFile(fileToRead, Set.class);
-			System.out.println();
-		} else {
-			throw new IOException("File to read is not available");
-		}
-	}
-	
-	public static void main (String[] args) {
-		try {
-			readJSONFile(Paths.get("./external_resources/JSON_DB_FILES/LEA.json"));
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+  public static <T> T readJSONFile(Path fileToRead, Class<T> returnClazz) throws Exception {
+    if (Files.exists(fileToRead)) {
+      T testSet = ModelHelper.toModelFromJSONFile(fileToRead, returnClazz);
+      return testSet;
+    }
+    else {
+      throw new IOException("File to read is not available");
+    }
+  }
 }
