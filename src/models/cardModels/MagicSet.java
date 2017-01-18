@@ -1,27 +1,19 @@
 package models.cardModels;
 
-import java.util.List;
-
-import util.JSONCard;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * A Standard MTG Set. Contains common things like name, code, gatherer code and release data
  * 
  * @author Mitchell
  */
-
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class MagicSet {
-  private String name;
-  private String code;
-  private String gathererCode;
-  private String border;
-  private String releaseDate;
-  private String magicCardsInfoCode;
-  private List<String> booster;
-  private List<JSONCard> cards;
+  protected String name;
+  protected String code;
+  protected String gathererCode;
+  protected String border;
+  protected String releaseDate;
+  protected String magicCardsInfoCode;
+
   /**
    * @return the name
    */
@@ -62,20 +54,6 @@ public class MagicSet {
    */
   public String getMagicCardsInfoCode() {
     return magicCardsInfoCode;
-  }
-
-  /**
-   * @return the booster
-   */
-  public List<String> getBooster() {
-    return booster;
-  }
-
-  /**
-   * @param booster the booster to set
-   */
-  public void setBooster(List<String> booster) {
-    this.booster = booster;
   }
 
   /**
@@ -120,19 +98,4 @@ public class MagicSet {
     this.magicCardsInfoCode = magicCardsInfoCode;
   }
 
-  /**
-   * @return the cards
-   */
-  public List<JSONCard> getCards() {
-    return cards;
-  }
-
-  /**
-   * @param cards the cards to set
-   */
-  public void setCards(List<JSONCard> cards) {
-    this.cards = cards;
-  }
-
-  
 }
