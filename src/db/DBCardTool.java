@@ -5,11 +5,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import util.JSONCard;
 import util.MTGHelper;
+import util.JSONConvertTools.JSONCard;
 
+/**
+ * A simple tool that is responsible for managing database operations that relate to individual cards themselves
+ * @author Mitchell
+ */
 public class DBCardTool extends DBTool {
 
+  // Table Creation String
   private final String CREATE_CARD_TABLE = "CREATE TABLE IF NOT EXISTS CARD_TABLE (CARD_ID varchar(" + DB_CHAR_COLUMN_LIMIT + ") PRIMARY KEY," 
                                                                                + "CARD_NAME varchar(" + DB_CHAR_COLUMN_LIMIT + "),"
                                                                                + "CARD_TEXT varchar(" + DB_CHAR_COLUMN_LIMIT + "),"
@@ -20,6 +25,7 @@ public class DBCardTool extends DBTool {
                                                                                + "CARD_TOUGHNESS INTEGER,"
                                                                                + "CARD_LOYALITY INTEGER)";
 
+  // Insertion String
   private final String INSERT_CARD_TABLE = "INSERT INTO CARD_TABLE (CARD_ID, CARD_NAME, CARD_TEXT, CARD_TYPE, CARD_SUPERTYPES, CARD_SUBTYPES, CARD_POWER, CARD_TOUGHNESS, CARD_LOYALITY) VALUES (?,?,?,?,?,?,?,?,?);";;
   
   public DBCardTool(DBPersistanceController controller) {
@@ -42,7 +48,7 @@ public class DBCardTool extends DBTool {
       st.setInt(8, createSafeNumberFromString(card.getPower()));
       st.execute();
     } catch (SQLException e) {
-      e.printStackTrace();
+      // Probably Hit A Card That Shares The Same Name, Not Important, So Just Continue Onward
     }
   }
   

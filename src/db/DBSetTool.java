@@ -6,17 +6,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 import models.cardModels.CardRarity;
-import util.JSONCard;
-import util.JSONSet;
 import util.MTGHelper;
+import util.JSONConvertTools.JSONCard;
+import util.JSONConvertTools.JSONSet;
 
+/**
+ * Database tool that is responsible for managing the sets that we may wish to access
+ * @author Mitchell
+ */
 public class DBSetTool extends DBTool {
-  private static String CREATE_SET_TABLE = "CREATE TABLE IF NOT EXISTS SET_TABLE (CODE varchar(4) PRIMARY KEY," + "NAME varchar(" + DB_CHAR_COLUMN_LIMIT + ")," + "GATHERER_CODE varchar(4)," + "BORDER varchar(" + DB_CHAR_COLUMN_LIMIT + ")," + "RELEASE_DATE varchar(" + DB_CHAR_COLUMN_LIMIT + ")," + "MAGIC_CARDS_INFO_CODE varchar(" + DB_CHAR_COLUMN_LIMIT + "));";
-  private static String CREATE_SET_JUNCTION_TABLE = "CREATE TABLE IF NOT EXISTS SET_JUNC_TABLE (CODE varchar(4)," + "CARD_ID varchar(" + DB_CHAR_COLUMN_LIMIT + ")," + "ARTIST varchar(" + DB_CHAR_COLUMN_LIMIT + ")," + "FLAVOUR_TEXT varchar(" + DB_CHAR_COLUMN_LIMIT + ")," + "RARITY varchar(15));";
+  private static String CREATE_SET_TABLE = "CREATE TABLE IF NOT EXISTS SET_TABLE (CODE varchar(4) PRIMARY KEY," 
+                                                                               + "NAME varchar(" + DB_CHAR_COLUMN_LIMIT + ")," 
+                                                                               + "GATHERER_CODE varchar(4)," 
+                                                                               + "BORDER varchar(" + DB_CHAR_COLUMN_LIMIT + ")," 
+                                                                               + "RELEASE_DATE varchar(" + DB_CHAR_COLUMN_LIMIT + ")," 
+                                                                               + "MAGIC_CARDS_INFO_CODE varchar(" + DB_CHAR_COLUMN_LIMIT + "));";
+  
+  private static String CREATE_SET_JUNCTION_TABLE = "CREATE TABLE IF NOT EXISTS SET_JUNC_TABLE (CODE varchar(4)," 
+                                                                                             + "CARD_ID varchar(" + DB_CHAR_COLUMN_LIMIT + ")," 
+                                                                                             + "ARTIST varchar(" + DB_CHAR_COLUMN_LIMIT + ")," 
+                                                                                             + "FLAVOUR_TEXT varchar(" + DB_CHAR_COLUMN_LIMIT + ")," 
+                                                                                             + "RARITY varchar(15));";
 
   private static String INSERT_SET_INTO_TABLE = "INSERT INTO SET_TABLE (CODE, NAME, GATHERER_CODE, BORDER, RELEASE_DATE, MAGIC_CARDS_INFO_CODE) VALUES (?,?,?,?,?,?)";
   private static String INSERT_SET_INTO_JUNCTION_TABLE = "INSERT INTO SET_JUNC_TABLE (CODE, CARD_ID, ARTIST, FLAVOUR_TEXT, RARITY) VALUES (?,?,?,?,?)";
 
+  // Default constructor for the tool
   public DBSetTool(DBPersistanceController controller) {
     super(controller);
   }
@@ -27,7 +42,7 @@ public class DBSetTool extends DBTool {
    * @param incomingSet
    */
   public void addJSONSetToDB(JSONSet incomingSet) {
-    System.out.println("Adding in JSON Set");
+    System.out.println("Adding in JSON Set: " + incomingSet);
     try (PreparedStatement p = parentController.getStatement(INSERT_SET_INTO_TABLE);) {
       p.setString(1, incomingSet.getCode());
       p.setString(2, incomingSet.getName());
@@ -40,6 +55,7 @@ public class DBSetTool extends DBTool {
       e.printStackTrace();
     }
 
+    // Load In All Of The Necessary Cards
     for (JSONCard c : incomingSet.getCards()) {
       parentController.addCardToDB(c);
       try (PreparedStatement p = parentController.getStatement(INSERT_SET_INTO_JUNCTION_TABLE);) {
