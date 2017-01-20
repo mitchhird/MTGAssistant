@@ -1,4 +1,4 @@
-package util;
+package util.JSONConvertTools;
 
 import java.util.List;
 
@@ -22,5 +22,10 @@ public class JSONSet extends MagicSet {
    */
   public void setCards(List<JSONCard> cards) {
     this.cards = cards;
+  }
+  
+  @Override
+  public String toString() {
+    return "[JSONSet(" + code + " - " + name + ")]";
   }
 }
