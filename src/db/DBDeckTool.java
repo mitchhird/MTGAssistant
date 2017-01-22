@@ -38,6 +38,7 @@ public class DBDeckTool extends DBTool {
   private final static String INSERT_INTO_DECK_TABLE = "INSERT INTO DECKS_TABLE (CREATING_USER, DECK_NAME, DECK_FORMAT, DECK_DESCRIPTION) VALUES (?,?,?,?)";
   private final static String INSERT_INTO_JUNC_TABLE = "INSERT INTO DECKS_JUNC_TABLE (CREATING_USER, DECK_NAME, CARD_ID, CARD_QUANTITY) VALUES (?,?,?,?)";
   private final static String DELETE_FROM_DECKS_TABLE = "DELETE FROM DECKS_TABLE WHERE CREATING_USER = ? AND DECK_NAME = ?;";
+  private final static String DELETE_ALL_DECKS = "DELETE FROM DECKS_TABLE";
       
   // Default Constructor For The Object
   protected DBDeckTool(DBPersistanceController parentController) {
@@ -71,14 +72,6 @@ public class DBDeckTool extends DBTool {
     }
   }
 
-  // Deletes A Given Deck From The DB
-  public void removeDeckFromDB(Deck incomingDeck) {
-    try (PreparedStatement st = parentController.getStatement(DELETE_FROM_DECKS_TABLE);) {
-      st.setString(1, incomingDeck.getCreatingUser());
-      st.setString(2, incomingDeck.getDeckName());
-      st.execute();
-    } catch (SQLException e) {}
-  }
 
   // Method For Collecting A Deck From The Database
   public Deck getDeckFromDB (ResultSet rs) throws SQLException {
@@ -102,6 +95,24 @@ public class DBDeckTool extends DBTool {
       e.printStackTrace();
     }
     return returnVal;
+  }
+  
+  // Deletes A Given Deck From The DB
+  public void removeDeckFromDB(Deck incomingDeck) {
+    try (PreparedStatement st = parentController.getStatement(DELETE_FROM_DECKS_TABLE);) {
+      st.setString(1, incomingDeck.getCreatingUser());
+      st.setString(2, incomingDeck.getDeckName());
+      st.execute();
+    } catch (SQLException e) {}
+  }
+
+  // Deletes All Decks From The DB
+  public void deleteAllDecksFromDB () {
+    try (PreparedStatement st = parentController.getStatement(DELETE_ALL_DECKS);) {
+      st.execute();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
   }
   
   @Override

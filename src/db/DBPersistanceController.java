@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import models.deckModels.Deck;
 import util.Constants;
 import util.MTGHelper;
 import util.JSONConvertTools.JSONCard;
@@ -110,6 +111,21 @@ public class DBPersistanceController {
   // Call To Convert A JSON Card To 
   public void addCardToDB (JSONCard card) {
     cardTool.addJSONCard(card);
+  }
+  
+  // Call To Add A Set To The DB
+  public void addDeckToDB (Deck incomingDeck) {
+    deckTool.addDeckToDB(incomingDeck);
+  }
+  
+  // Call To Return All Decks Currently In The DB
+  public List<Deck> getAllDecksInDB () {
+    return deckTool.getAllDecksFromDB();
+  }
+  
+  // Call To Run Clean Up Data From The Existing Database
+  public void clearDatabase() {
+    deckTool.deleteAllDecksFromDB();
   }
   
   // Method Responsible For Loading In The JSON Library And Converting In It Into SQL

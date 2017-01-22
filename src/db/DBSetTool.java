@@ -42,7 +42,7 @@ public class DBSetTool extends DBTool {
    * @param incomingSet
    */
   public void addJSONSetToDB(JSONSet incomingSet) {
-    System.out.println("Adding in JSON Set: " + incomingSet);
+    System.out.println("\nAdding in JSON Set: " + incomingSet);
     try (PreparedStatement p = parentController.getStatement(INSERT_SET_INTO_TABLE);) {
       p.setString(1, incomingSet.getCode());
       p.setString(2, incomingSet.getName());
@@ -51,28 +51,25 @@ public class DBSetTool extends DBTool {
       p.setString(5, incomingSet.getReleaseDate());
       p.setString(6, incomingSet.getMagicCardsInfoCode());
       p.execute();
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
 
-    // Load In All Of The Necessary Cards
-    for (JSONCard c : incomingSet.getCards()) {
-      parentController.addCardToDB(c);
-      try (PreparedStatement p = parentController.getStatement(INSERT_SET_INTO_JUNCTION_TABLE);) {
-        p.setString(1, incomingSet.getCode());
-        p.setString(2, MTGHelper.generateCardKey(c));
-        p.setString(3, c.getArtist());
-        p.setString(4, c.getFlavor());
+      // Load In All Of The Necessary Cards
+      for (JSONCard c : incomingSet.getCards()) {
+        parentController.addCardToDB(c);
+        try (PreparedStatement p2 = parentController.getStatement(INSERT_SET_INTO_JUNCTION_TABLE);) {
+          p2.setString(1, incomingSet.getCode());
+          p2.setString(2, MTGHelper.generateCardKey(c));
+          p2.setString(3, c.getArtist());
+          p2.setString(4, c.getFlavor());
 
-        String jsonRarity = c.getRarity().toUpperCase();
-        CardRarity cardRarity = (jsonRarity.equals("BASIC LAND")) ? CardRarity.COMMON : CardRarity.valueOf(jsonRarity);
-        p.setString(5, cardRarity.name());
-        p.execute();
-        System.out.println("    --> Added Card: " + c);
-      } catch (SQLException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+          String jsonRarity = c.getRarity().toUpperCase().replace(" ", "_");
+          CardRarity cardRarity = CardRarity.valueOf(jsonRarity);
+          p2.setString(5, cardRarity.name());
+          p2.execute();
+          System.out.println("    --> Added Card: " + c);
+        }
       }
+    } catch (SQLException e) {
+
     }
   }
 
