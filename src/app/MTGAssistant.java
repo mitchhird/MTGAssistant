@@ -1,5 +1,7 @@
 package app;
 
+import ui.MainApplicationFrame;
+
 /**
  * Main class for client side application of this project.
  * Spaans the UI elements when evoked. 
@@ -8,6 +10,6 @@ package app;
 public class MTGAssistant {
 
 	public static void main (String[] args) {
-		
+		new MainApplicationFrame();
 	}
 }
