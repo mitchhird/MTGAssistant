@@ -1,10 +1,12 @@
 package models.cardModels;
 
 public enum CardRarity {
+  BASIC_LAND,
   COMMON,
   UNCOMMON,
   RARE,
-  MYTHIC,
+  MYTHIC_RARE,
   TIMESHIFTED,
-  PROMOTIONAL
+  PROMOTIONAL,
+  SPECIAL
 }
