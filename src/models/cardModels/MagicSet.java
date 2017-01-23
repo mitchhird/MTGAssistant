@@ -3,7 +3,6 @@ package models.cardModels;
 
 /**
  * A Standard MTG Set. Contains common things like name, code, gatherer code and release data
- * 
  * @author Mitchell
  */
 public class MagicSet {
@@ -96,6 +95,11 @@ public class MagicSet {
    */
   public void setMagicCardsInfoCode(String magicCardsInfoCode) {
     this.magicCardsInfoCode = magicCardsInfoCode;
+  }
+  
+  @Override
+  public String toString() {
+    return name + " - (" + code + ")";
   }
 
 }
