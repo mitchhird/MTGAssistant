@@ -12,17 +12,18 @@ import models.cardModels.Format;
  * @author Mitchell
  */
 public class Deck {
-  private final String creatingUser;
-  private final String deckName;
-  private final String deckDescription;
-  private final Format deckFormat;
+  private String creatingUser;
+  private String deckName;
+  private String deckArchetype;
+  private String deckDescription;
+  private Format deckFormat;
   private Map<Card, Integer> cardsWithinDeck;
   
-  public Deck (String creatingUser, String description, String deckName, Format deckFormat) {
-    this.creatingUser = creatingUser;
-    this.deckName = deckName;
-    this.deckDescription = description;
-    this.deckFormat = deckFormat;
+  public Deck () {
+    this.creatingUser = "";
+    this.deckName = "";
+    this.deckDescription = "";
+    this.deckArchetype = "";
   }
 
   public String getCreatingUser() {
@@ -39,6 +40,30 @@ public class Deck {
   
   public String getDeckName() {
     return deckName;
+  }
+  
+  public String getDeckArchetype() {
+    return deckArchetype;
+  }
+
+  public void setDeckArchetype(String deckArchetype) {
+    this.deckArchetype = deckArchetype;
+  }
+
+  public void setCreatingUser(String creatingUser) {
+    this.creatingUser = creatingUser;
+  }
+
+  public void setDeckName(String deckName) {
+    this.deckName = deckName;
+  }
+
+  public void setDeckDescription(String deckDescription) {
+    this.deckDescription = deckDescription;
+  }
+
+  public void setDeckFormat(Format deckFormat) {
+    this.deckFormat = deckFormat;
   }
 
   // Adds A Card To The Deck, It The Card Already Exists, Then It's Quanity Value Is Updated

@@ -1,11 +1,13 @@
 package db;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import models.cardModels.CardRarity;
+import models.cardModels.MagicSet;
 import util.MTGHelper;
 import util.JSONConvertTools.JSONCard;
 import util.JSONConvertTools.JSONSet;
@@ -30,10 +32,43 @@ public class DBSetTool extends DBTool {
 
   private static String INSERT_SET_INTO_TABLE = "INSERT INTO SET_TABLE (CODE, NAME, GATHERER_CODE, BORDER, RELEASE_DATE, MAGIC_CARDS_INFO_CODE) VALUES (?,?,?,?,?,?)";
   private static String INSERT_SET_INTO_JUNCTION_TABLE = "INSERT INTO SET_JUNC_TABLE (CODE, CARD_ID, ARTIST, FLAVOUR_TEXT, RARITY) VALUES (?,?,?,?,?)";
-
+  private static String SELECT_ALL_SETS = "SELECT * FROM SET_TABLE";
+  
   // Default constructor for the tool
   public DBSetTool(DBPersistanceController controller) {
     super(controller);
+  }
+  
+  // Returns A MagicSet Object Corresponding To The Result Supplied
+  private MagicSet collectSetFromResultSet (ResultSet rs) {
+    MagicSet returnVal = new MagicSet();
+    try {
+      returnVal.setName(rs.getString("NAME"));
+      returnVal.setCode(rs.getString("CODE"));
+      returnVal.setGathererCode(rs.getString("GATHERER_CODE"));
+      returnVal.setBorder(rs.getString("BORDER"));
+      returnVal.setReleaseDate(rs.getString("RELEASE_DATE"));
+      returnVal.setMagicCardsInfoCode(rs.getString("MAGIC_CARDS_INFO_CODE"));
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return returnVal;
+  }
+  
+  // Collects All Available Sets From The Database
+  public List<MagicSet> getAllMagicSets () {
+    List<MagicSet> returnVal = new ArrayList<>();
+    try (PreparedStatement st = parentController.getStatement(SELECT_ALL_SETS);) {
+      ResultSet rs = st.executeQuery();
+      
+      while (rs.next()) {
+        MagicSet nextSet = collectSetFromResultSet(rs);
+        returnVal.add(nextSet);
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return returnVal;
   }
 
   /**
@@ -72,7 +107,7 @@ public class DBSetTool extends DBTool {
 
     }
   }
-
+  
   @Override
   public List<String> getDBCreationStrings() {
     List<String> returnVal = new ArrayList<String>();

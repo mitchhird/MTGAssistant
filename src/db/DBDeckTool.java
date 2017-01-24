@@ -23,6 +23,7 @@ public class DBDeckTool extends DBTool {
                                                                                        + "DECK_NAME varchar(" + DB_CHAR_COLUMN_LIMIT + "),"
                                                                                        + "DECK_FORMAT varchar(" + DB_CHAR_COLUMN_LIMIT + "),"
                                                                                        + "DECK_DESCRIPTION varchar(" + DB_CHAR_COLUMN_LIMIT + "),"
+                                                                                       + "DECK_ARCHETYPE varchar (" + DB_CHAR_COLUMN_LIMIT + "),"
                                                                                        + "PRIMARY KEY (CREATING_USER, DECK_NAME));";
   
   private final static String DECK_JUNC_TABLE_CREATE = "CREATE TABLE IF NOT EXISTS DECKS_JUNC_TABLE (CREATING_USER varchar(" + DB_CHAR_COLUMN_LIMIT + "), "
@@ -35,7 +36,7 @@ public class DBDeckTool extends DBTool {
                                                                                                   + "PRIMARY KEY(CREATING_USER, DECK_NAME, CARD_ID));";
   
   private final static String SELECT_ALL_FROM_DECKS = "SELECT * FROM DECKS_TABLE;";
-  private final static String INSERT_INTO_DECK_TABLE = "INSERT INTO DECKS_TABLE (CREATING_USER, DECK_NAME, DECK_FORMAT, DECK_DESCRIPTION) VALUES (?,?,?,?)";
+  private final static String INSERT_INTO_DECK_TABLE = "INSERT INTO DECKS_TABLE (CREATING_USER, DECK_NAME, DECK_FORMAT, DECK_DESCRIPTION, DECK_ARCHETYPE) VALUES (?,?,?,?,?)";
   private final static String INSERT_INTO_JUNC_TABLE = "INSERT INTO DECKS_JUNC_TABLE (CREATING_USER, DECK_NAME, CARD_ID, CARD_QUANTITY) VALUES (?,?,?,?)";
   private final static String DELETE_FROM_DECKS_TABLE = "DELETE FROM DECKS_TABLE WHERE CREATING_USER = ? AND DECK_NAME = ?;";
   private final static String DELETE_ALL_DECKS = "DELETE FROM DECKS_TABLE";
@@ -52,12 +53,15 @@ public class DBDeckTool extends DBTool {
       st.setString(2, incomingDeck.getDeckName());
       st.setString(3, incomingDeck.getDeckFormat().name());
       st.setString(4, incomingDeck.getDeckDescription());
+      st.setString(5, incomingDeck.getDeckArchetype());
       st.execute();
     } catch (SQLException e) {
       e.printStackTrace();
     }
+  }
 
-    // Now Add In All Of The Cards Accordingly
+  // Gathers All Cards For The Supplied Deck
+  private void gatherAllCardsForDeck(Deck incomingDeck) {
     for (Card c : incomingDeck.getCardsWithinDeck().keySet()) {
       Integer quanityValue = incomingDeck.getCardsWithinDeck().get(c);
       try (PreparedStatement st2 = parentController.getStatement(INSERT_INTO_JUNC_TABLE);) {
@@ -75,11 +79,13 @@ public class DBDeckTool extends DBTool {
 
   // Method For Collecting A Deck From The Database
   public Deck getDeckFromDB (ResultSet rs) throws SQLException {
-    String creatingUser = rs.getString("CREATING_USER");
-    String deckName = rs.getString("DECK_NAME");
-    String deckDescription = rs.getString("DECK_DESCRIPTION");
-    Format deckFormat = Format.valueOf(rs.getString("DECK_FORMAT"));
-    return new Deck(creatingUser, deckDescription, deckName, deckFormat);
+    Deck returnVal = new Deck();
+    returnVal.setCreatingUser(rs.getString("CREATING_USER"));
+    returnVal.setDeckName(rs.getString("DECK_NAME"));
+    returnVal.setDeckDescription(rs.getString("DECK_DESCRIPTION"));
+    returnVal.setDeckFormat(Format.valueOf(rs.getString("DECK_FORMAT")));
+    returnVal.setDeckArchetype(rs.getString("DECK_ARCHETYPE"));
+    return returnVal;
   }
   
   // Returns All Decks Present Within The DB
