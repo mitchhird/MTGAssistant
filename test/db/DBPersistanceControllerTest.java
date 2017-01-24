@@ -23,12 +23,13 @@ public class DBPersistanceControllerTest {
   
   @Test
   public void basicDeckAdditionToDB () {
-    String testUser = "testUser";
-    String testDescription = "testDescription";
-    String testDeckName = "testDeckName";
-    Format testFormat = Format.MODERN;
+    Deck testDeck = new Deck();
+    testDeck.setCreatingUser("testUser1");
+    testDeck.setDeckDescription("testDescription1");
+    testDeck.setDeckName("testDeckName1");
+    testDeck.setDeckFormat(Format.MODERN);
+    testDeck.setDeckArchetype("testArt1");
     
-    Deck testDeck = new Deck(testUser, testDescription, testDeckName, testFormat);
     classUnderTest.addDeckToDB(testDeck);
     
     // Retrieve The Data Back From The DB And Verify That It Is What We Expect It To Be
@@ -40,6 +41,7 @@ public class DBPersistanceControllerTest {
     assertEquals (testDeck.getDeckDescription(), sqlDeck.getDeckDescription());
     assertEquals (testDeck.getDeckFormat(), sqlDeck.getDeckFormat());
     assertEquals (testDeck.getDeckName(), sqlDeck.getDeckName());
+    assertEquals (testDeck.getDeckDescription(), sqlDeck.getDeckDescription());
   }
   
   @After

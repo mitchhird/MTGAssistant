@@ -23,7 +23,11 @@ public class DeckTests {
   
   @Before
   public void setup() {
-    classUnderTest = new Deck(testCreatingUser, testDeckDescription, testDeckName, testFormat);
+    classUnderTest = new Deck();
+    classUnderTest.setCreatingUser(testCreatingUser);
+    classUnderTest.setDeckDescription(testDeckDescription);
+    classUnderTest.setDeckName(testDeckName);
+    classUnderTest.setDeckFormat(testFormat);
   }
   
   @Test

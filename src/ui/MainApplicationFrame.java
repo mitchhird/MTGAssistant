@@ -3,6 +3,7 @@ package ui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -13,7 +14,7 @@ import util.Constants;
  * Main class that is responsible for showing our application's main UI
  * @author Mitchell
  */
-public final class MainApplicationFrame extends UIFrameBase {
+public final class MainApplicationFrame extends JFrame {
 
   private JMenuItem exitFileMenuItem;
   private JMenuItem connectMenuItem;
@@ -25,6 +26,9 @@ public final class MainApplicationFrame extends UIFrameBase {
     initJFrameSettings();
     initMenuBar();
     addActionListeners();
+    
+    DeckEditingPanel testPanel = new DeckEditingPanel();
+    add(testPanel);
   }
 
   // Main Method For Establishing Frame Settings
