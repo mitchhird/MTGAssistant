@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import models.cardModels.MagicSet;
 import models.deckModels.Deck;
 import util.Constants;
 import util.MTGHelper;
@@ -121,6 +122,11 @@ public class DBPersistanceController {
   // Call To Return All Decks Currently In The DB
   public List<Deck> getAllDecksInDB () {
     return deckTool.getAllDecksFromDB();
+  }
+  
+  // Call To Return All Sets Currently In The Db
+  public List<MagicSet> getAllMagicSetsInDB() {
+    return setTool.getAllMagicSets();
   }
   
   // Call To Run Clean Up Data From The Existing Database
