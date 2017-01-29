@@ -14,8 +14,8 @@ import javax.swing.JPanel;
 public abstract class UIPanelBase extends JPanel {
 
   // Complex Variable Definitions
-  private final GridBagLayout layout;
-  private final GridBagConstraints gbc;
+  protected final GridBagLayout layout;
+  protected final GridBagConstraints gbc;
   
   // Default Constructor For The UI Frames
   protected UIPanelBase() {

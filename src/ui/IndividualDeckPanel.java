@@ -13,8 +13,9 @@ import models.tableModels.DeckContentsTableModel;
 import util.Constants;
 
 /**
- * Panel That Contains Information Used Within A Selected Deck Context.
- * Panel shows deck names, creator names, format, descriptions, and overall content
+ * Panel That Contains Information Used Within A Selected Deck Context. Panel shows deck names, creator names, format,
+ * descriptions, and overall content
+ * 
  * @author Mitchell
  */
 public class IndividualDeckPanel extends UIPanelBase {
@@ -35,15 +36,15 @@ public class IndividualDeckPanel extends UIPanelBase {
 
   // Data for the retrieval of necessary for rendering
   private Deck currentlySelectedDeck;
-  
+
   // Constructor When We Know If We Want Edit Everything Or Just The Available Subset
   public IndividualDeckPanel(boolean fullEditability) {
     super();
     setEditablity(fullEditability);
   }
-  
+
   // Sets The Editiablity Of All Applicable Items
-  public void setEditablity (boolean editable) {
+  public void setEditablity(boolean editable) {
     selectedCreatedField.setEditable(editable);
   }
 
@@ -61,17 +62,17 @@ public class IndividualDeckPanel extends UIPanelBase {
 
     selectedFormatField = new JComboBox<>(Format.values());
     selectedDescriptionField = new JTextArea();
-    
+
     DeckContentsTableModel contentsModel = new DeckContentsTableModel();
     selectedDeckContentsTable = new JTable(contentsModel);
     selectedDeckContentsTable.setAutoCreateRowSorter(true);
   }
 
   @Override
-  protected void placeUIElements() {    
+  protected void placeUIElements() {
     addComponentToPanel(selectedCreateLabel, 0, 0, 1, 1, 0.1f, 0.1f);
     addComponentToPanel(selectedCreatedField, 1, 0, 3, 1, 1.0f, 0.1f);
-    
+
     addComponentToPanel(selectedDeckNameLabel, 0, 1, 1, 1, 0.1f, 0.1f);
     addComponentToPanel(selectedDeckNameField, 1, 1, 3, 1, 1.0f, 0.1f);
 
@@ -79,7 +80,7 @@ public class IndividualDeckPanel extends UIPanelBase {
     addComponentToPanel(selectedFormatField, 1, 2, 3, 1, 1.0f, 0.1f);
 
     addComponentToPanel(selectedDescriptionLabel, 0, 3, 1, 1, 0.1f, 0.1f);
-    
+
     JScrollPane descriptionScroller = new JScrollPane(selectedDescriptionField);
     addComponentToPanel(descriptionScroller, 1, 3, 3, 1, 1.0f, 0.2f);
 
@@ -97,10 +98,12 @@ public class IndividualDeckPanel extends UIPanelBase {
 
   @Override
   protected void populateLocal() {
-    selectedDeckNameField.setText(currentlySelectedDeck.getDeckName());
-    selectedCreatedField.setText(currentlySelectedDeck.getCreatingUser());
-    selectedDescriptionField.setText(currentlySelectedDeck.getDeckDescription());
-    selectedFormatField.setSelectedIndex(currentlySelectedDeck.getDeckFormat().ordinal());
+    if (currentlySelectedDeck != null) {
+      selectedDeckNameField.setText(currentlySelectedDeck.getDeckName());
+      selectedCreatedField.setText(currentlySelectedDeck.getCreatingUser());
+      selectedDescriptionField.setText(currentlySelectedDeck.getDeckDescription());
+      selectedFormatField.setSelectedIndex(currentlySelectedDeck.getDeckFormat().ordinal());
+    }
   }
 
   public void setCurrentlySelectedDeck(Deck incomingDeck) {

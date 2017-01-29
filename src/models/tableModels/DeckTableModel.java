@@ -88,6 +88,11 @@ public class DeckTableModel extends AbstractTableModel {
     return decksToRender.get(rowIndex);
   }
 
+  public void removeDeckFromModel (int rowIndex) {
+    decksToRender.remove(rowIndex);
+    fireTableDataChanged();
+  }
+  
   public void setDecksToRender(List<Deck> decksToRender) {
     this.decksToRender = decksToRender;
     fireTableDataChanged();

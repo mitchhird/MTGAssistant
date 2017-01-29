@@ -1,8 +1,16 @@
 package ui;
 
+import java.awt.GridBagConstraints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JToolBar;
+import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -21,8 +29,13 @@ public class DeckEditingPanel extends UIPanelBase {
   
   private JLabel currentDecksLabel;
   private JTable currentDecksTable;
+  private JToolBar deckOperationPanel;
+  
+  private JButton newDeckButton;
+  private JButton editDeckButton;
+  private JButton deleteDeckButton;
+  
   private DeckTableModel deckTableModel;
-  private IndividualDeckPanel selectedDeckPanel;
   
   public DeckEditingPanel() {
     super();
@@ -30,22 +43,39 @@ public class DeckEditingPanel extends UIPanelBase {
 
   @Override
   protected void initVariables() {
-    currentDecksLabel = new JLabel(Constants.DECKS_CURRENT_LABEL + ":");    
+    currentDecksLabel = new JLabel(Constants.DECKS_CURRENT_LABEL + ":");
+    
     deckTableModel = new DeckTableModel();
-    selectedDeckPanel = new IndividualDeckPanel(false);
-
     currentDecksTable = new JTable(deckTableModel);
     currentDecksTable.setAutoCreateRowSorter(true);
-
-    deckTableModel.setDecksToRender(DBPersistanceController.getInstance().getAllDecksInDB());
+    
+    newDeckButton = new JButton(Constants.DECK_TOOL_NEW_DECK);
+    editDeckButton = new JButton(Constants.DECK_TOOL_EDIT_DECK);
+    deleteDeckButton = new JButton(Constants.DECK_TOOL_DELETE_DECK);
+    
+    newDeckButton.setIcon(UIManager.getIcon("OptionPane.informationIcon"));
+    editDeckButton.setIcon(UIManager.getIcon("OptionPane.informationIcon"));
+    deleteDeckButton.setIcon(UIManager.getIcon("OptionPane.informationIcon"));
+    
+    deckOperationPanel = new JToolBar();
+    deckOperationPanel.add(newDeckButton);
+    deckOperationPanel.add(editDeckButton);
+    deckOperationPanel.add(deleteDeckButton);
+    deckOperationPanel.setFloatable(false);
   }
 
   @Override
   protected void placeUIElements() {
-    addComponentToPanel(currentDecksLabel, 0, 0, 1, 1, 0.1f, 0.1f);
+    addComponentToPanel(deckOperationPanel, 0, 0, 1, 1, 0.1f, 0.01f);
+    
+    gbc.anchor = GridBagConstraints.NORTH;
+    gbc.fill = GridBagConstraints.HORIZONTAL;
+    addComponentToPanel(currentDecksLabel, 0, 1, 1, 1, 1.0f, 0.19f);
+    
+    gbc.anchor = GridBagConstraints.CENTER;
+    gbc.fill = GridBagConstraints.BOTH;
     JScrollPane currentDecksScroller = new JScrollPane(currentDecksTable);
-    addComponentToPanel(currentDecksScroller, 0, 1, 4, 1, 1.0f, 0.2f);
-    addComponentToPanel(selectedDeckPanel, 0, 2, 4, 1, 1.0f, 0.8f);
+    addComponentToPanel(currentDecksScroller, 0, 2, 4, 1, 1.0f, 0.8f);
   }
 
   @Override
@@ -54,23 +84,58 @@ public class DeckEditingPanel extends UIPanelBase {
       @Override
       public void valueChanged(ListSelectionEvent paramListSelectionEvent) {
         int selectedRow = currentDecksTable.getSelectedRow();
+        updateButtonEnable(selectedRow >= 0);
         if (selectedRow >= 0) {
           Deck deckToRender = deckTableModel.getDeckAtRow(selectedRow);
-          selectedDeckPanel.setCurrentlySelectedDeck(deckToRender);
         }
+      }
+    });    
+    
+    newDeckButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent paramActionEvent) {
+        System.out.println("New Deck Button Has Been Pressed");
       }
     });
     
+    editDeckButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent paramActionEvent) {
+        System.out.println("Edit Deck Button Has Been Pressed");
+      }
+    });
+    
+    deleteDeckButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent paramActionEvent) {
+        handleDeleteButton();
+      }
+    });
+  }
+  
+  private void updateButtonEnable (boolean rowSelected) {
+    newDeckButton.setEnabled(true);
+    editDeckButton.setEnabled(rowSelected);
+    deleteDeckButton.setEnabled(rowSelected);
   }
 
   @Override
   protected void populateLocal() {
-    
+    List<Deck> allDecksInDB = DBPersistanceController.getInstance().getAllDecksInDB();
+    deckTableModel.setDecksToRender(allDecksInDB);
   }
 
   @Override
   protected void applyLocal() {
     // TODO Auto-generated method stub
     
+  }
+
+  private void handleDeleteButton() {
+    int selectedRow = currentDecksTable.getSelectedRow();
+    Deck incomingDeck = deckTableModel.getDeckAtRow(selectedRow);
+    DBPersistanceController.getInstance().deleteDeckFromDB(incomingDeck);
+    deckTableModel.removeDeckFromModel(selectedRow);
+    currentDecksTable.repaint();
   }
 }

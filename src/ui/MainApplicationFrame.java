@@ -1,5 +1,6 @@
 package ui;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -7,9 +8,12 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JTabbedPane;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 
+import ui.TabRenders.AbstractTabRenderer;
 import util.Constants;
-
 /**
  * Main class that is responsible for showing our application's main UI
  * @author Mitchell
@@ -26,17 +30,31 @@ public final class MainApplicationFrame extends JFrame {
     initJFrameSettings();
     initMenuBar();
     addActionListeners();
+    createAndShowUI();
+    pack();
+  }
+  
+  private void createAndShowUI () {
+    JXTabbedPane tabbedPane = new JXTabbedPane(JTabbedPane.LEFT);
     
-    DeckEditingPanel testPanel = new DeckEditingPanel();
-    add(testPanel);
+    AbstractTabRenderer renderer = (AbstractTabRenderer)tabbedPane.getTabRenderer();
+    renderer.setDisplayText("This text is a prototype");
+    renderer.setHorizontalTextAlignment(SwingConstants.LEADING);
+
+    DeckEditingPanel editingPane = new DeckEditingPanel();
+    CardAdvancedSearchPanel searchPane = new CardAdvancedSearchPanel();
+    tabbedPane.addTab("Decks", UIManager.getIcon("OptionPane.informationIcon"), editingPane, "Information tool tip");
+    tabbedPane.addTab("Search", UIManager.getIcon("OptionPane.informationIcon"), searchPane, "Information tool tip");
+    this.add(tabbedPane);
   }
 
   // Main Method For Establishing Frame Settings
   private void initJFrameSettings() {
-    setVisible(true);
     setDefaultCloseOperation(EXIT_ON_CLOSE);
-    setSize(Constants.MAIN_APP_WIDTH, Constants.MAIN_APP_HEIGHT);
+    setPreferredSize(new Dimension(Constants.MAIN_APP_WIDTH, Constants.MAIN_APP_HEIGHT));
     setTitle(Constants.MAIN_APPLICATION_NAME);
+    setLocationByPlatform(true);
+    setVisible(true);
   }
   
   // Method responsible for adding action listeners

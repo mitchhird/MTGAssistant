@@ -1,19 +1,26 @@
 package ui;
 
+import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import models.cardModels.Card;
 import models.cardModels.CardRarity;
 import models.cardModels.MagicSet;
 import util.Constants;
+import db.DBCardSearchDataObject;
 import db.DBPersistanceController;
 
 /**
@@ -32,11 +39,11 @@ public class CardAdvancedSearchPanel extends UIPanelBase {
   private JTextField cardNameTextField;
   private JTextField cardSuperTypeField;
   private JTextField cardSubTypeField;
-  private JComboBox<MagicSet> setComboBox;
-  private JComboBox<CardRarity> rarityComboBox;
+  private JList<MagicSet> setComboBox;
+  private JList<CardRarity> rarityComboBox;
 
   private JButton searchButton;
-  
+
   // Default Constructor That Is Responsible For Creating
   public CardAdvancedSearchPanel() {
     super();
@@ -56,8 +63,8 @@ public class CardAdvancedSearchPanel extends UIPanelBase {
     cardSubTypeField = new JTextField();
     cardSuperTypeField = new JTextField();
 
-    setComboBox = new JComboBox<MagicSet>();
-    rarityComboBox = new JComboBox<CardRarity>(CardRarity.values());
+    setComboBox = new JList<MagicSet>();
+    rarityComboBox = new JList<CardRarity>(CardRarity.values());
 
     searchButton = new JButton(Constants.CARD_SEARCH_SEARCH_BUTTON);
   }
@@ -65,25 +72,32 @@ public class CardAdvancedSearchPanel extends UIPanelBase {
   @Override
   protected void placeUIElements() {
     int i = 0;
-    addComponentToPanel(cardNameSearchLabel, 0, i, 1, 1, 1.0f, 0.1f);
-    addComponentToPanel(cardNameSearchField, 1, i, 5, 1, 1.0f, 0.1f);
+
+    gbc.anchor = GridBagConstraints.WEST;
+    addComponentToPanel(cardNameSearchLabel, 0, i, 1, 1, 0.2f, 0.1f);
+
+    gbc.anchor = GridBagConstraints.EAST;
+    addComponentToPanel(cardNameSearchField, 1, i, 5, 1, 0.8f, 0.1f);
 
     i++;
-    addComponentToPanel(cardNameTextLabel, 0, i, 1, 1, 1.0f, 0.1f);
-    addComponentToPanel(cardNameTextField, 1, i, 5, 1, 1.0f, 0.1f);
-    
-    i++;
-    addComponentToPanel(cardNameSuperTypeLabel, 0, i, 1, 1, 1.0f, 0.1f);
-    addComponentToPanel(cardSuperTypeField, 1, i, 2, 1, 1.0f, 0.1f);
-    addComponentToPanel(cardNameSubTypeLabel, 3, i, 1, 1, 1.0f, 0.1f);
-    addComponentToPanel(cardSubTypeField, 4, i, 2, 1, 1.0f, 0.1f);
+    addComponentToPanel(cardNameTextLabel, 0, i, 1, 1, 0.2f, 0.1f);
+    addComponentToPanel(cardNameTextField, 1, i, 5, 1, 0.8f, 0.1f);
 
     i++;
-    addComponentToPanel(cardSetLabel, 0, i, 1, 1, 1.0f, 0.1f);
-    addComponentToPanel(setComboBox, 1, i, 2, 1, 1.0f, 0.1f);
-    addComponentToPanel(cardRarityLabel, 3, i, 1, 1, 1.0f, 0.1f);
-    addComponentToPanel(rarityComboBox, 4, i, 2, 1, 1.0f, 0.1f);
-    
+    addComponentToPanel(cardNameSuperTypeLabel, 0, i, 1, 1, 0.2f, 0.1f);
+    addComponentToPanel(cardSuperTypeField, 1, i, 2, 1, 0.8f, 0.1f);
+    addComponentToPanel(cardNameSubTypeLabel, 3, i, 1, 1, 0.2f, 0.1f);
+    addComponentToPanel(cardSubTypeField, 4, i, 2, 1, 0.8f, 0.1f);
+
+    i++;
+    JScrollPane setScrollWrapper = new JScrollPane(setComboBox);
+    addComponentToPanel(cardSetLabel, 0, i, 1, 1, 0.1f, 0.1f);
+    addComponentToPanel(setScrollWrapper, 1, i, 2, 1, 0.4f, 0.1f);
+
+    JScrollPane rarityScrollWrapper = new JScrollPane(rarityComboBox);
+    addComponentToPanel(cardRarityLabel, 3, i, 1, 1, 0.1f, 0.1f);
+    addComponentToPanel(rarityScrollWrapper, 4, i, 2, 1, 0.4f, 0.1f);
+
     i++;
     addComponentToPanel(searchButton, 0, i, 6, 1, 1.0f, 0.05f);
   }
@@ -93,14 +107,62 @@ public class CardAdvancedSearchPanel extends UIPanelBase {
     searchButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        System.out.println("Search Button Has Been Pressed");
+        handleSearchButtonPressed();
       }
     });
+  }
+
+  // Handles The Search Button Press
+  private void handleSearchButtonPressed() {
+    Set<DBCardSearchDataObject> searchRequests = new HashSet<>();
+    addSearchIfDefined(searchRequests, "CARD_NAME", cardNameSearchField.getText());
+    addSearchIfDefined(searchRequests, "CARD_TEXT", cardNameTextField.getText());
+    addSearchIfDefined(searchRequests, "CARD_SUPERTYPES", cardSuperTypeField.getText());
+    addSearchIfDefined(searchRequests, "CARD_SUBTYPES", cardSubTypeField.getText());
+
+    List<MagicSet> setSelected = setComboBox.getSelectedValuesList();
+    addSearchIfDefined(searchRequests, "CODE", setSelected);
+
+    List<CardRarity> raritiesSelected = rarityComboBox.getSelectedValuesList();
+    addSearchIfDefined(searchRequests, raritiesSelected, "RARITY");
+
+    Set<Card> filteredCards = DBPersistanceController.getInstance().getFilteredCards(searchRequests);
+    JOptionPane.showMessageDialog(this, "Search Returned " + filteredCards.size());
+  }
+
+  // Adds Another Search Parameter If Is Defined
+  private void addSearchIfDefined(Set<DBCardSearchDataObject> curSearch, String key, String value) {
+    addSearchIfDefined(curSearch, key, value, true);
+  }
+
+  private void addSearchIfDefined(Set<DBCardSearchDataObject> curSearch, String key, String value, boolean andTerm) {
+    if (value != null && !value.trim().isEmpty()) {
+      curSearch.add(new DBCardSearchDataObject(key, value, andTerm));
+    }
+  }
+
+  private void addSearchIfDefined(Set<DBCardSearchDataObject> curSearch, String key, List<MagicSet> values) {
+    if (values != null) {
+      for (int i = 0; i < values.size(); i++) {
+        boolean isFirstTerm = i == 0;
+        addSearchIfDefined(curSearch, key, values.get(i).getCode(), isFirstTerm);
+      }
+    }
+  }
+ 
+  private void addSearchIfDefined(Set<DBCardSearchDataObject> curSearch, List<CardRarity> values, String key) {
+    if (values != null) {
+      for (int i = 0; i < values.size(); i++) {
+        boolean isFirstTerm = i == 0;
+        addSearchIfDefined(curSearch, key, values.get(i).name(), isFirstTerm);
+      }
+    }
   }
 
   @Override
   protected void populateLocal() {
     List<MagicSet> mtgSets = DBPersistanceController.getInstance().getAllMagicSetsInDB();
+    Collections.sort(mtgSets);
     MagicSet[] mtgSetsArray = mtgSets.toArray(new MagicSet[mtgSets.size()]);
     DefaultComboBoxModel<MagicSet> model = new DefaultComboBoxModel<MagicSet>(mtgSetsArray);
     setComboBox.setModel(model);
@@ -110,17 +172,5 @@ public class CardAdvancedSearchPanel extends UIPanelBase {
   protected void applyLocal() {
     // TODO Auto-generated method stub
 
-  }
-  
-  public static void main (String[] args) {
-    JFrame testFrame = new JFrame();
-    testFrame.setSize(Constants.MAIN_APP_WIDTH, 200);
-    testFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    testFrame.setVisible(true);
-    testFrame.setTitle("TEST Search Panel");
-    
-    CardAdvancedSearchPanel searchPanel = new CardAdvancedSearchPanel();
-    testFrame.add(searchPanel);
-    
   }
 }
