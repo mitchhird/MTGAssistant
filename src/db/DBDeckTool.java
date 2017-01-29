@@ -104,7 +104,7 @@ public class DBDeckTool extends DBTool {
   }
   
   // Deletes A Given Deck From The DB
-  public void removeDeckFromDB(Deck incomingDeck) {
+  public void deleteDeckFromDB(Deck incomingDeck) {
     try (PreparedStatement st = parentController.getStatement(DELETE_FROM_DECKS_TABLE);) {
       st.setString(1, incomingDeck.getCreatingUser());
       st.setString(2, incomingDeck.getDeckName());

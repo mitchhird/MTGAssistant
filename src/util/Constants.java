@@ -33,7 +33,11 @@ public interface Constants {
   public static final String DECK_CONTENT_CARD_TEXT = "Card Text";
   public static final String DECK_CONTENT_CARD_QUANTITY = "Quantity";
   
+  public static final String DECK_TOOL_NEW_DECK = "New Deck";
+  public static final String DECK_TOOL_EDIT_DECK = "Edit Deck";
+  public static final String DECK_TOOL_DELETE_DECK = "Delete Deck";
+  
   // Integer Constants
-  public static final int MAIN_APP_WIDTH = 600;
+  public static final int MAIN_APP_WIDTH = 800;
   public static final int MAIN_APP_HEIGHT = 600;
 }

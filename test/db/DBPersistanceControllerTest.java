@@ -23,25 +23,30 @@ public class DBPersistanceControllerTest {
   
   @Test
   public void basicDeckAdditionToDB () {
-    Deck testDeck = new Deck();
-    testDeck.setCreatingUser("testUser1");
-    testDeck.setDeckDescription("testDescription1");
-    testDeck.setDeckName("testDeckName1");
-    testDeck.setDeckFormat(Format.MODERN);
-    testDeck.setDeckArchetype("testArt1");
-    
-    classUnderTest.addDeckToDB(testDeck);
-    
-    // Retrieve The Data Back From The DB And Verify That It Is What We Expect It To Be
-    List<Deck> decksInDB = classUnderTest.getAllDecksInDB();
-    Deck sqlDeck = decksInDB.get(0);
+    int numOfDeckToTest = 20;
+    for (int i = 0; i < numOfDeckToTest; i++) {
+      Deck testDeck = new Deck();
+      testDeck.setCreatingUser("testUser" + i);
+      testDeck.setDeckDescription("testDescription" + i);
+      testDeck.setDeckName("testDeckName" + i);
+      
+      Format[] availableFormats = Format.values();
+      testDeck.setDeckFormat(availableFormats[i % availableFormats.length]);
+      testDeck.setDeckArchetype("testArt" + i);
 
-    assertEquals (1, decksInDB.size());
-    assertEquals (testDeck.getCreatingUser(), sqlDeck.getCreatingUser());
-    assertEquals (testDeck.getDeckDescription(), sqlDeck.getDeckDescription());
-    assertEquals (testDeck.getDeckFormat(), sqlDeck.getDeckFormat());
-    assertEquals (testDeck.getDeckName(), sqlDeck.getDeckName());
-    assertEquals (testDeck.getDeckDescription(), sqlDeck.getDeckDescription());
+      classUnderTest.addDeckToDB(testDeck);
+
+      // Retrieve The Data Back From The DB And Verify That It Is What We Expect It To Be
+      List<Deck> decksInDB = classUnderTest.getAllDecksInDB();
+      Deck sqlDeck = decksInDB.get(decksInDB.size() - 1);
+
+      assertEquals(i + 1, decksInDB.size());
+      assertEquals(testDeck.getCreatingUser(), sqlDeck.getCreatingUser());
+      assertEquals(testDeck.getDeckDescription(), sqlDeck.getDeckDescription());
+      assertEquals(testDeck.getDeckFormat(), sqlDeck.getDeckFormat());
+      assertEquals(testDeck.getDeckName(), sqlDeck.getDeckName());
+      assertEquals(testDeck.getDeckDescription(), sqlDeck.getDeckDescription());
+    }
   }
   
   @After

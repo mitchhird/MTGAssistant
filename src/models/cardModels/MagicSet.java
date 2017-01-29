@@ -5,12 +5,13 @@ package models.cardModels;
  * A Standard MTG Set. Contains common things like name, code, gatherer code and release data
  * @author Mitchell
  */
-public class MagicSet {
+public class MagicSet implements Comparable<MagicSet> {
   protected String name;
   protected String code;
   protected String gathererCode;
   protected String border;
   protected String releaseDate;
+  protected String artist;
   protected String magicCardsInfoCode;
 
   /**
@@ -45,6 +46,9 @@ public class MagicSet {
    * @return the releaseDate
    */
   public String getReleaseDate() {
+    if (releaseDate == null) { 
+      System.out.println();
+    }
     return releaseDate;
   }
 
@@ -100,6 +104,11 @@ public class MagicSet {
   @Override
   public String toString() {
     return name + " - (" + code + ")";
+  }
+
+  @Override
+  public int compareTo(MagicSet compareSet) {
+    return compareSet.releaseDate.compareTo(this.releaseDate);
   }
 
 }

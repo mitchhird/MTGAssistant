@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import models.cardModels.Card;
+import models.cardModels.CardRarity;
 import util.MTGHelper;
 import util.JSONConvertTools.JSONCard;
 
@@ -32,19 +33,35 @@ public class DBCardTool extends DBTool {
   // Insertion String
   private final String INSERT_CARD_TABLE = "INSERT INTO CARD_TABLE (CARD_ID, CARD_NAME, CARD_TEXT, CARD_TYPE, CARD_SUPERTYPES, CARD_SUBTYPES, CARD_POWER, CARD_TOUGHNESS, CARD_LOYALITY) VALUES (?,?,?,?,?,?,?,?,?);";;
   private final String SELECT_CARD_TABLE_BASE = "SELECT * FROM CARD_TABLE NATURAL JOIN SET_JUNC_TABLE";
+  private final String SELECT_DISTINCT_CARD_NAME = "SELECT DISTINCT CARD_NAME FROM CARD_TABLE;"; 
   
   
   public DBCardTool(DBPersistanceController controller) {
     super(controller);
   }
   
-  // Returns 
-  public Set<Card> gatherFilteredCards(Set<DBCardSearchDataObject> searchParameters) {
+  // Returns All Available Card Names From The DB
+  public Set<String> getAllCardNames () {
+    Set<String> returnVal = new HashSet<>();
+    try (PreparedStatement st = parentController.getStatement(SELECT_DISTINCT_CARD_NAME);) {
+      ResultSet rs = st.executeQuery();
+      while (rs.next()) {
+        returnVal.add(rs.getString("CARD_NAME"));
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return returnVal;
+  }
+  
+  // Returns A Set Of Cards Matching A Particular Set Of Search Parameters
+  public Set<Card> getFilteredCards(Set<DBCardSearchDataObject> searchParameters) {
     String fullStatement = genFilteredSearchRequest(searchParameters);
     Set<Card> returnVal = gatherCardsFromQuery(fullStatement);
     return returnVal;
   }
 
+  // Return A Set of Cards Based On A Query
   private Set<Card> gatherCardsFromQuery(String query) {
     Set<Card> returnVal = new HashSet<>();
     try (PreparedStatement st = parentController.getStatement(query);) {
@@ -65,6 +82,9 @@ public class DBCardTool extends DBTool {
     try {
       returnVal.setName(incomingResult.getString("CARD_NAME"));
       returnVal.setText(incomingResult.getString("CARD_TEXT"));
+      returnVal.setFlavor(incomingResult.getString("FLAVOUR_TEXT"));
+      returnVal.setArtist(incomingResult.getString("ARTIST"));
+      returnVal.setCardRarity(CardRarity.valueOf(incomingResult.getString("RARITY")));
     } catch (SQLException e) {
       e.printStackTrace();
       return null;
@@ -73,9 +93,14 @@ public class DBCardTool extends DBTool {
   }
   
   private String genFilteredSearchRequest(Set<DBCardSearchDataObject> searchParameters) {
+    boolean firstEntry = true;
     StringBuilder baseStatement = new StringBuilder(SELECT_CARD_TABLE_BASE);
+    
     for (DBCardSearchDataObject dataObj: searchParameters) {
-      baseStatement.append(" WHERE " + dataObj.getDBColumnKey() + " LIKE '%" + dataObj.getDBSearchValue() + "%'");
+      String andOrConnector = (dataObj.isAndTerm()) ? " AND " : " OR ";
+      String prefix = (firstEntry) ? " WHERE " : andOrConnector;
+      baseStatement.append(prefix + dataObj.getDBColumnKey() + " LIKE '%" + dataObj.getDBSearchValue() + "%'");
+      firstEntry = false;
     }
     return baseStatement.toString();
   }

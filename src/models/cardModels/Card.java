@@ -4,20 +4,22 @@ import java.util.List;
 
 /**
  * Base Card Class That Is Responsible For Storing Base Information
+ * 
  * @author Mitchell
- *
+ * 
  */
-public class Card {
+public class Card implements Comparable<Card> {
   protected String layout;
   protected String text;
   protected String type;
   protected String name;
   protected String flavor;
-
+  protected String artist;
+  
   protected List<String> types;
   protected List<String> subtypes;
   protected List<String> colorIdentity;
-  
+
   protected CardRarity cardRarity;
 
   /**
@@ -82,6 +84,20 @@ public class Card {
   public CardRarity getCardRarity() {
     return cardRarity;
   }
+  
+  /**
+   * @return the artist
+   */
+  public String getArtist() {
+    return artist;
+  }
+
+  /**
+   * @param artist the artist to set
+   */
+  public void setArtist(String artist) {
+    this.artist = artist;
+  }
 
   /**
    * @param flavour the flavour to set
@@ -144,5 +160,33 @@ public class Card {
    */
   public void setCardRarity(CardRarity cardRarity) {
     this.cardRarity = cardRarity;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj instanceof Card) {
+      Card testObject = (Card) obj;
+      if (!testObject.name.equals(this.name)) {
+        return false;
+      }
+      else if (!testObject.text.equals(this.text)) {
+        return false;
+      }
+      return true;
+    }
+    return false;
+  }
+  
+  @Override
+  public int hashCode() {
+    int hashCode = 1;
+    hashCode += name.hashCode();
+    hashCode += text.hashCode();
+    return hashCode;
+  }
+
+  @Override
+  public int compareTo(Card paramT) {
+    return paramT.name.compareTo(this.name);
   }
 }

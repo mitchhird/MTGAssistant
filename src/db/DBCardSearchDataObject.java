@@ -3,9 +3,18 @@ package db;
 public class DBCardSearchDataObject {
   private String DBColumnKey;
   private String DBSearchValue;
+  private boolean andTerm;
   
   public DBCardSearchDataObject (String key, String value) {
-     DBColumnKey = key;
+     initVars(key, value, true);
+  }
+  
+  public DBCardSearchDataObject (String key, String value, boolean andTerm) {
+    initVars(key, value, andTerm);
+  }
+
+  private void initVars(String key, String value, boolean andTerm) {
+      DBColumnKey = key;
      DBSearchValue = value;
   }
 
@@ -21,5 +30,9 @@ public class DBCardSearchDataObject {
    */
   public String getDBSearchValue() {
     return DBSearchValue;
+  }
+
+  public boolean isAndTerm() {
+    return andTerm;
   }
 }

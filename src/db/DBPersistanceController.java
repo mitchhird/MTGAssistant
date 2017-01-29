@@ -8,7 +8,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import models.cardModels.Card;
 import models.cardModels.MagicSet;
 import models.deckModels.Deck;
 import util.Constants;
@@ -128,6 +130,22 @@ public class DBPersistanceController {
   public List<MagicSet> getAllMagicSetsInDB() {
     return setTool.getAllMagicSets();
   }
+  
+  // Call To Get A Specific List Of Cards Back From The DB
+  public Set<Card> getFilteredCards (Set<DBCardSearchDataObject> searchOptions) {
+    return cardTool.getFilteredCards(searchOptions);
+  }
+  
+  // Call To Return All Of Current Card Names
+  public Set<String> getAllCardNames () {
+    return cardTool.getAllCardNames();
+  }
+  
+  // Call To Delete Deck From The DB
+  public void deleteDeckFromDB (Deck incomingDeck) {
+    deckTool.deleteDeckFromDB(incomingDeck);
+  }
+  
   
   // Call To Run Clean Up Data From The Existing Database
   public void clearDatabase() {

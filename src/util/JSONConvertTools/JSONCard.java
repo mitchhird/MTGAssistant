@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JSONCard extends Card {
-  protected String artist;
   protected String cmc;
   protected String imageName;
   protected String manaCost;
@@ -17,13 +16,6 @@ public class JSONCard extends Card {
   @Override
   public String toString() {
     return "[JSONCard(" + name + ")]";
-  }
-
-  /**
-   * @return the artist
-   */
-  public String getArtist() {
-    return artist;
   }
 
   /**
@@ -54,12 +46,6 @@ public class JSONCard extends Card {
     return rarity;
   }
 
-  /**
-   * @param artist the artist to set
-   */
-  public void setArtist(String artist) {
-    this.artist = artist;
-  }
 
   /**
    * @param cmc the cmc to set
