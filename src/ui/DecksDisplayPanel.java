@@ -25,7 +25,7 @@ import db.DBPersistanceController;
  * @author Mitchell
  *
  */
-public class DeckEditingPanel extends UIPanelBase {
+public class DecksDisplayPanel extends UIPanelBase {
   
   private JLabel currentDecksLabel;
   private JTable currentDecksTable;
@@ -37,7 +37,7 @@ public class DeckEditingPanel extends UIPanelBase {
   
   private DeckTableModel deckTableModel;
   
-  public DeckEditingPanel() {
+  public DecksDisplayPanel() {
     super();
   }
 
@@ -62,6 +62,8 @@ public class DeckEditingPanel extends UIPanelBase {
     deckOperationPanel.add(editDeckButton);
     deckOperationPanel.add(deleteDeckButton);
     deckOperationPanel.setFloatable(false);
+    
+    updateButtonEnable(false);
   }
 
   @Override
@@ -83,11 +85,8 @@ public class DeckEditingPanel extends UIPanelBase {
     currentDecksTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
       @Override
       public void valueChanged(ListSelectionEvent paramListSelectionEvent) {
-        int selectedRow = currentDecksTable.getSelectedRow();
-        updateButtonEnable(selectedRow >= 0);
-        if (selectedRow >= 0) {
-          Deck deckToRender = deckTableModel.getDeckAtRow(selectedRow);
-        }
+        int selectedRow = currentDecksTable.getSelectedRowCount();
+        updateButtonEnable(selectedRow == 1);
       }
     });    
     

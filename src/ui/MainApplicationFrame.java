@@ -41,7 +41,7 @@ public final class MainApplicationFrame extends JFrame {
     renderer.setDisplayText("This text is a prototype");
     renderer.setHorizontalTextAlignment(SwingConstants.LEADING);
 
-    DeckEditingPanel editingPane = new DeckEditingPanel();
+    DecksDisplayPanel editingPane = new DecksDisplayPanel();
     CardAdvancedSearchPanel searchPane = new CardAdvancedSearchPanel();
     tabbedPane.addTab("Decks", UIManager.getIcon("OptionPane.informationIcon"), editingPane, "Information tool tip");
     tabbedPane.addTab("Search", UIManager.getIcon("OptionPane.informationIcon"), searchPane, "Information tool tip");
