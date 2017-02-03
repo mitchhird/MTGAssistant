@@ -10,9 +10,10 @@ import java.util.Set;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
@@ -30,13 +31,17 @@ public class CardAdvancedSearchPanel extends UIPanelBase {
 
   private JLabel cardNameSearchLabel;
   private JLabel cardNameTextLabel;
+  private JLabel cardFlavourText;
+  private JLabel cardArtistLabel;
   private JLabel cardNameSuperTypeLabel;
   private JLabel cardNameSubTypeLabel;
   private JLabel cardSetLabel;
   private JLabel cardRarityLabel;
-
+  
   private JTextField cardNameSearchField;
   private JTextField cardNameTextField;
+  private JTextField cardFlavourTextField;
+  private JTextField cardArtistTextField;
   private JTextField cardSuperTypeField;
   private JTextField cardSubTypeField;
   private JList<MagicSet> setComboBox;
@@ -47,12 +52,15 @@ public class CardAdvancedSearchPanel extends UIPanelBase {
   // Default Constructor That Is Responsible For Creating
   public CardAdvancedSearchPanel() {
     super();
+    populateLocal();
   }
 
   @Override
   protected void initVariables() {
     cardNameSearchLabel = new JLabel(Constants.CARD_SEARCH_CARD_NAME);
     cardNameTextLabel = new JLabel(Constants.CARD_SEARCH_CARD_TEXT);
+    cardFlavourText = new JLabel(Constants.CARD_SEARCH_CARD_FLAVOUR);
+    cardArtistLabel = new JLabel(Constants.CARD_SEARCH_CARD_ARTIST);
     cardNameSubTypeLabel = new JLabel(Constants.CARD_SEARCH_CARD_SUB);
     cardNameSuperTypeLabel = new JLabel(Constants.CARD_SEARCH_CARD_SUPER);
     cardSetLabel = new JLabel(Constants.CARD_SEARCH_CARD_SET);
@@ -62,9 +70,11 @@ public class CardAdvancedSearchPanel extends UIPanelBase {
     cardNameTextField = new JTextField();
     cardSubTypeField = new JTextField();
     cardSuperTypeField = new JTextField();
+    cardFlavourTextField = new JTextField();
+    cardArtistTextField = new JTextField();
 
     setComboBox = new JList<MagicSet>();
-    rarityComboBox = new JList<CardRarity>(CardRarity.values());
+    rarityComboBox = new JList<CardRarity>();
 
     searchButton = new JButton(Constants.CARD_SEARCH_SEARCH_BUTTON);
   }
@@ -82,6 +92,14 @@ public class CardAdvancedSearchPanel extends UIPanelBase {
     i++;
     addComponentToPanel(cardNameTextLabel, 0, i, 1, 1, 0.2f, 0.1f);
     addComponentToPanel(cardNameTextField, 1, i, 5, 1, 0.8f, 0.1f);
+    
+    i++;
+    addComponentToPanel(cardFlavourText, 0, i, 1, 1, 0.2f, 0.1f);
+    addComponentToPanel(cardFlavourTextField, 1, i, 5, 1, 0.8f, 0.1f);
+    
+    i++;
+    addComponentToPanel(cardArtistLabel, 0, i, 1, 1, 0.2f, 0.1f);
+    addComponentToPanel(cardArtistTextField, 1, i, 5, 1, 0.8f, 0.1f);
 
     i++;
     addComponentToPanel(cardNameSuperTypeLabel, 0, i, 1, 1, 0.2f, 0.1f);
@@ -119,7 +137,9 @@ public class CardAdvancedSearchPanel extends UIPanelBase {
     addSearchIfDefined(searchRequests, "CARD_TEXT", cardNameTextField.getText());
     addSearchIfDefined(searchRequests, "CARD_SUPERTYPES", cardSuperTypeField.getText());
     addSearchIfDefined(searchRequests, "CARD_SUBTYPES", cardSubTypeField.getText());
-
+    addSearchIfDefined(searchRequests, "FLAVOUR_TEXT", cardFlavourTextField.getText());
+    addSearchIfDefined(searchRequests, "ARTIST", cardArtistTextField.getText());
+    
     List<MagicSet> setSelected = setComboBox.getSelectedValuesList();
     addSearchIfDefined(searchRequests, "CODE", setSelected);
 
@@ -127,7 +147,12 @@ public class CardAdvancedSearchPanel extends UIPanelBase {
     addSearchIfDefined(searchRequests, raritiesSelected, "RARITY");
 
     Set<Card> filteredCards = DBPersistanceController.getInstance().getFilteredCards(searchRequests);
-    JOptionPane.showMessageDialog(this, "Search Returned " + filteredCards.size());
+
+    JDialog testDialog = new JDialog(new JFrame());
+    CardSearchDisplayPanel display = new CardSearchDisplayPanel(filteredCards);
+    testDialog.setSize(Constants.MAIN_APP_WIDTH, Constants.MAIN_APP_HEIGHT);
+    testDialog.add(display);
+    testDialog.setVisible(true);
   }
 
   // Adds Another Search Parameter If Is Defined
@@ -168,6 +193,9 @@ public class CardAdvancedSearchPanel extends UIPanelBase {
     MagicSet[] mtgSetsArray = mtgSets.toArray(new MagicSet[mtgSets.size()]);
     DefaultComboBoxModel<MagicSet> model = new DefaultComboBoxModel<MagicSet>(mtgSetsArray);
     setComboBox.setModel(model);
+    
+    DefaultComboBoxModel<CardRarity> rarities = new DefaultComboBoxModel<>(CardRarity.values());
+    rarityComboBox.setModel(rarities);
   }
 
   @Override
