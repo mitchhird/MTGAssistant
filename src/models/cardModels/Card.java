@@ -15,6 +15,7 @@ public class Card implements Comparable<Card> {
   protected String name;
   protected String flavor;
   protected String artist;
+  protected String manaCost;
   
   protected List<String> types;
   protected List<String> subtypes;
@@ -91,6 +92,20 @@ public class Card implements Comparable<Card> {
   public String getArtist() {
     return artist;
   }
+  
+  /**
+   * @return the manaCost
+   */
+  public String getManaCost() {
+    return manaCost;
+  }
+
+  /**
+   * @param manaCost the manaCost to set
+   */
+  public void setManaCost(String manaCost) {
+    this.manaCost = manaCost;
+  }
 
   /**
    * @param artist the artist to set
@@ -117,14 +132,14 @@ public class Card implements Comparable<Card> {
    * @param text the text to set
    */
   public void setText(String text) {
-    this.text = text;
+    this.text = (text == null) ? "" : text;
   }
 
   /**
    * @param type the type to set
    */
   public void setType(String type) {
-    this.type = type;
+    this.type = (type == null) ? "" : type;
   }
 
   /**
@@ -187,7 +202,7 @@ public class Card implements Comparable<Card> {
 
   @Override
   public int compareTo(Card paramT) {
-    return paramT.name.compareTo(this.name);
+    return this.name.compareTo(paramT.name);
   }
   
   @Override

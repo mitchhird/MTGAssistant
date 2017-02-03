@@ -58,10 +58,11 @@ public class DBDeckTool extends DBTool {
     } catch (SQLException e) {
       e.printStackTrace();
     }
+    addDeckCardsToDB(incomingDeck);
   }
 
   // Gathers All Cards For The Supplied Deck
-  private void gatherAllCardsForDeck(Deck incomingDeck) {
+  private void addDeckCardsToDB(Deck incomingDeck) {
     for (Card c : incomingDeck.getCardsWithinDeck().keySet()) {
       Integer quanityValue = incomingDeck.getCardsWithinDeck().get(c);
       try (PreparedStatement st2 = parentController.getStatement(INSERT_INTO_JUNC_TABLE);) {

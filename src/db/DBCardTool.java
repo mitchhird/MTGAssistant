@@ -71,7 +71,7 @@ public class DBCardTool extends DBTool {
         Card nextCard = getCardFromResultSet(rs);
         returnVal.add(nextCard);
       }
-    } catch (SQLException e) {
+    } catch (Exception e) {
       e.printStackTrace();
     }
     return returnVal;
@@ -83,10 +83,12 @@ public class DBCardTool extends DBTool {
     try {
       returnVal.setName(incomingResult.getString("CARD_NAME"));
       returnVal.setText(incomingResult.getString("CARD_TEXT"));
+      returnVal.setType(incomingResult.getString("CARD_TYPE"));
       returnVal.setFlavor(incomingResult.getString("FLAVOUR_TEXT"));
       returnVal.setArtist(incomingResult.getString("ARTIST"));
       returnVal.setCardRarity(CardRarity.valueOf(incomingResult.getString("RARITY")));
-    } catch (SQLException e) {
+      returnVal.setManaCost(incomingResult.getString("CARD_MANA_COST"));
+    } catch (Exception e) {
       e.printStackTrace();
       return null;
     }
