@@ -1,5 +1,8 @@
 package util.JSONConvertTools;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import models.cardModels.Card;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -12,6 +15,9 @@ public class JSONCard extends Card {
   protected String rarity;
   protected String power;
   protected String toughness;
+  
+  protected List<JSONLegality> legalities;
+  
   
   @Override
   public String toString() {
@@ -45,7 +51,23 @@ public class JSONCard extends Card {
   public String getRarity() {
     return rarity;
   }
+  
+  /**
+   * @return the legalities
+   */
+  public List<JSONLegality> getLegalities() {
+    if (legalities == null) {
+      legalities = new ArrayList<>();
+    }
+    return legalities;
+  }
 
+  /**
+   * @param legalities the legalities to set
+   */
+  public void setLegalities(List<JSONLegality> legalities) {
+    this.legalities = legalities;
+  }
 
   /**
    * @param cmc the cmc to set

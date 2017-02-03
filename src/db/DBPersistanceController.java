@@ -32,6 +32,7 @@ public class DBPersistanceController {
   private DBSetTool setTool;
   private DBCardTool cardTool;
   private DBDeckTool deckTool;
+  private DBLegalityTool legalTool;
   
   private List<DBTool> databaseTools;
   private static DBPersistanceController instance;
@@ -64,11 +65,13 @@ public class DBPersistanceController {
     setTool = new DBSetTool(this);
     cardTool = new DBCardTool(this);
     deckTool = new DBDeckTool(this);
+    legalTool = new DBLegalityTool(this);
     
     databaseTools = new ArrayList<>();
     databaseTools.add(setTool);
     databaseTools.add(cardTool);
     databaseTools.add(deckTool);
+    databaseTools.add(legalTool);
   }
 
   // Runs through the connection strings and creates all of the tables associated with them
@@ -119,6 +122,11 @@ public class DBPersistanceController {
   // Call To Add A Set To The DB
   public void addDeckToDB (Deck incomingDeck) {
     deckTool.addDeckToDB(incomingDeck);
+  }
+  
+  // Call To Add Legalities To The DB
+  public void addLegalitiesToDB(JSONCard card) {
+    legalTool.insertIntoLegalTable(card);
   }
   
   // Call To Return All Decks Currently In The DB

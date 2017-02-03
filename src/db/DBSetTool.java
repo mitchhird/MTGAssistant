@@ -90,9 +90,6 @@ public class DBSetTool extends DBTool {
       // Load In All Of The Necessary Cards
       for (JSONCard c : incomingSet.getCards()) {
         try (PreparedStatement p2 = parentController.getStatement(INSERT_SET_INTO_JUNCTION_TABLE);) {
-          if (c.getName().equals("Air Elemental")) {
-            System.out.println();
-          }
           p2.setString(1, incomingSet.getCode());
           p2.setString(2, MTGHelper.generateCardKey(c));
           p2.setString(3, c.getArtist());
@@ -105,7 +102,11 @@ public class DBSetTool extends DBTool {
           System.out.println("    --> Added Card To Junction Table: " + c);
           
           parentController.addCardToDB(c);
-          System.out.println("    --> Added Card: " + c);
+          System.out.println("    --> Card To Card Table: " + c);
+          
+          parentController.addLegalitiesToDB(c);
+          System.out.println("    --> Card added to legal table " + c);
+          
         } catch (SQLException e) {
         }
       }

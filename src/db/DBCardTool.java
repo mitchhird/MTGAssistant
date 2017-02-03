@@ -15,33 +15,34 @@ import util.JSONConvertTools.JSONCard;
 
 /**
  * A simple tool that is responsible for managing database operations that relate to individual cards themselves
+ * 
  * @author Mitchell
  */
 public class DBCardTool extends DBTool {
 
-  // Table Creation String
-  private final String CREATE_CARD_TABLE = "CREATE TABLE IF NOT EXISTS CARD_TABLE (CARD_ID varchar(" + DB_CHAR_COLUMN_LIMIT + ") PRIMARY KEY," 
-                                                                               + "CARD_NAME varchar(" + DB_CHAR_COLUMN_LIMIT + "),"
-                                                                               + "CARD_TEXT varchar(" + DB_CHAR_COLUMN_LIMIT + "),"
-                                                                               + "CARD_TYPE varchar(" + DB_CHAR_COLUMN_LIMIT + "),"
-                                                                               + "CARD_SUPERTYPES varchar(" + DB_CHAR_COLUMN_LIMIT + "),"
-                                                                               + "CARD_SUBTYPES varchar(" + DB_CHAR_COLUMN_LIMIT + "),"
-                                                                               + "CARD_POWER INTEGER,"
-                                                                               + "CARD_TOUGHNESS INTEGER,"
-                                                                               + "CARD_LOYALITY INTEGER)";
+//Table Creation String
+ private final String CREATE_CARD_TABLE = "CREATE TABLE IF NOT EXISTS CARD_TABLE (CARD_ID varchar(" + DB_CHAR_COLUMN_LIMIT + ") PRIMARY KEY," 
+                                                                              + "CARD_NAME varchar(" + DB_CHAR_COLUMN_LIMIT + "),"
+                                                                              + "CARD_TEXT varchar(" + DB_CHAR_COLUMN_LIMIT + "),"
+                                                                              + "CARD_TYPE varchar(" + DB_CHAR_COLUMN_LIMIT + "),"
+                                                                              + "CARD_SUPERTYPES varchar(" + DB_CHAR_COLUMN_LIMIT + "),"
+                                                                              + "CARD_SUBTYPES varchar(" + DB_CHAR_COLUMN_LIMIT + "),"
+                                                                              + "CARD_POWER INTEGER,"
+                                                                              + "CARD_TOUGHNESS INTEGER,"
+                                                                              + "CARD_LOYALITY INTEGER,"
+                                                                              + "CARD_CMC varchar(" + DB_CHAR_COLUMN_LIMIT + "),"
+                                                                              + "CARD_MANA_COST varchar(" + DB_CHAR_COLUMN_LIMIT + "))";
 
-  // Insertion String
-  private final String INSERT_CARD_TABLE = "INSERT INTO CARD_TABLE (CARD_ID, CARD_NAME, CARD_TEXT, CARD_TYPE, CARD_SUPERTYPES, CARD_SUBTYPES, CARD_POWER, CARD_TOUGHNESS, CARD_LOYALITY) VALUES (?,?,?,?,?,?,?,?,?);";;
-  private final String SELECT_CARD_TABLE_BASE = "SELECT * FROM CARD_TABLE NATURAL JOIN SET_JUNC_TABLE";
-  private final String SELECT_DISTINCT_CARD_NAME = "SELECT DISTINCT CARD_NAME FROM CARD_TABLE;"; 
-  
-  
+ // Insertion String
+ private final String INSERT_CARD_TABLE = "INSERT INTO CARD_TABLE (CARD_ID, CARD_NAME, CARD_TEXT, CARD_TYPE, CARD_SUPERTYPES, CARD_SUBTYPES, CARD_POWER, CARD_TOUGHNESS, CARD_LOYALITY, CARD_CMC, CARD_MANA_COST) VALUES (?,?,?,?,?,?,?,?,?,?,?);";;
+ private final String SELECT_CARD_TABLE_BASE = "SELECT * FROM CARD_TABLE NATURAL JOIN SET_JUNC_TABLE";
+ private final String SELECT_DISTINCT_CARD_NAME = "SELECT DISTINCT CARD_NAME FROM CARD_TABLE;"; 
   public DBCardTool(DBPersistanceController controller) {
     super(controller);
   }
-  
+
   // Returns All Available Card Names From The DB
-  public Set<String> getAllCardNames () {
+  public Set<String> getAllCardNames() {
     Set<String> returnVal = new HashSet<>();
     try (PreparedStatement st = parentController.getStatement(SELECT_DISTINCT_CARD_NAME);) {
       ResultSet rs = st.executeQuery();
@@ -53,7 +54,7 @@ public class DBCardTool extends DBTool {
     }
     return returnVal;
   }
-  
+
   // Returns A Set Of Cards Matching A Particular Set Of Search Parameters
   public Set<Card> getFilteredCards(Set<DBCardSearchDataObject> searchParameters) {
     String fullStatement = genFilteredSearchRequest(searchParameters);
@@ -91,12 +92,12 @@ public class DBCardTool extends DBTool {
     }
     return returnVal;
   }
-  
+
   private String genFilteredSearchRequest(Set<DBCardSearchDataObject> searchParameters) {
     boolean firstEntry = true;
     StringBuilder baseStatement = new StringBuilder(SELECT_CARD_TABLE_BASE);
-    
-    for (DBCardSearchDataObject dataObj: searchParameters) {
+
+    for (DBCardSearchDataObject dataObj : searchParameters) {
       String andOrConnector = (dataObj.isAndTerm()) ? " AND " : " OR ";
       String prefix = (firstEntry) ? " WHERE " : andOrConnector;
       baseStatement.append(prefix + dataObj.getDBColumnKey() + " LIKE '%" + dataObj.getDBSearchValue() + "%'");
@@ -104,29 +105,46 @@ public class DBCardTool extends DBTool {
     }
     return baseStatement.toString();
   }
-  
-  
+
   /**
    * Adds A JSON Card To The Database. Only Called When We Need To Refresh The DB
+   * 
    * @param card
    */
-  public void addJSONCard (JSONCard card) {
+  public void addJSONCard(JSONCard card) {
     try (PreparedStatement st = parentController.getStatement(INSERT_CARD_TABLE);) {
       st.setString(1, MTGHelper.generateCardKey(card));
       st.setString(2, card.getName());
-      st.setString(3, card.getType());
+      st.setString(3, card.getText());
       st.setString(4, card.getType());
-      st.setString(5, card.getType());
-      st.setInt(6, createSafeNumberFromString(card.getPower()));
-      st.setInt(7, createSafeNumberFromString(card.getToughness()));
-      st.setInt(8, createSafeNumberFromString(card.getPower()));
+      st.setString(5, getCommaStringFromList(card.getTypes()));
+      st.setString(6, getCommaStringFromList(card.getSubtypes()));
+      st.setInt(7, createSafeNumberFromString(card.getPower()));
+      st.setInt(8, createSafeNumberFromString(card.getToughness()));
+      st.setInt(9, createSafeNumberFromString(card.getPower()));
+      st.setString(10, card.getCmc());
       st.execute();
     } catch (SQLException e) {
+     // e.printStackTrace();
       // Probably Hit A Card That Shares The Same Name, Not Important, So Just Continue Onward
     }
   }
-  
-  private int createSafeNumberFromString (String num) {
+
+  private String getCommaStringFromList(List<String> items) {
+    if (items != null) {
+      StringBuilder sb = new StringBuilder();
+      for (int i = 0; i < items.size(); i++) {
+        String suffix = (i == (items.size() - 1)) ? "," : "";
+        sb.append(items.get(i) + suffix);
+      }
+      return sb.toString();
+    }
+    else {
+      return "";
+    }
+  }
+
+  private int createSafeNumberFromString(String num) {
     try {
       return Integer.parseInt(num);
     } catch (Exception e) {
@@ -136,7 +154,7 @@ public class DBCardTool extends DBTool {
 
   @Override
   public List<String> getDBCreationStrings() {
-    List<String> creationStrings = new ArrayList<String> ();
+    List<String> creationStrings = new ArrayList<String>();
     creationStrings.add(CREATE_CARD_TABLE);
     return creationStrings;
   }
