@@ -38,9 +38,8 @@ public class IndividualDeckPanel extends UIPanelBase {
   private Deck currentlySelectedDeck;
 
   // Constructor When We Know If We Want Edit Everything Or Just The Available Subset
-  public IndividualDeckPanel(boolean fullEditability) {
+  public IndividualDeckPanel() {
     super();
-    setEditablity(fullEditability);
   }
 
   // Sets The Editiablity Of All Applicable Items
@@ -115,7 +114,10 @@ public class IndividualDeckPanel extends UIPanelBase {
 
   @Override
   protected void applyLocal() {
-    // TODO Auto-generated method stub
+    currentlySelectedDeck.setCreatingUser(selectedCreatedField.getText().trim());
+    currentlySelectedDeck.setDeckDescription(selectedDescriptionField.getText().trim());
+    currentlySelectedDeck.setDeckFormat(Format.values()[selectedFormatField.getSelectedIndex()]);
+    currentlySelectedDeck.setDeckName(selectedDeckNameField.getText().trim());
   }
 
 }

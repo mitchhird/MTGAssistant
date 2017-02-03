@@ -1,6 +1,7 @@
 package models.deckModels;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import models.cardModels.Card;
@@ -24,6 +25,7 @@ public class Deck {
     this.deckName = "";
     this.deckDescription = "";
     this.deckArchetype = "";
+    this.deckFormat = Format.STANDARD;
   }
 
   public String getCreatingUser() {

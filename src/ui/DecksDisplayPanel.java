@@ -29,6 +29,7 @@ public class DecksDisplayPanel extends UIPanelBase {
   
   private JLabel currentDecksLabel;
   private JTable currentDecksTable;
+  private JScrollPane currentDecksWrapper;
   private JToolBar deckOperationPanel;
   
   private JButton newDeckButton;
@@ -77,8 +78,8 @@ public class DecksDisplayPanel extends UIPanelBase {
     
     gbc.anchor = GridBagConstraints.CENTER;
     gbc.fill = GridBagConstraints.BOTH;
-    JScrollPane currentDecksScroller = new JScrollPane(currentDecksTable);
-    addComponentToPanel(currentDecksScroller, 0, 2, 4, 1, 1.0f, 0.8f);
+    currentDecksWrapper = new JScrollPane(currentDecksTable);
+    addComponentToPanel(currentDecksWrapper, 0, 2, 4, 1, 1.0f, 0.8f);
   }
 
   @Override
@@ -95,6 +96,8 @@ public class DecksDisplayPanel extends UIPanelBase {
       @Override
       public void actionPerformed(ActionEvent paramActionEvent) {
         System.out.println("New Deck Button Has Been Pressed");
+        DeckEditDialog newDialog = new DeckEditDialog(new Deck(), true);
+        newDialog.setVisible(true);
       }
     });
     
@@ -102,6 +105,9 @@ public class DecksDisplayPanel extends UIPanelBase {
       @Override
       public void actionPerformed(ActionEvent paramActionEvent) {
         System.out.println("Edit Deck Button Has Been Pressed");
+        Deck deckToEdit = deckTableModel.getDeckAtRow(currentDecksTable.getSelectedRow());
+        DeckEditDialog newDialog = new DeckEditDialog(deckToEdit, false);
+        newDialog.setVisible(true);
       }
     });
     
@@ -137,5 +143,6 @@ public class DecksDisplayPanel extends UIPanelBase {
     DBPersistanceController.getInstance().deleteDeckFromDB(incomingDeck);
     deckTableModel.removeDeckFromModel(selectedRow);
     currentDecksTable.repaint();
+    currentDecksWrapper.repaint();
   }
 }

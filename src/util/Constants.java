@@ -21,6 +21,8 @@ public interface Constants {
   
   public static final String CARD_SEARCH_CARD_NAME = "Name";
   public static final String CARD_SEARCH_CARD_TEXT = "Text";
+  public static final String CARD_SEARCH_CARD_FLAVOUR = "Flavour Text";
+  public static final String CARD_SEARCH_CARD_ARTIST = "Artist";
   public static final String CARD_SEARCH_CARD_SUPER = "Supertype";
   public static final String CARD_SEARCH_CARD_SUB = "Subtype";
   public static final String CARD_SEARCH_CARD_FORMAT = "Format";

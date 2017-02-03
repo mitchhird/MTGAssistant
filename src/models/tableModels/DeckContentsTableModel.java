@@ -29,7 +29,7 @@ public class DeckContentsTableModel extends AbstractTableModel{
 
   @Override
   public int getColumnCount() {
-    return 4;
+    return 3;
   }
 
   @Override
@@ -37,8 +37,7 @@ public class DeckContentsTableModel extends AbstractTableModel{
     switch (columnIndex) {
       case 0: return Constants.DECK_CONTENT_CARD_NAME;
       case 1: return Constants.DECK_CONTENT_CARD_TYPE;
-      case 2: return Constants.DECK_CONTENT_CARD_TEXT;
-      case 3: return Constants.DECK_CONTENT_CARD_QUANTITY;
+      case 2: return Constants.DECK_CONTENT_CARD_QUANTITY;
       default: return "";
     }
   }
@@ -46,7 +45,7 @@ public class DeckContentsTableModel extends AbstractTableModel{
   @Override
   public Class<?> getColumnClass(int columnIndex) {
     switch (columnIndex) {
-      case 3: return Integer.class;
+      case 2: return Integer.class;
       default: return String.class;
     }
   }
