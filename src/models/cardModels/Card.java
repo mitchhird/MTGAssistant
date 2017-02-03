@@ -189,4 +189,9 @@ public class Card implements Comparable<Card> {
   public int compareTo(Card paramT) {
     return paramT.name.compareTo(this.name);
   }
+  
+  @Override
+  public String toString() {
+    return "Card [name=" + name + ", text=" + text +"]";
+  }
 }

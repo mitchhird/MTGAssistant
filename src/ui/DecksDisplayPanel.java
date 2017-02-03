@@ -39,6 +39,7 @@ public class DecksDisplayPanel extends UIPanelBase {
   
   public DecksDisplayPanel() {
     super();
+    populateLocal();
   }
 
   @Override

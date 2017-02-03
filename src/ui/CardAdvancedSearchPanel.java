@@ -152,10 +152,12 @@ public class CardAdvancedSearchPanel extends UIPanelBase {
  
   private void addSearchIfDefined(Set<DBCardSearchDataObject> curSearch, List<CardRarity> values, String key) {
     if (values != null) {
+      StringBuilder builder = new StringBuilder("(");
       for (int i = 0; i < values.size(); i++) {
         boolean isFirstTerm = i == 0;
         addSearchIfDefined(curSearch, key, values.get(i).name(), isFirstTerm);
       }
+      builder.append(")");
     }
   }
 

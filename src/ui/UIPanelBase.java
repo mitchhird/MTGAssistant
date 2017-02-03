@@ -29,7 +29,6 @@ public abstract class UIPanelBase extends JPanel {
     initVariables();
     placeUIElements();
     addActionListeners();
-    populateLocal();
   }
   
   protected void addComponentToPanel (JComponent comp, int gridX, int gridY, int gridWidth, int gridHeight, float xWeight, float yWeight) {
