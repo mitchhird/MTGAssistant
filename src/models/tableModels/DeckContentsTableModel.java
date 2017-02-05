@@ -1,6 +1,9 @@
 package models.tableModels;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.event.TableModelListener;
@@ -15,16 +18,24 @@ import util.Constants;
  */
 public class DeckContentsTableModel extends AbstractTableModel{
 
-  private final Map<Card, Integer> cardsWithinDeck;
+  private List<Card> displayList;
+  private Map<Card, Integer> cardsWithinDeck;
   private static final long serialVersionUID = 1L;
-  
+
   public DeckContentsTableModel () {
-    cardsWithinDeck = new HashMap<Card, Integer>();
+    setCardsInDeck(new HashMap<Card, Integer>());
+  }
+
+  public void setCardsInDeck(Map<Card,Integer> newMap) {
+    cardsWithinDeck = newMap;
+    displayList = new ArrayList<Card>(cardsWithinDeck.keySet());
+    Collections.sort(displayList);
+    fireTableDataChanged();
   }
   
   @Override
   public int getRowCount() {
-    return cardsWithinDeck.keySet().size();
+    return displayList.size();
   }
 
   @Override
@@ -58,7 +69,11 @@ public class DeckContentsTableModel extends AbstractTableModel{
 
   @Override
   public Object getValueAt(int rowIndex, int columnIndex) {
+    Card card = displayList.get(rowIndex);
     switch (columnIndex) {
+      case 0: return card.getName();
+      case 1: return card.getType();
+      case 2: return cardsWithinDeck.get(card);
       default: return "";
     }
   }

@@ -32,6 +32,8 @@ public class IndividualDeckPanel extends UIPanelBase {
   private JTextField selectedDeckNameField;
   private JComboBox<Format> selectedFormatField;
   private JTextArea selectedDescriptionField;
+  
+  private DeckContentsTableModel deckModel;
   private JTable selectedDeckContentsTable;
 
   // Data for the retrieval of necessary for rendering
@@ -62,9 +64,8 @@ public class IndividualDeckPanel extends UIPanelBase {
     selectedFormatField = new JComboBox<>(Format.values());
     selectedDescriptionField = new JTextArea();
 
-    DeckContentsTableModel contentsModel = new DeckContentsTableModel();
-    selectedDeckContentsTable = new JTable(contentsModel);
-    selectedDeckContentsTable.setAutoCreateRowSorter(true);
+    deckModel = new DeckContentsTableModel();
+    selectedDeckContentsTable = new JTable(deckModel);
   }
 
   @Override
@@ -108,6 +109,7 @@ public class IndividualDeckPanel extends UIPanelBase {
   public void setCurrentlySelectedDeck(Deck incomingDeck) {
     if (incomingDeck != null) {
       currentlySelectedDeck = incomingDeck;
+      deckModel.setCardsInDeck(incomingDeck.getCardsWithinDeck());
       populateLocal();
     }
   }
@@ -118,6 +120,12 @@ public class IndividualDeckPanel extends UIPanelBase {
     currentlySelectedDeck.setDeckDescription(selectedDescriptionField.getText().trim());
     currentlySelectedDeck.setDeckFormat(Format.values()[selectedFormatField.getSelectedIndex()]);
     currentlySelectedDeck.setDeckName(selectedDeckNameField.getText().trim());
+  }
+  
+  public void refreshTable() {
+    deckModel.setCardsInDeck(currentlySelectedDeck.getCardsWithinDeck());
+    selectedDeckContentsTable.invalidate();
+    selectedDeckContentsTable.repaint();
   }
 
 }

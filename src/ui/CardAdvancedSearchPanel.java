@@ -3,7 +3,6 @@ package ui;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -146,7 +145,7 @@ public class CardAdvancedSearchPanel extends UIPanelBase {
     List<CardRarity> raritiesSelected = rarityComboBox.getSelectedValuesList();
     addSearchIfDefined(searchRequests, raritiesSelected, "RARITY");
 
-    Set<Card> filteredCards = DBPersistanceController.getInstance().getFilteredCards(searchRequests);
+    List<Card> filteredCards = DBPersistanceController.getInstance().getFilteredCards(searchRequests);
 
     JDialog testDialog = new JDialog(new JFrame());
     CardSearchDisplayPanel display = new CardSearchDisplayPanel(filteredCards);
@@ -189,7 +188,6 @@ public class CardAdvancedSearchPanel extends UIPanelBase {
   @Override
   protected void populateLocal() {
     List<MagicSet> mtgSets = DBPersistanceController.getInstance().getAllMagicSetsInDB();
-    Collections.sort(mtgSets);
     MagicSet[] mtgSetsArray = mtgSets.toArray(new MagicSet[mtgSets.size()]);
     DefaultComboBoxModel<MagicSet> model = new DefaultComboBoxModel<MagicSet>(mtgSetsArray);
     setComboBox.setModel(model);

@@ -1,9 +1,6 @@
 package ui;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
@@ -25,10 +22,9 @@ public class CardSearchDisplayPanel extends UIPanelBase {
   private final List<Card> cardsToDisplay;
   private static final long serialVersionUID = 1L;
   
-  public CardSearchDisplayPanel(Set<Card> cardsToDisplay) {
+  public CardSearchDisplayPanel(List<Card> cardsToDisplay) {
     super();
-    this.cardsToDisplay = new ArrayList<>(cardsToDisplay);
-    Collections.sort(this.cardsToDisplay);
+    this.cardsToDisplay = cardsToDisplay;
     populateLocal();
   }
   
