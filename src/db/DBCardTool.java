@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -56,10 +57,14 @@ public class DBCardTool extends DBTool {
   }
 
   // Returns A Set Of Cards Matching A Particular Set Of Search Parameters
-  public Set<Card> getFilteredCards(Set<DBCardSearchDataObject> searchParameters) {
+  public List<Card> getFilteredCards(Set<DBCardSearchDataObject> searchParameters) {
     String fullStatement = genFilteredSearchRequest(searchParameters);
     Set<Card> returnVal = gatherCardsFromQuery(fullStatement);
-    return returnVal;
+    
+    // Convert into a list and sort before returning
+    List<Card> arrayList = new ArrayList<Card>(returnVal);
+    Collections.sort(arrayList);
+    return arrayList;
   }
 
   // Return A Set of Cards Based On A Query

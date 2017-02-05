@@ -42,4 +42,7 @@ public interface Constants {
   // Integer Constants
   public static final int MAIN_APP_WIDTH = 800;
   public static final int MAIN_APP_HEIGHT = 600;
+  public static final int CONSTRUCTED_MAX_PLAY_SET = 4;
+  public static final int CONSTRUCTED_MIN_DECK_SIZE = 60;
+  public static final int SINGLETON_DECK_SIZE = 100;
 }

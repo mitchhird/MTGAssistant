@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 import models.cardModels.Card;
+import models.cardModels.Format;
 import models.cardModels.MagicSet;
 import models.deckModels.Deck;
 import util.Constants;
@@ -140,13 +141,28 @@ public class DBPersistanceController {
   }
   
   // Call To Get A Specific List Of Cards Back From The DB
-  public Set<Card> getFilteredCards (Set<DBCardSearchDataObject> searchOptions) {
+  public List<Card> getFilteredCards (Set<DBCardSearchDataObject> searchOptions) {
     return cardTool.getFilteredCards(searchOptions);
   }
   
   // Call To Return All Of Current Card Names
   public Set<String> getAllCardNames () {
     return cardTool.getAllCardNames();
+  }
+  
+  // Returns Whether Or Not A Card Is Legal In A Given Format
+  public boolean isCardLegalInFormat (Card incomingCard, Format formatToCheck) {
+    return legalTool.isCardLegalInFormat(incomingCard, formatToCheck);
+  }
+
+  // Returns Whether Or Not A Card Is Banned In A Given Format
+  public boolean isCardBannedInFormat (Card incomingCard, Format formatToCheck) {
+    return legalTool.isCardBannedInFormat(incomingCard, formatToCheck);
+  }
+  
+  // Returns Whether Or Not A Card Is Restricted In A Given Format
+  public boolean isCardRestrictedInFormat (Card incomingCard, Format formatToCheck) {
+    return legalTool.isCardRestrictedInFormat(incomingCard, formatToCheck);
   }
   
   // Call To Delete Deck From The DB

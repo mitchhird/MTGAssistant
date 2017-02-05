@@ -22,6 +22,14 @@ public class Card implements Comparable<Card> {
   protected List<String> colorIdentity;
 
   protected CardRarity cardRarity;
+  
+  public Card () {
+    
+  }
+  
+  public Card (String cardName) {
+    this.name = cardName; 
+  }
 
   /**
    * @return the flavour

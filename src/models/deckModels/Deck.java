@@ -1,6 +1,5 @@
 package models.deckModels;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -26,6 +25,7 @@ public class Deck {
     this.deckDescription = "";
     this.deckArchetype = "";
     this.deckFormat = Format.STANDARD;
+    cardsWithinDeck = new LinkedHashMap<>();
   }
 
   public String getCreatingUser() {
@@ -68,7 +68,7 @@ public class Deck {
     this.deckFormat = deckFormat;
   }
 
-  // Adds A Card To The Deck, It The Card Already Exists, Then It's Quanity Value Is Updated
+  // Adds A Card To The Deck, It The Card Already Exists, Then It's Quantity Value Is Updated
   public void addCardToDeck (Card incomingCard) {
     if (cardsWithinDeck.containsKey(incomingCard)) {
       Integer quanity = cardsWithinDeck.get(incomingCard);
@@ -77,10 +77,14 @@ public class Deck {
       cardsWithinDeck.put(incomingCard, 1);
     }
   }
+  
+  public void addCardToDeck (Card incomingCard, int quantity) {
+    cardsWithinDeck.put(incomingCard, quantity);
+  }
 
   public Map<Card, Integer> getCardsWithinDeck() {
     if (cardsWithinDeck == null) {
-      cardsWithinDeck = new HashMap<>();
+      cardsWithinDeck = new LinkedHashMap<>();
     }
     return cardsWithinDeck;
   }
