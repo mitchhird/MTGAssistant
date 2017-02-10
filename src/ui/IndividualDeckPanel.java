@@ -127,5 +127,4 @@ public class IndividualDeckPanel extends UIPanelBase {
     selectedDeckContentsTable.invalidate();
     selectedDeckContentsTable.repaint();
   }
-
 }

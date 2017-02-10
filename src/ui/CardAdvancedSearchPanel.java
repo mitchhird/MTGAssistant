@@ -3,6 +3,7 @@ package ui;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -188,6 +189,7 @@ public class CardAdvancedSearchPanel extends UIPanelBase {
   @Override
   protected void populateLocal() {
     List<MagicSet> mtgSets = DBPersistanceController.getInstance().getAllMagicSetsInDB();
+    Collections.sort(mtgSets);
     MagicSet[] mtgSetsArray = mtgSets.toArray(new MagicSet[mtgSets.size()]);
     DefaultComboBoxModel<MagicSet> model = new DefaultComboBoxModel<MagicSet>(mtgSetsArray);
     setComboBox.setModel(model);

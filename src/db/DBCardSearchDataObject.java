@@ -1,5 +1,9 @@
 package db;
 
+/**
+ * Simple data store object that contains dynamic search parameter data
+ * @author Mitchell
+ */
 public class DBCardSearchDataObject {
   private String DBColumnKey;
   private String DBSearchValue;

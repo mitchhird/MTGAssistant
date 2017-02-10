@@ -24,6 +24,7 @@ public class DefaultTabRenderer extends AbstractTabRenderer implements PropertyC
   // Default Constructor For The Class
   public DefaultTabRenderer() {
       prototypeComponent = generateRendererComponent(getDisplayText(), getDisplayIcon(), getHorizontalTextAlignment());
+      prototypeComponent.setPreferredSize(new Dimension(10, 100));
       addPropertyChangeListener(this);
   }
 

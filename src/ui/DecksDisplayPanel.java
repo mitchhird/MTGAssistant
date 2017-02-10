@@ -3,19 +3,18 @@ package ui;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collections;
 import java.util.List;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.UIManager;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 import models.deckModels.Deck;
-import models.tableModels.DeckTableModel;
 import util.Constants;
 import db.DBPersistanceController;
 
@@ -29,14 +28,14 @@ public class DecksDisplayPanel extends UIPanelBase {
   
   private JLabel currentDecksLabel;
   private JTable currentDecksTable;
-  private JScrollPane currentDecksWrapper;
   private JToolBar deckOperationPanel;
   
   private JButton newDeckButton;
-  private JButton editDeckButton;
+  private JButton addCardsToDeckButton;
   private JButton deleteDeckButton;
-  
-  private DeckTableModel deckTableModel;
+
+  private JComboBox<Deck> deckComboBox;
+  private IndividualDeckPanel deckPanel;
   
   public DecksDisplayPanel() {
     super();
@@ -47,21 +46,20 @@ public class DecksDisplayPanel extends UIPanelBase {
   protected void initVariables() {
     currentDecksLabel = new JLabel(Constants.DECKS_CURRENT_LABEL + ":");
     
-    deckTableModel = new DeckTableModel();
-    currentDecksTable = new JTable(deckTableModel);
-    currentDecksTable.setAutoCreateRowSorter(true);
+    deckComboBox = new JComboBox<Deck>();
+    deckPanel = new IndividualDeckPanel();
     
     newDeckButton = new JButton(Constants.DECK_TOOL_NEW_DECK);
-    editDeckButton = new JButton(Constants.DECK_TOOL_EDIT_DECK);
+    addCardsToDeckButton = new JButton(Constants.DECK_TOOL_EDIT_DECK);
     deleteDeckButton = new JButton(Constants.DECK_TOOL_DELETE_DECK);
     
     newDeckButton.setIcon(UIManager.getIcon("OptionPane.informationIcon"));
-    editDeckButton.setIcon(UIManager.getIcon("OptionPane.informationIcon"));
+    addCardsToDeckButton.setIcon(UIManager.getIcon("OptionPane.informationIcon"));
     deleteDeckButton.setIcon(UIManager.getIcon("OptionPane.informationIcon"));
     
     deckOperationPanel = new JToolBar();
     deckOperationPanel.add(newDeckButton);
-    deckOperationPanel.add(editDeckButton);
+    deckOperationPanel.add(addCardsToDeckButton);
     deckOperationPanel.add(deleteDeckButton);
     deckOperationPanel.setFloatable(false);
     
@@ -70,43 +68,47 @@ public class DecksDisplayPanel extends UIPanelBase {
 
   @Override
   protected void placeUIElements() {
-    addComponentToPanel(deckOperationPanel, 0, 0, 1, 1, 0.1f, 0.01f);
+    addComponentToPanel(deckOperationPanel, 0, 0, 1, 1, 0.1f, 0f);
     
     gbc.anchor = GridBagConstraints.NORTH;
     gbc.fill = GridBagConstraints.HORIZONTAL;
-    addComponentToPanel(currentDecksLabel, 0, 1, 1, 1, 1.0f, 0.19f);
+    addComponentToPanel(currentDecksLabel, 0, 1, 1, 1, 1.0f, 0f);
     
     gbc.anchor = GridBagConstraints.CENTER;
     gbc.fill = GridBagConstraints.BOTH;
-    currentDecksWrapper = new JScrollPane(currentDecksTable);
-    addComponentToPanel(currentDecksWrapper, 0, 2, 4, 1, 1.0f, 0.8f);
+    addComponentToPanel(deckComboBox, 0, 2, 4, 1, 1.0f, 0f);
+    
+    addComponentToPanel(deckPanel, 0, 3, 4, 1, 1.0f, 1.0f);
   }
 
   @Override
   protected void addActionListeners() {
-    currentDecksTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+    deckComboBox.addActionListener(new ActionListener() {
+      
       @Override
-      public void valueChanged(ListSelectionEvent paramListSelectionEvent) {
-        int selectedRow = currentDecksTable.getSelectedRowCount();
-        updateButtonEnable(selectedRow == 1);
+      public void actionPerformed(ActionEvent e) {
+        updateButtonEnable(deckComboBox.getSelectedIndex() != 0);
+        if (deckComboBox.getSelectedIndex() >= 0) {
+          Deck deckToRender = deckComboBox.getItemAt(deckComboBox.getSelectedIndex());
+          deckPanel.setCurrentlySelectedDeck(deckToRender);
+        }
       }
-    });    
+    });
     
     newDeckButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent paramActionEvent) {
         System.out.println("New Deck Button Has Been Pressed");
-        DeckEditDialog newDialog = new DeckEditDialog(new Deck(), true);
-        newDialog.setVisible(true);
+        deckPanel.setCurrentlySelectedDeck(new Deck());
       }
     });
     
-    editDeckButton.addActionListener(new ActionListener() {
+    addCardsToDeckButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent paramActionEvent) {
-        System.out.println("Edit Deck Button Has Been Pressed");
-        Deck deckToEdit = deckTableModel.getDeckAtRow(currentDecksTable.getSelectedRow());
-        DeckEditDialog newDialog = new DeckEditDialog(deckToEdit, false);
+        System.out.println("Add Cards To Deck Button Has Been Pressed");
+        Deck deckToEdit = deckComboBox.getItemAt(deckComboBox.getSelectedIndex());
+        DeckEditDialog newDialog = new DeckEditDialog(deckToEdit, deckPanel, false);
         newDialog.setVisible(true);
       }
     });
@@ -121,14 +123,19 @@ public class DecksDisplayPanel extends UIPanelBase {
   
   private void updateButtonEnable (boolean rowSelected) {
     newDeckButton.setEnabled(true);
-    editDeckButton.setEnabled(rowSelected);
+    addCardsToDeckButton.setEnabled(rowSelected);
     deleteDeckButton.setEnabled(rowSelected);
   }
 
   @Override
   protected void populateLocal() {
     List<Deck> allDecksInDB = DBPersistanceController.getInstance().getAllDecksInDB();
-    deckTableModel.setDecksToRender(allDecksInDB);
+    Collections.sort(allDecksInDB);
+    DefaultComboBoxModel<Deck> displayModel = new DefaultComboBoxModel<Deck>();
+    for (Deck d: allDecksInDB) {
+      displayModel.addElement(d);
+    }
+    deckComboBox.setModel(displayModel);
   }
 
   @Override
@@ -138,11 +145,11 @@ public class DecksDisplayPanel extends UIPanelBase {
   }
 
   private void handleDeleteButton() {
-    int selectedRow = currentDecksTable.getSelectedRow();
-    Deck incomingDeck = deckTableModel.getDeckAtRow(selectedRow);
-    DBPersistanceController.getInstance().deleteDeckFromDB(incomingDeck);
-    deckTableModel.removeDeckFromModel(selectedRow);
-    currentDecksTable.repaint();
-    currentDecksWrapper.repaint();
+    System.out.println("Delete Button Has Been Pressed");
+    int selectedIndex = deckComboBox.getSelectedIndex();
+    if (selectedIndex >= 0) {
+      Deck incomingDeck = deckComboBox.getItemAt(selectedIndex);
+      DBPersistanceController.getInstance().deleteDeckFromDB(incomingDeck);
+    }
   }
 }

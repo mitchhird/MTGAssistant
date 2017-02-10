@@ -7,6 +7,7 @@ import javax.swing.JButton;
 import javax.swing.JTabbedPane;
 
 import models.deckModels.Deck;
+import util.Constants;
 
 public class DeckEditDialog extends UIDialogBase {
 
@@ -17,10 +18,10 @@ public class DeckEditDialog extends UIDialogBase {
   protected JButton closeButton;
   protected JButton applyButton;
   
-  public DeckEditDialog(Deck deckToEdit, boolean newDeck) {
+  public DeckEditDialog(Deck deckToEdit, IndividualDeckPanel panel, boolean newDeck) {
     super();
     this.deckToEdit = deckToEdit;
-    deckDisplayPanel.setEditablity(newDeck);
+    this.deckDisplayPanel = panel;
     setTitle(newDeck ? "New Deck" : "Editing Existing Deck - " + deckToEdit.getDeckName());
     populateLocal();
   }
@@ -33,17 +34,16 @@ public class DeckEditDialog extends UIDialogBase {
     deckDisplayPanel = new IndividualDeckPanel();
     deckAddPanel = new DeckCardSearchPanel(this);
     tabWrapper = new JTabbedPane();
+    
     setModal(false);
-    setSize(500, 400);
+    setSize(500, Constants.MAIN_APP_HEIGHT);
   }
 
   @Override
   protected void placeUIElements() {
-    tabWrapper.add("Deck Details", deckDisplayPanel);
     tabWrapper.add("Add Cards", deckAddPanel);
     addComponentToPanel(tabWrapper, 0, 0, 6, 1, 0.9f, 1.0f);
-    addComponentToPanel(closeButton, 0, 1, 1, 1, 0.05f, 0.0f);
-    addComponentToPanel(applyButton, 5, 1, 1, 1, 0.05f, 0.0f);
+    addComponentToPanel(closeButton, 5, 1, 1, 1, 0.05f, 0.0f);
   }
 
   @Override

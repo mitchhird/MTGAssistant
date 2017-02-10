@@ -110,5 +110,4 @@ public class MagicSet implements Comparable<MagicSet> {
   public int compareTo(MagicSet compareSet) {
     return compareSet.releaseDate.compareTo(this.releaseDate);
   }
-
 }

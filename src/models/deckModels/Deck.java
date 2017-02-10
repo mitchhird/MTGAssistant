@@ -7,19 +7,19 @@ import models.cardModels.Card;
 import models.cardModels.Format;
 
 /**
- * Class that is the main focal point of the project, this simple model contains the deck that user
- * will be creating
+ * Class that is the main focal point of the project, this simple model contains the deck that user will be creating
+ * 
  * @author Mitchell
  */
-public class Deck {
+public class Deck implements Comparable<Deck> {
   private String creatingUser;
   private String deckName;
   private String deckArchetype;
   private String deckDescription;
   private Format deckFormat;
   private Map<Card, Integer> cardsWithinDeck;
-  
-  public Deck () {
+
+  public Deck() {
     this.creatingUser = "";
     this.deckName = "";
     this.deckDescription = "";
@@ -39,11 +39,11 @@ public class Deck {
   public Format getDeckFormat() {
     return deckFormat;
   }
-  
+
   public String getDeckName() {
     return deckName;
   }
-  
+
   public String getDeckArchetype() {
     return deckArchetype;
   }
@@ -69,16 +69,17 @@ public class Deck {
   }
 
   // Adds A Card To The Deck, It The Card Already Exists, Then It's Quantity Value Is Updated
-  public void addCardToDeck (Card incomingCard) {
+  public void addCardToDeck(Card incomingCard) {
     if (cardsWithinDeck.containsKey(incomingCard)) {
       Integer quanity = cardsWithinDeck.get(incomingCard);
       cardsWithinDeck.put(incomingCard, quanity + 1);
-    } else {
+    }
+    else {
       cardsWithinDeck.put(incomingCard, 1);
     }
   }
-  
-  public void addCardToDeck (Card incomingCard, int quantity) {
+
+  public void addCardToDeck(Card incomingCard, int quantity) {
     cardsWithinDeck.put(incomingCard, quantity);
   }
 
@@ -87,5 +88,20 @@ public class Deck {
       cardsWithinDeck = new LinkedHashMap<>();
     }
     return cardsWithinDeck;
+  }
+
+  @Override
+  public String toString() {
+    return deckName + " (" + deckFormat + "): Created by: " + creatingUser;
+  }
+
+  @Override
+  public int compareTo(Deck o) {
+    int deckFormatComparision = o.deckFormat.compareTo(deckFormat);
+    if (deckFormatComparision != 0)
+      return deckFormatComparision;
+
+    int deckNameComparision = o.deckName.compareTo(deckName);
+    return deckNameComparision;
   }
 }
