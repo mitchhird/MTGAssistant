@@ -7,6 +7,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -129,10 +130,24 @@ public class DBPersistanceController {
   public void addLegalitiesToDB(JSONCard card) {
     legalTool.insertIntoLegalTable(card);
   }
+
+  // Call To Return All Decks Currently In The DB
+  public Deck getIndividualDeck (String creatingUser, String deckName) {
+    return deckTool.getIndividualDeck(creatingUser, deckName);
+  }
+  
+  // Call To Return Decks That Match The Searc
+  public List<Deck> getDecksByFormat (Format formatToSearch) {
+    List<Deck> decksByFormat = deckTool.getDecksByFormat(formatToSearch);
+    Collections.sort(decksByFormat);
+    return decksByFormat;
+  }
   
   // Call To Return All Decks Currently In The DB
   public List<Deck> getAllDecksInDB () {
-    return deckTool.getAllDecksFromDB();
+    List<Deck> allDecksFromDB = deckTool.getAllDecksFromDB();
+    Collections.sort(allDecksFromDB);
+    return allDecksFromDB;
   }
   
   // Call To Return All Sets Currently In The Db

@@ -32,7 +32,7 @@ public abstract class DeckValidator {
   /**
    * Tests all of the cards to see if their banned or exceeding the restricted listed on the format
    */
-  public void testBanAndRestrictedRules(Deck incomingDeck, List<String> validationErrors, Map<Card, Integer> cardsInDeck, Card c) {
+  protected void testBanAndRestrictedRules(Deck incomingDeck, List<String> validationErrors, Map<Card, Integer> cardsInDeck, Card c) {
     if (!PM_CONTROLLER.isCardLegalInFormat(c, incomingDeck.getDeckFormat())) {
       if (PM_CONTROLLER.isCardRestrictedInFormat(c, incomingDeck.getDeckFormat())) {
         int quantity = cardsInDeck.get(c);

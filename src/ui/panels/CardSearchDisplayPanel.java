@@ -1,4 +1,4 @@
-package ui;
+package ui.panels;
 
 import java.util.List;
 
@@ -9,6 +9,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
 import models.cardModels.Card;
+import ui.UIPanelBase;
 import ui.listRenderers.BasicCardRenderer;
 
 /**

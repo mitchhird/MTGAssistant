@@ -1,4 +1,4 @@
-package ui;
+package ui.panels;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -10,6 +10,7 @@ import javax.swing.JTextField;
 import models.cardModels.Format;
 import models.deckModels.Deck;
 import models.tableModels.DeckContentsTableModel;
+import ui.UIPanelBase;
 import util.Constants;
 
 /**
@@ -112,6 +113,10 @@ public class IndividualDeckPanel extends UIPanelBase {
       deckModel.setCardsInDeck(incomingDeck.getCardsWithinDeck());
       populateLocal();
     }
+  }
+
+  public Deck getCurrentlySelectedDeck() {
+    return currentlySelectedDeck;
   }
 
   @Override

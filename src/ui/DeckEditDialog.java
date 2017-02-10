@@ -7,6 +7,8 @@ import javax.swing.JButton;
 import javax.swing.JTabbedPane;
 
 import models.deckModels.Deck;
+import ui.panels.DeckCardSearchPanel;
+import ui.panels.IndividualDeckPanel;
 import util.Constants;
 
 public class DeckEditDialog extends UIDialogBase {

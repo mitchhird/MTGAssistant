@@ -1,4 +1,4 @@
-package ui;
+package ui.panels;
 
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
@@ -20,6 +20,7 @@ import javax.swing.JTextField;
 import models.cardModels.Card;
 import models.cardModels.CardRarity;
 import models.cardModels.MagicSet;
+import ui.UIPanelBase;
 import util.Constants;
 import db.DBCardSearchDataObject;
 import db.DBPersistanceController;

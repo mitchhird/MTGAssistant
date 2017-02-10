@@ -39,6 +39,14 @@ public interface Constants {
   public static final String DECK_TOOL_EDIT_DECK = "Edit Deck";
   public static final String DECK_TOOL_DELETE_DECK = "Delete Deck";
   
+  // Image Icon Constants
+  public static final String ICON_NEW_KEY = "NEW_ICON";
+  public static final String ICON_EDIT_KEY = "EDIT_ICON";
+  public static final String ICON_DELETE_KEY = "DELETE_ICON";
+  public static final String ICON_DECKS_KEY = "DECK_ICON";
+  public static final String ICON_SEARCH_KEY = "SEARCH_ICON";
+  public static final String ICON_MAIN_ICON_KEY = "MAIN_ICON";
+  
   // Integer Constants
   public static final int MAIN_APP_WIDTH = 800;
   public static final int MAIN_APP_HEIGHT = 600;

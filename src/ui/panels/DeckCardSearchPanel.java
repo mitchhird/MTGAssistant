@@ -1,4 +1,4 @@
-package ui;
+package ui.panels;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,6 +19,8 @@ import javax.swing.event.ListSelectionListener;
 
 import models.cardModels.Card;
 import models.deckModels.Deck;
+import ui.DeckEditDialog;
+import ui.UIPanelBase;
 import ui.listRenderers.BasicCardRenderer;
 import util.Constants;
 import db.DBCardSearchDataObject;

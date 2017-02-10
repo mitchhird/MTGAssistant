@@ -4,15 +4,17 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
 
 import ui.TabRenders.AbstractTabRenderer;
+import ui.panels.CardAdvancedSearchPanel;
+import ui.panels.DecksDisplayPanel;
 import util.Constants;
 /**
  * Main class that is responsible for showing our application's main UI
@@ -43,8 +45,12 @@ public final class MainApplicationFrame extends JFrame {
 
     DecksDisplayPanel editingPane = new DecksDisplayPanel();
     CardAdvancedSearchPanel searchPane = new CardAdvancedSearchPanel();
-    tabbedPane.addTab("Decks", UIManager.getIcon("OptionPane.informationIcon"), editingPane, "Information tool tip");
-    tabbedPane.addTab("Search", UIManager.getIcon("OptionPane.informationIcon"), searchPane, "Information tool tip");
+    
+    ImageIcon decksIcon = new ImageIcon(ImageManager.getInstance().getIconForKey(Constants.ICON_DECKS_KEY));
+    tabbedPane.addTab("Decks", decksIcon, editingPane, "Deck Browsing And Manipulation");
+    
+    ImageIcon searchIcon = new ImageIcon(ImageManager.getInstance().getIconForKey(Constants.ICON_SEARCH_KEY));
+    tabbedPane.addTab("Search", searchIcon, searchPane, "Deck Browsing And Manipulation");
     this.add(tabbedPane);
   }
 
@@ -55,6 +61,7 @@ public final class MainApplicationFrame extends JFrame {
     setTitle(Constants.MAIN_APPLICATION_NAME);
     setLocationByPlatform(true);
     setVisible(true);
+    setIconImage(ImageManager.getInstance().getIconForKey(Constants.ICON_MAIN_ICON_KEY));
   }
   
   // Method responsible for adding action listeners
