@@ -59,12 +59,7 @@ public class CardSearchDisplayPanel extends UIPanelBase {
 
     displayList.setCellRenderer(new BasicCardRenderer());
     displayList.setModel(displayModel);
-    displayList.repaint();
-    
+    displayList.repaint();  
     resultsLabel.setText("Number of Results Returned: " + displayModel.size());
-  }
-
-  @Override
-  protected void applyLocal() { 
   }
 }

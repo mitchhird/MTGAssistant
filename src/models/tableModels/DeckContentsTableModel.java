@@ -30,12 +30,11 @@ public class DeckContentsTableModel extends AbstractTableModel{
     cardsWithinDeck = newMap;
     displayList = new ArrayList<Card>(cardsWithinDeck.keySet());
     Collections.sort(displayList);
-    fireTableDataChanged();
   }
   
   @Override
   public int getRowCount() {
-    return displayList.size();
+    return cardsWithinDeck.keySet().size();
   }
 
   @Override

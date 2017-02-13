@@ -84,20 +84,32 @@ public class DBDeckTool extends DBTool {
     }
   }
 
-  // Method For Collecting A Deck From The Database
-  public Deck getDeckFromDB(ResultSet rs) throws SQLException {
+  // Method For Collecting A Deck From The Database. Returns Decks With Their Content
+  private Deck getDeckFromDBWithContent(ResultSet rs) throws SQLException {
+    Deck returnVal = getDeckWithoutContent(rs);
+    getDeckContentsFromDB(returnVal);
+    return returnVal;
+  }
+  
+  // Method For Collecting Just Deck Details From The DB
+  private Deck getDeckFromDBWithOutContent(ResultSet rs) throws SQLException {
+    Deck returnVal = getDeckWithoutContent(rs);
+    return returnVal;
+  }
+
+  // Small Method That Collects Data For A Given Deck
+  private Deck getDeckWithoutContent(ResultSet rs) throws SQLException {
     Deck returnVal = new Deck();
     returnVal.setCreatingUser(rs.getString("CREATING_USER"));
     returnVal.setDeckName(rs.getString("DECK_NAME"));
     returnVal.setDeckDescription(rs.getString("DECK_DESCRIPTION"));
     returnVal.setDeckFormat(Format.valueOf(rs.getString("DECK_FORMAT")));
     returnVal.setDeckArchetype(rs.getString("DECK_ARCHETYPE"));
-    getDeckContentsFromDB(returnVal);
     return returnVal;
   }
   
-  //
-  private void getDeckContentsFromDB (Deck incomingDeck) {
+  // Collects The Deck's Contents From The DB When Called
+  public void getDeckContentsFromDB (Deck incomingDeck) {
     try (PreparedStatement st = parentController.getStatement(SELECT_FROM_DECKS_JUNC_INDIVIDUAL);) {
       st.setString(1, incomingDeck.getDeckName());
       st.setString(2, incomingDeck.getCreatingUser());
@@ -117,7 +129,7 @@ public class DBDeckTool extends DBTool {
     try (PreparedStatement st = parentController.getStatement(SELECT_ALL_FROM_DECKS);) {
       ResultSet rs = st.executeQuery();
       while (rs.next()) {
-        Deck newDeck = getDeckFromDB(rs);
+        Deck newDeck = getDeckFromDBWithContent(rs);
         returnVal.add(newDeck);
       }
     } catch (SQLException e) {
@@ -127,13 +139,13 @@ public class DBDeckTool extends DBTool {
   }
 
   // Returns All Decks Present Within The DB
-  public List<Deck> getDecksByFormat(Format formatToSearch) {
+  public List<Deck> getDecksByFormatNoContent(Format formatToSearch) {
     List<Deck> returnVal = new ArrayList<Deck>();
     try (PreparedStatement st = parentController.getStatement(SELECT_ALL_FROM_DECKS_BY_FORMAT);) {
       st.setString(1, formatToSearch.name());
       ResultSet rs = st.executeQuery();
       while (rs.next()) {
-        Deck newDeck = getDeckFromDB(rs);
+        Deck newDeck = getDeckFromDBWithOutContent(rs);
         returnVal.add(newDeck);
       }
     } catch (SQLException e) {
@@ -149,7 +161,7 @@ public class DBDeckTool extends DBTool {
       st.setString(2, creatingUser);
       ResultSet rs = st.executeQuery();
       rs.next();
-      return getDeckFromDB(rs);
+      return getDeckFromDBWithContent(rs);
     } catch (SQLException e) {
       e.printStackTrace();
       return null;
@@ -158,8 +170,8 @@ public class DBDeckTool extends DBTool {
 
   // Deletes A Given Deck From The DB
   public void deleteDeckFromDB(Deck incomingDeck) {
-    deleteFromTable(DELETE_FROM_DECKS_TABLE,incomingDeck);
-    deleteFromTable(DELETE_ALL_DECKS_JUNC,incomingDeck);
+    deleteFromTable(DELETE_FROM_DECKS_TABLE, incomingDeck);
+    deleteFromTable(DELETE_FROM_DECKS_JUNC_TABLE, incomingDeck);
   }
 
   private void deleteFromTable(String command, Deck incomingDeck) {

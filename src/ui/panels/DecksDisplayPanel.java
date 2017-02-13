@@ -13,6 +13,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
 
 import models.cardModels.Format;
 import models.deckModels.Deck;
@@ -40,17 +41,21 @@ public class DecksDisplayPanel extends UIPanelBase {
   private JToolBar deckOperationPanel;
 
   private JButton newDeckButton;
-  private JButton addCardsToDeckButton;
+  private JButton editDeckButton;
   private JButton deleteDeckButton;
   private JButton applyButton;
 
   private JComboBox<Deck> deckComboBox;
   private JComboBox<Format> deckFormatCombobox;
   
+  private Deck currentSelectedDeck;
   private IndividualDeckPanel deckPanel;
-
+  private DBPersistanceController dbController;
+  
+  // Default Constructor For The Display Panel
   public DecksDisplayPanel() {
     super();
+    dbController = DBPersistanceController.getInstance();
     populateLocal();
   }
 
@@ -67,17 +72,17 @@ public class DecksDisplayPanel extends UIPanelBase {
     deckPanel.setBorder(BorderFactory.createTitledBorder("Deck Details"));
 
     newDeckButton = new JButton(Constants.DECK_TOOL_NEW_DECK);
-    addCardsToDeckButton = new JButton(Constants.DECK_TOOL_EDIT_DECK);
+    editDeckButton = new JButton(Constants.DECK_TOOL_EDIT_DECK);
     deleteDeckButton = new JButton(Constants.DECK_TOOL_DELETE_DECK);
     applyButton = new JButton("Submit Deck");
 
     newDeckButton.setIcon(new ImageIcon(ImageManager.getInstance().getIconForKey(Constants.ICON_NEW_KEY)));
-    addCardsToDeckButton.setIcon(new ImageIcon(ImageManager.getInstance().getIconForKey(Constants.ICON_EDIT_KEY)));
+    editDeckButton.setIcon(new ImageIcon(ImageManager.getInstance().getIconForKey(Constants.ICON_EDIT_KEY)));
     deleteDeckButton.setIcon(new ImageIcon(ImageManager.getInstance().getIconForKey(Constants.ICON_DELETE_KEY)));
 
     deckOperationPanel = new JToolBar();
     deckOperationPanel.add(newDeckButton);
-    deckOperationPanel.add(addCardsToDeckButton);
+    deckOperationPanel.add(editDeckButton);
     deckOperationPanel.add(deleteDeckButton);
     deckOperationPanel.setFloatable(false);
 
@@ -124,16 +129,16 @@ public class DecksDisplayPanel extends UIPanelBase {
       @Override
       public void actionPerformed(ActionEvent paramActionEvent) {
         System.out.println("New Deck Button Has Been Pressed");
-        deckPanel.setCurrentlySelectedDeck(new Deck());
+        currentSelectedDeck = new Deck();
+        deckPanel.setCurrentlySelectedDeck(currentSelectedDeck);
       }
     });
 
-    addCardsToDeckButton.addActionListener(new ActionListener() {
+    editDeckButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent paramActionEvent) {
         System.out.println("Add Cards To Deck Button Has Been Pressed");
-        Deck deckToEdit = deckComboBox.getItemAt(deckComboBox.getSelectedIndex());
-        DeckEditDialog newDialog = new DeckEditDialog(deckToEdit, deckPanel, false);
+        DeckEditDialog newDialog = new DeckEditDialog(currentSelectedDeck, deckPanel, false);
         newDialog.setVisible(true);
       }
     });
@@ -160,62 +165,84 @@ public class DecksDisplayPanel extends UIPanelBase {
     });
   }
 
+  // Updates The Button Availability When Called
   private void updateButtonEnable(boolean rowSelected) {
     newDeckButton.setEnabled(true);
-    addCardsToDeckButton.setEnabled(rowSelected);
+    editDeckButton.setEnabled(rowSelected);
     deleteDeckButton.setEnabled(rowSelected);
   }
 
+  // Populates The Individual Deck Details Window With The Specified Items
   private void populateDeckDetails() {
     updateButtonEnable(deckComboBox.getSelectedIndex() > -1);
     if (deckComboBox.getSelectedIndex() > -1) {
-      Deck deckToRender = deckComboBox.getItemAt(deckComboBox.getSelectedIndex());
-      deckPanel.setCurrentlySelectedDeck(deckToRender);
+      updateDeckUIContents();
     }
     statusLabel.setText("");
   }
 
+  // Updates The Deck UI Contents With The Necessary Information. 
+  private void updateDeckUIContents() {
+    currentSelectedDeck = deckComboBox.getItemAt(deckComboBox.getSelectedIndex());
+    if (currentSelectedDeck.getCardsWithinDeck().isEmpty()) {
+      dbController.populateDeckContents(currentSelectedDeck);
+    }
+    deckPanel.setCurrentlySelectedDeck(currentSelectedDeck);
+  }
+
   @Override
   protected void populateLocal() {
-    Format selectedIndex = deckFormatCombobox.getItemAt(deckFormatCombobox.getSelectedIndex());
-    List<Deck> allDecksInDB = DBPersistanceController.getInstance().getDecksByFormat(selectedIndex);
-    DefaultComboBoxModel<Deck> displayModel = new DefaultComboBoxModel<Deck>();
-    for (Deck d : allDecksInDB) {
-      displayModel.addElement(d);
-    }
-    deckComboBox.setModel(displayModel);
-    populateDeckDetails();
+    Runnable deckUpdateRunnable = new Runnable() {
+      @Override
+      public void run() {
+        Format selectedIndex = deckFormatCombobox.getItemAt(deckFormatCombobox.getSelectedIndex());
+        List<Deck> allDecksInDB = dbController.getDecksByFormatNoContent(selectedIndex);
+        DefaultComboBoxModel<Deck> displayModel = new DefaultComboBoxModel<Deck>();
+        for (Deck d : allDecksInDB) {
+          displayModel.addElement(d);
+        }
+        deckComboBox.setModel(displayModel);
+        populateDeckDetails();  
+      }
+    };
+    SwingUtilities.invokeLater(deckUpdateRunnable);
   }
 
-  @Override
-  protected void applyLocal() {
-    // TODO Auto-generated method stub
-
-  }
-
+  // Handles The Press Of The Delete Button
   private void handleDeleteButton() {
     System.out.println("Delete Button Has Been Pressed");
     int selectedIndex = deckComboBox.getSelectedIndex();
     if (selectedIndex >= 0) {
       Deck incomingDeck = deckComboBox.getItemAt(selectedIndex);
-      DBPersistanceController.getInstance().deleteDeckFromDB(incomingDeck);
+      dbController.deleteDeckFromDB(incomingDeck);
       deckComboBox.removeItemAt(selectedIndex);
       statusLabel.setText("Removed Deck (" + incomingDeck.getDeckName() + ") from system");
     }
   }
   
+  // Handles The Press Of The Apply Button
   private void handleApplyButton () {
     Deck currentSelectedDeck = deckPanel.getCurrentlySelectedDeck();
     DeckValidator validator = ValidatorFactory.getValidatorForDeck(currentSelectedDeck);
     if (validator.isDeckValid(currentSelectedDeck)) {
-      
+      attemptDeckSubmission(currentSelectedDeck);
     } else {
-      StringBuilder sb = new StringBuilder("Validation Of Deck Failed. Please Fix The Following Errors");
-      for (String s: validator.validateDeck(currentSelectedDeck)) {
-        sb.append("\n" + s);
-      }
-      JOptionPane.showMessageDialog(this, sb.toString(), "Validation Error", JOptionPane.ERROR_MESSAGE);
-      
+      displayDeckErrors(currentSelectedDeck, validator);
     }
+  }
+
+  private void displayDeckErrors(Deck currentSelectedDeck, DeckValidator validator) {
+    StringBuilder sb = new StringBuilder("Validation Of Deck Failed. Please Fix The Following Errors");
+    for (String s: validator.validateDeck(currentSelectedDeck)) {
+      sb.append("\n" + s);
+    }
+    JOptionPane.showMessageDialog(this, sb.toString(), "Validation Error", JOptionPane.ERROR_MESSAGE);
+  }
+
+  private void attemptDeckSubmission(Deck currentSelectedDeck) {
+    deckPanel.populateDeckDetails(currentSelectedDeck);
+    dbController.deleteDeckFromDB(currentSelectedDeck);
+    dbController.addDeckToDB(currentSelectedDeck);
+    statusLabel.setText("Deck (" + currentSelectedDeck.getDeckName() +") Has Been Added To The System");
   }
 }

@@ -198,10 +198,4 @@ public class CardAdvancedSearchPanel extends UIPanelBase {
     DefaultComboBoxModel<CardRarity> rarities = new DefaultComboBoxModel<>(CardRarity.values());
     rarityComboBox.setModel(rarities);
   }
-
-  @Override
-  protected void applyLocal() {
-    // TODO Auto-generated method stub
-
-  }
 }

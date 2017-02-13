@@ -61,28 +61,29 @@ public class IndividualDeckPanel extends UIPanelBase {
 
     deckModel = new DeckContentsTableModel();
     selectedDeckContentsTable = new JTable(deckModel);
+    selectedDeckContentsTable.setAutoCreateRowSorter(false);
   }
 
   @Override
   protected void placeUIElements() {
-    addComponentToPanel(selectedCreateLabel, 0, 0, 1, 1, 0.1f, 0.1f);
-    addComponentToPanel(selectedCreatedField, 1, 0, 3, 1, 1.0f, 0.1f);
+    addComponentToPanel(selectedCreateLabel, 0, 0, 1, 1, 0.0f, 0.0f);
+    addComponentToPanel(selectedCreatedField, 1, 0, 3, 1, 1.0f, 0.0f);
 
-    addComponentToPanel(selectedDeckNameLabel, 0, 1, 1, 1, 0.1f, 0.1f);
-    addComponentToPanel(selectedDeckNameField, 1, 1, 3, 1, 1.0f, 0.1f);
+    addComponentToPanel(selectedDeckNameLabel, 0, 1, 1, 1, 0.0f, 0.0f);
+    addComponentToPanel(selectedDeckNameField, 1, 1, 3, 1, 1.0f, 0.0f);
 
-    addComponentToPanel(selectedFormatLabel, 0, 2, 1, 1, 0.1f, 0.1f);
-    addComponentToPanel(selectedFormatField, 1, 2, 3, 1, 1.0f, 0.1f);
+    addComponentToPanel(selectedFormatLabel, 0, 2, 1, 1, 0.0f, 0.0f);
+    addComponentToPanel(selectedFormatField, 1, 2, 3, 1, 1.0f, 0.0f);
 
-    addComponentToPanel(selectedDescriptionLabel, 0, 3, 1, 1, 0.1f, 0.1f);
+    addComponentToPanel(selectedDescriptionLabel, 0, 3, 1, 1, 0.0f, 0.0f);
 
     JScrollPane descriptionScroller = new JScrollPane(selectedDescriptionField);
     addComponentToPanel(descriptionScroller, 1, 3, 3, 1, 1.0f, 0.2f);
 
-    addComponentToPanel(selectedDeckContentsLabel, 0, 4, 1, 1, 0.1f, 0.1f);
+    addComponentToPanel(selectedDeckContentsLabel, 0, 4, 1, 1, 0.0f, 0.0f);
 
     JScrollPane selectedDecksScroller = new JScrollPane(selectedDeckContentsTable);
-    addComponentToPanel(selectedDecksScroller, 0, 5, 4, 1, 0.1f, 1.0f);
+    addComponentToPanel(selectedDecksScroller, 0, 5, 4, 1, 1.0f, 0.8f);
   }
 
   @Override
@@ -104,7 +105,7 @@ public class IndividualDeckPanel extends UIPanelBase {
   public void setCurrentlySelectedDeck(Deck incomingDeck) {
     if (incomingDeck != null) {
       currentlySelectedDeck = incomingDeck;
-      deckModel.setCardsInDeck(incomingDeck.getCardsWithinDeck());
+      refreshTable();
       populateLocal();
     }
   }
@@ -112,13 +113,12 @@ public class IndividualDeckPanel extends UIPanelBase {
   public Deck getCurrentlySelectedDeck() {
     return currentlySelectedDeck;
   }
-
-  @Override
-  protected void applyLocal() {
-    currentlySelectedDeck.setCreatingUser(selectedCreatedField.getText().trim());
-    currentlySelectedDeck.setDeckDescription(selectedDescriptionField.getText().trim());
-    currentlySelectedDeck.setDeckFormat(Format.values()[selectedFormatField.getSelectedIndex()]);
-    currentlySelectedDeck.setDeckName(selectedDeckNameField.getText().trim());
+  
+  public void populateDeckDetails(Deck deckToPopulate) {
+    deckToPopulate.setCreatingUser(selectedCreatedField.getText().trim());
+    deckToPopulate.setDeckDescription(selectedDescriptionField.getText().trim());
+    deckToPopulate.setDeckFormat(Format.values()[selectedFormatField.getSelectedIndex()]);
+    deckToPopulate.setDeckName(selectedDeckNameField.getText().trim());
   }
   
   public void refreshTable() {

@@ -14,6 +14,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -61,7 +63,7 @@ public class DeckCardSearchPanel extends UIPanelBase {
     statusLabel = new JLabel();
 
     addCardToDeckButton = new JButton("Add Card To Deck");
-    quantitySpinner = new JSpinner(new SpinnerNumberModel(1, 1, 4, 1));
+    quantitySpinner = new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
 
     searchDisplayList = new CardDisplayingJList();
     searchDisplayList.setCellRenderer(new BasicCardRenderer());
@@ -84,6 +86,7 @@ public class DeckCardSearchPanel extends UIPanelBase {
     addComponentToPanel(quantitySpinner, 4, i, 2, 1, 1.0f, 0.0f);
 
     i++;
+    addComponentToPanel(statusLabel, 0, i, 4, 1, 1.0f, 0.0f);
     addComponentToPanel(addCardToDeckButton, 5, i, 1, 1, 0.0f, 0.0f);
   }
 
@@ -103,10 +106,20 @@ public class DeckCardSearchPanel extends UIPanelBase {
       }
     });
 
-    searchField.addActionListener(new ActionListener() {
+    searchField.getDocument().addDocumentListener(new DocumentListener() {
       @Override
-      public void actionPerformed(ActionEvent e) {
-        searchButton.setEnabled(searchField.getText().trim().isEmpty());
+      public void removeUpdate(DocumentEvent e) {
+        searchButton.setEnabled(!searchField.getText().trim().isEmpty());
+      }
+      
+      @Override
+      public void insertUpdate(DocumentEvent e) {
+        searchButton.setEnabled(!searchField.getText().trim().isEmpty());
+      }
+      
+      @Override
+      public void changedUpdate(DocumentEvent e) {
+        searchButton.setEnabled(!searchField.getText().trim().isEmpty());
       }
     });
 
@@ -121,6 +134,7 @@ public class DeckCardSearchPanel extends UIPanelBase {
     });
   }
 
+  // Handles The Operation That Occurs When The User Pushes The Search Button
   private void handleSearchButton() {
     Set<DBCardSearchDataObject> searchList = new HashSet<>();
     searchList.add(new DBCardSearchDataObject("CARD_NAME", searchField.getText().trim()));
@@ -139,13 +153,7 @@ public class DeckCardSearchPanel extends UIPanelBase {
     // TODO Auto-generated method stub
 
   }
-
-  @Override
-  protected void applyLocal() {
-    // TODO Auto-generated method stub
-
-  }
-
+  
   public void setDeckToEdit(Deck incomingDeck) {
     this.deckToEdit = incomingDeck;
   }
@@ -155,6 +163,7 @@ public class DeckCardSearchPanel extends UIPanelBase {
     Card cardToAdd = searchDisplayList.getSelectedValue();
     if (cardToAdd != null) {
       deckToEdit.addCardToDeck(cardToAdd, quantity);
+      statusLabel.setText("Added " + quantity + "x " + cardToAdd.getName() + " to " + deckToEdit.getDeckName());
       parentPanel.refreshData();
     }
   }
