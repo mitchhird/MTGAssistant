@@ -11,6 +11,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
+import javax.swing.ToolTipManager;
 
 import ui.TabRenders.AbstractTabRenderer;
 import ui.panels.CardAdvancedSearchPanel;
@@ -50,7 +51,7 @@ public final class MainApplicationFrame extends JFrame {
     tabbedPane.addTab("Decks", decksIcon, editingPane, "Deck Browsing And Manipulation");
     
     ImageIcon searchIcon = new ImageIcon(ImageManager.getInstance().getIconForKey(Constants.ICON_SEARCH_KEY));
-    tabbedPane.addTab("Search", searchIcon, searchPane, "Deck Browsing And Manipulation");
+    tabbedPane.addTab("Search", searchIcon, searchPane, "Advanced Search On Card DB");
     this.add(tabbedPane);
   }
 
@@ -60,8 +61,9 @@ public final class MainApplicationFrame extends JFrame {
     setPreferredSize(new Dimension(Constants.MAIN_APP_WIDTH, Constants.MAIN_APP_HEIGHT));
     setTitle(Constants.MAIN_APPLICATION_NAME);
     setLocationByPlatform(true);
-    setVisible(true);
     setIconImage(ImageManager.getInstance().getIconForKey(Constants.ICON_MAIN_ICON_KEY));
+    ToolTipManager.sharedInstance().setInitialDelay(Constants.TOOLTIP_DISPLAY_DELAY);
+    setVisible(true);
   }
   
   // Method responsible for adding action listeners

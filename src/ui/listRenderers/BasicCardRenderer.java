@@ -71,9 +71,4 @@ public class BasicCardRenderer extends UIPanelBase implements ListCellRenderer<C
   @Override
   protected void populateLocal() {
   }
-
-  @Override
-  protected void applyLocal() {  
-  }
-
 }

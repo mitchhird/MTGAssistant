@@ -46,5 +46,4 @@ public abstract class UIPanelBase extends JPanel {
   protected abstract void placeUIElements();
   protected abstract void addActionListeners();
   protected abstract void populateLocal ();
-  protected abstract void applyLocal();
 }

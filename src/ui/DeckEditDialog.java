@@ -67,7 +67,6 @@ public class DeckEditDialog extends UIDialogBase {
 
   @Override
   protected void populateLocal() {
-    deckDisplayPanel.setCurrentlySelectedDeck(deckToEdit);
     deckAddPanel.setDeckToEdit(deckToEdit);
   }
 

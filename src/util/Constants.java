@@ -9,7 +9,7 @@ public interface Constants {
 
   // String Constants
   public static final String CENTRAL_DB_NAME = "MTG_Assistant_DB";
-  public static final String MAIN_APPLICATION_NAME = "MTG Assistent";
+  public static final String MAIN_APPLICATION_NAME = "MTG Assistant";
   
   public static final String DECKS_CURRENT_LABEL = "Current Decks (Click A Row To View Details)";
   public static final String DECKS_SELECT_NAME_LABEL = "Deck Name";
@@ -53,4 +53,5 @@ public interface Constants {
   public static final int CONSTRUCTED_MAX_PLAY_SET = 4;
   public static final int CONSTRUCTED_MIN_DECK_SIZE = 60;
   public static final int SINGLETON_DECK_SIZE = 100;
+  public static final int TOOLTIP_DISPLAY_DELAY = 500;
 }

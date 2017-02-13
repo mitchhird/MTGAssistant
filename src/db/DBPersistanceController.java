@@ -136,9 +136,14 @@ public class DBPersistanceController {
     return deckTool.getIndividualDeck(creatingUser, deckName);
   }
   
+  // Call To Get The Deck Contents From The DB
+  public void populateDeckContents (Deck incomingDeck) {
+    deckTool.getDeckContentsFromDB(incomingDeck);
+  }
+  
   // Call To Return Decks That Match The Searc
-  public List<Deck> getDecksByFormat (Format formatToSearch) {
-    List<Deck> decksByFormat = deckTool.getDecksByFormat(formatToSearch);
+  public List<Deck> getDecksByFormatNoContent (Format formatToSearch) {
+    List<Deck> decksByFormat = deckTool.getDecksByFormatNoContent(formatToSearch);
     Collections.sort(decksByFormat);
     return decksByFormat;
   }
