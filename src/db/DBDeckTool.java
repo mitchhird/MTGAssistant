@@ -20,17 +20,33 @@ import util.MTGHelper;
  */
 public class DBDeckTool extends DBTool {
 
-  private final static String DECK_CREATE_STRING = "CREATE TABLE IF NOT EXISTS DECKS_TABLE (CREATING_USER varchar(" + DB_CHAR_COLUMN_LIMIT + ")," + "DECK_NAME varchar(" + DB_CHAR_COLUMN_LIMIT + ")," + "DECK_FORMAT varchar(" + DB_CHAR_COLUMN_LIMIT + ")," + "DECK_DESCRIPTION varchar(" + DB_CHAR_COLUMN_LIMIT + ")," + "DECK_ARCHETYPE varchar (" + DB_CHAR_COLUMN_LIMIT + ")," + "PRIMARY KEY (CREATING_USER, DECK_NAME));";
+  private final static String DECK_CREATE_STRING = "CREATE TABLE IF NOT EXISTS DECKS_TABLE (CREATING_USER varchar(" + DB_CHAR_COLUMN_LIMIT + ")," +
+                                                                                           "DECK_NAME varchar(" + DB_CHAR_COLUMN_LIMIT + ")," + 
+                                                                                           "DECK_FORMAT varchar(" + DB_CHAR_COLUMN_LIMIT + ")," + 
+                                                                                           "DECK_DESCRIPTION varchar(" + DB_CHAR_COLUMN_LIMIT + ")," +
+                                                                                           "DECK_ARCHETYPE varchar (" + DB_CHAR_COLUMN_LIMIT + ")," + 
+                                                                                           "PRIMARY KEY (CREATING_USER, DECK_NAME));";
 
-  private final static String DECK_JUNC_TABLE_CREATE = "CREATE TABLE IF NOT EXISTS DECKS_JUNC_TABLE (CREATING_USER varchar(" + DB_CHAR_COLUMN_LIMIT + "), " + "DECK_NAME varchar(" + DB_CHAR_COLUMN_LIMIT + ")," + "CARD_ID varchar(" + DB_CHAR_COLUMN_LIMIT + ")," + "CARD_QUANTITY integer," + "FOREIGN KEY(CREATING_USER) REFERENCES DECKS_TABLE(CREATING_USER) ON DELETE CASCADE," + "FOREIGN KEY(DECK_NAME) REFERENCES DECKS_TABLE(DECK_NAME) ON DELETE CASCADE," + "FOREIGN KEY(CARD_ID) REFERENCES CARD_TABLE(CARD_ID)," + "PRIMARY KEY(CREATING_USER, DECK_NAME, CARD_ID));";
+  private final static String DECK_JUNC_TABLE_CREATE = "CREATE TABLE IF NOT EXISTS DECKS_JUNC_TABLE (CREATING_USER varchar(" + DB_CHAR_COLUMN_LIMIT + "), " +
+                                                                                                    "DECK_NAME varchar(" + DB_CHAR_COLUMN_LIMIT + ")," + 
+                                                                                                    "CARD_ID varchar(" + DB_CHAR_COLUMN_LIMIT + ")," +
+                                                                                                    "CARD_QUANTITY integer," +
+                                                                                                    "FOREIGN KEY(CREATING_USER) REFERENCES DECKS_TABLE(CREATING_USER) ON DELETE CASCADE," +
+                                                                                                    "FOREIGN KEY(DECK_NAME) REFERENCES DECKS_TABLE(DECK_NAME) ON DELETE CASCADE," +
+                                                                                                    "FOREIGN KEY(CARD_ID) REFERENCES CARD_TABLE(CARD_ID)," +
+                                                                                                    "PRIMARY KEY(CREATING_USER, DECK_NAME, CARD_ID));";
 
   private final static String SELECT_ALL_FROM_DECKS = "SELECT * FROM DECKS_TABLE;";
   private final static String SELECT_ALL_FROM_DECKS_BY_FORMAT = "SELECT * FROM DECKS_TABLE WHERE DECK_FORMAT = ?;";
   private final static String SELECT_ALL_FROM_DECKS_INDIVIDUAL = "SELECT * FROM DECKS_TABLE WHERE DECK_NAME = ? AND CREATING_USER = ?;";
+  private final static String SELECT_FROM_DECKS_JUNC_INDIVIDUAL = "SELECT * FROM DECKS_JUNC_TABLE NATURAL JOIN CARD_TABLE NATURAL JOIN SET_JUNC_TABLE WHERE DECK_NAME = ? AND CREATING_USER = ?;";
   private final static String INSERT_INTO_DECK_TABLE = "INSERT INTO DECKS_TABLE (CREATING_USER, DECK_NAME, DECK_FORMAT, DECK_DESCRIPTION, DECK_ARCHETYPE) VALUES (?,?,?,?,?)";
   private final static String INSERT_INTO_JUNC_TABLE = "INSERT INTO DECKS_JUNC_TABLE (CREATING_USER, DECK_NAME, CARD_ID, CARD_QUANTITY) VALUES (?,?,?,?)";
-  private final static String DELETE_FROM_DECKS_TABLE = "DELETE FROM DECKS_TABLE WHERE CREATING_USER = ? AND DECK_NAME = ?;";
+  
   private final static String DELETE_ALL_DECKS = "DELETE FROM DECKS_TABLE";
+  private final static String DELETE_ALL_DECKS_JUNC = "DELETE FROM DECKS_JUNC_TABLE";
+  private final static String DELETE_FROM_DECKS_TABLE = "DELETE FROM DECKS_TABLE WHERE CREATING_USER = ? AND DECK_NAME = ?;";
+  private final static String DELETE_FROM_DECKS_JUNC_TABLE = "DELETE FROM DECKS_JUNC_TABLE WHERE CREATING_USER = ? AND DECK_NAME = ?;";
 
   // Default Constructor For The Object
   protected DBDeckTool(DBPersistanceController parentController) {
@@ -60,7 +76,7 @@ public class DBDeckTool extends DBTool {
         st2.setString(1, incomingDeck.getCreatingUser());
         st2.setString(2, incomingDeck.getDeckName());
         st2.setString(3, MTGHelper.generateCardKey(c));
-        st2.setInt(quanityValue, quanityValue.intValue());
+        st2.setInt(4, quanityValue.intValue());
         st2.execute();
       } catch (SQLException e) {
         e.printStackTrace();
@@ -76,7 +92,23 @@ public class DBDeckTool extends DBTool {
     returnVal.setDeckDescription(rs.getString("DECK_DESCRIPTION"));
     returnVal.setDeckFormat(Format.valueOf(rs.getString("DECK_FORMAT")));
     returnVal.setDeckArchetype(rs.getString("DECK_ARCHETYPE"));
+    getDeckContentsFromDB(returnVal);
     return returnVal;
+  }
+  
+  //
+  private void getDeckContentsFromDB (Deck incomingDeck) {
+    try (PreparedStatement st = parentController.getStatement(SELECT_FROM_DECKS_JUNC_INDIVIDUAL);) {
+      st.setString(1, incomingDeck.getDeckName());
+      st.setString(2, incomingDeck.getCreatingUser());
+      ResultSet rs = st.executeQuery();
+      
+      while (rs.next()) {
+        Card nextCard = getPartialCardFromRS(rs);
+        incomingDeck.addCardToDeck(nextCard, rs.getInt("CARD_QUANTITY"));
+      }
+    } catch (SQLException e) {
+    }
   }
 
   // Returns All Decks Present Within The DB
@@ -126,7 +158,12 @@ public class DBDeckTool extends DBTool {
 
   // Deletes A Given Deck From The DB
   public void deleteDeckFromDB(Deck incomingDeck) {
-    try (PreparedStatement st = parentController.getStatement(DELETE_FROM_DECKS_TABLE);) {
+    deleteFromTable(DELETE_FROM_DECKS_TABLE,incomingDeck);
+    deleteFromTable(DELETE_ALL_DECKS_JUNC,incomingDeck);
+  }
+
+  private void deleteFromTable(String command, Deck incomingDeck) {
+    try (PreparedStatement st = parentController.getStatement(command);) {
       st.setString(1, incomingDeck.getCreatingUser());
       st.setString(2, incomingDeck.getDeckName());
       st.execute();
@@ -136,6 +173,12 @@ public class DBDeckTool extends DBTool {
   // Deletes All Decks From The DB
   public void deleteAllDecksFromDB() {
     try (PreparedStatement st = parentController.getStatement(DELETE_ALL_DECKS);) {
+      st.execute();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    
+    try (PreparedStatement st = parentController.getStatement(DELETE_ALL_DECKS_JUNC);) {
       st.execute();
     } catch (SQLException e) {
       e.printStackTrace();

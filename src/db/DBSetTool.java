@@ -28,10 +28,11 @@ public class DBSetTool extends DBTool {
                                                                                              + "CARD_ID varchar(" + DB_CHAR_COLUMN_LIMIT + ")," 
                                                                                              + "ARTIST varchar(" + DB_CHAR_COLUMN_LIMIT + ")," 
                                                                                              + "FLAVOUR_TEXT varchar(" + DB_CHAR_COLUMN_LIMIT + ")," 
-                                                                                             + "RARITY varchar(15));";
+                                                                                             + "RARITY varchar(15),"
+                                                                                             + "MULTIVERSE_ID integer);";
 
   private static String INSERT_SET_INTO_TABLE = "INSERT INTO SET_TABLE (CODE, NAME, GATHERER_CODE, BORDER, RELEASE_DATE, MAGIC_CARDS_INFO_CODE) VALUES (?,?,?,?,?,?)";
-  private static String INSERT_SET_INTO_JUNCTION_TABLE = "INSERT INTO SET_JUNC_TABLE (CODE, CARD_ID, ARTIST, FLAVOUR_TEXT, RARITY) VALUES (?,?,?,?,?)";
+  private static String INSERT_SET_INTO_JUNCTION_TABLE = "INSERT INTO SET_JUNC_TABLE (CODE, CARD_ID, ARTIST, FLAVOUR_TEXT, RARITY, MULTIVERSE_ID) VALUES (?,?,?,?,?,?)";
   private static String SELECT_ALL_SETS = "SELECT * FROM SET_TABLE";
   
   // Default constructor for the tool
@@ -98,20 +99,22 @@ public class DBSetTool extends DBTool {
           String jsonRarity = c.getRarity().toUpperCase().replace(" ", "_");
           CardRarity cardRarity = CardRarity.valueOf(jsonRarity);
           p2.setString(5, cardRarity.name());
+          p2.setInt(6, c.getMultiverseid());
           p2.execute();
           System.out.println("    --> Added Card To Junction Table: " + c);
           
-          parentController.addCardToDB(c);
-          System.out.println("    --> Card To Card Table: " + c);
+   //       parentController.addCardToDB(c);
+      //    System.out.println("    --> Card To Card Table: " + c);
           
-          parentController.addLegalitiesToDB(c);
-          System.out.println("    --> Card added to legal table " + c);
+     //     parentController.addLegalitiesToDB(c);
+        //  System.out.println("    --> Card added to legal table " + c);
           
         } catch (SQLException e) {
+          e.printStackTrace();
         }
       }
     } catch (SQLException e) {
-
+      e.printStackTrace();
     }
   }
   

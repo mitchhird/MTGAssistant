@@ -10,6 +10,7 @@ import javax.swing.ScrollPaneConstants;
 
 import models.cardModels.Card;
 import ui.UIPanelBase;
+import ui.customUiElements.CardDisplayingJList;
 import ui.listRenderers.BasicCardRenderer;
 
 /**
@@ -32,7 +33,7 @@ public class CardSearchDisplayPanel extends UIPanelBase {
   @Override
   protected void initVariables() {
     resultsLabel = new JLabel();
-    displayList = new JList<Card>();
+    displayList = new CardDisplayingJList();
   }
 
   @Override

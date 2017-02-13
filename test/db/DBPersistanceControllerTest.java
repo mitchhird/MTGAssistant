@@ -20,7 +20,9 @@ import util.TestUtil;
 public class DBPersistanceControllerTest {
 
   private DBPersistanceController classUnderTest;
-
+  private final String[] testCardSet = {"Island", "Swamp", "Mountain", "Forest", "Plains"};
+  private final int amountOfEachCard = 20;
+  
   @Before
   public void setup() {
     classUnderTest = DBPersistanceController.getInstance();
@@ -39,6 +41,14 @@ public class DBPersistanceControllerTest {
       assertEquals(d.getDeckFormat(), sqlDeck.getDeckFormat());
       assertEquals(d.getDeckName(), sqlDeck.getDeckName());
       assertEquals(d.getDeckDescription(), sqlDeck.getDeckDescription());
+      
+      for (String s: testCardSet) {
+        Card testCard = new Card(s);
+        Integer originalContent = d.getCardsWithinDeck().get(testCard);
+        Integer sqlContent = sqlDeck.getCardsWithinDeck().get(testCard);
+        assertEquals(amountOfEachCard, sqlContent.intValue());
+        assertEquals(originalContent, sqlContent);
+      }
     }
   }
   
@@ -103,7 +113,13 @@ public class DBPersistanceControllerTest {
       testDeck.setDeckFormat(availableFormats[i % availableFormats.length]);
       testDeck.setDeckArchetype("testArt" + i);
       
+      for (String s: testCardSet) {
+        Card cardToTest = new Card(s);
+        testDeck.addCardToDeck(cardToTest, amountOfEachCard);
+      }
+      
       classUnderTest.addDeckToDB(testDeck);
+      decksToTest.add(testDeck);
     }
     return decksToTest;
   }

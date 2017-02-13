@@ -16,7 +16,7 @@ public class Card implements Comparable<Card> {
   protected String flavor;
   protected String artist;
   protected String manaCost;
-  
+  protected int multiverseID;
   protected List<String> types;
   protected List<String> subtypes;
   protected List<String> colorIdentity;
@@ -29,6 +29,7 @@ public class Card implements Comparable<Card> {
   
   public Card (String cardName) {
     this.name = cardName; 
+    this.text = "";
   }
 
   /**
@@ -106,6 +107,20 @@ public class Card implements Comparable<Card> {
    */
   public String getManaCost() {
     return manaCost;
+  }
+
+  /**
+   * @return the multiverseID
+   */
+  public int getMultiverseID() {
+    return multiverseID;
+  }
+
+  /**
+   * @param multiverseID the multiverseID to set
+   */
+  public void setMultiverseID(int multiverseID) {
+    this.multiverseID = multiverseID;
   }
 
   /**

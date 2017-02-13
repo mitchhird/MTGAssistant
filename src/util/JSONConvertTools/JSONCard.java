@@ -14,9 +14,8 @@ public class JSONCard extends Card {
   protected String rarity;
   protected String power;
   protected String toughness;
-  
+  protected int multiverseid;
   protected List<JSONLegality> legalities;
-  
   
   @Override
   public String toString() {
@@ -52,6 +51,20 @@ public class JSONCard extends Card {
       legalities = new ArrayList<>();
     }
     return legalities;
+  }
+  
+  /**
+   * @return the multiverseid
+   */
+  public int getMultiverseid() {
+    return multiverseid;
+  }
+
+  /**
+   * @param multiverseid the multiverseid to set
+   */
+  public void setMultiverseid(int multiverseid) {
+    this.multiverseid = multiverseid;
   }
 
   /**

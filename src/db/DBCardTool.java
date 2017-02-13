@@ -21,23 +21,14 @@ import util.JSONConvertTools.JSONCard;
  */
 public class DBCardTool extends DBTool {
 
-//Table Creation String
- private final String CREATE_CARD_TABLE = "CREATE TABLE IF NOT EXISTS CARD_TABLE (CARD_ID varchar(" + DB_CHAR_COLUMN_LIMIT + ") PRIMARY KEY," 
-                                                                              + "CARD_NAME varchar(" + DB_CHAR_COLUMN_LIMIT + "),"
-                                                                              + "CARD_TEXT varchar(" + DB_CHAR_COLUMN_LIMIT + "),"
-                                                                              + "CARD_TYPE varchar(" + DB_CHAR_COLUMN_LIMIT + "),"
-                                                                              + "CARD_SUPERTYPES varchar(" + DB_CHAR_COLUMN_LIMIT + "),"
-                                                                              + "CARD_SUBTYPES varchar(" + DB_CHAR_COLUMN_LIMIT + "),"
-                                                                              + "CARD_POWER INTEGER,"
-                                                                              + "CARD_TOUGHNESS INTEGER,"
-                                                                              + "CARD_LOYALITY INTEGER,"
-                                                                              + "CARD_CMC varchar(" + DB_CHAR_COLUMN_LIMIT + "),"
-                                                                              + "CARD_MANA_COST varchar(" + DB_CHAR_COLUMN_LIMIT + "))";
+  //Table Creation String
+  private final String CREATE_CARD_TABLE = "CREATE TABLE IF NOT EXISTS CARD_TABLE (CARD_ID varchar(" + DB_CHAR_COLUMN_LIMIT + ") PRIMARY KEY," + "CARD_NAME varchar(" + DB_CHAR_COLUMN_LIMIT + ")," + "CARD_TEXT varchar(" + DB_CHAR_COLUMN_LIMIT + ")," + "CARD_TYPE varchar(" + DB_CHAR_COLUMN_LIMIT + ")," + "CARD_SUPERTYPES varchar(" + DB_CHAR_COLUMN_LIMIT + ")," + "CARD_SUBTYPES varchar(" + DB_CHAR_COLUMN_LIMIT + ")," + "CARD_POWER INTEGER," + "CARD_TOUGHNESS INTEGER," + "CARD_LOYALITY INTEGER," + "CARD_CMC varchar(" + DB_CHAR_COLUMN_LIMIT + ")," + "CARD_MANA_COST varchar(" + DB_CHAR_COLUMN_LIMIT + "))";
 
- // Insertion String
- private final String INSERT_CARD_TABLE = "INSERT INTO CARD_TABLE (CARD_ID, CARD_NAME, CARD_TEXT, CARD_TYPE, CARD_SUPERTYPES, CARD_SUBTYPES, CARD_POWER, CARD_TOUGHNESS, CARD_LOYALITY, CARD_CMC, CARD_MANA_COST) VALUES (?,?,?,?,?,?,?,?,?,?,?);";;
- private final String SELECT_CARD_TABLE_BASE = "SELECT * FROM CARD_TABLE NATURAL JOIN SET_JUNC_TABLE";
- private final String SELECT_DISTINCT_CARD_NAME = "SELECT DISTINCT CARD_NAME FROM CARD_TABLE;"; 
+  // Insertion String
+  private final String INSERT_CARD_TABLE = "INSERT INTO CARD_TABLE (CARD_ID, CARD_NAME, CARD_TEXT, CARD_TYPE, CARD_SUPERTYPES, CARD_SUBTYPES, CARD_POWER, CARD_TOUGHNESS, CARD_LOYALITY, CARD_CMC, CARD_MANA_COST) VALUES (?,?,?,?,?,?,?,?,?,?,?);";;
+  private final String SELECT_CARD_TABLE_BASE = "SELECT * FROM CARD_TABLE NATURAL JOIN SET_JUNC_TABLE";
+  private final String SELECT_DISTINCT_CARD_NAME = "SELECT DISTINCT CARD_NAME FROM CARD_TABLE;";
+
   public DBCardTool(DBPersistanceController controller) {
     super(controller);
   }
@@ -60,7 +51,7 @@ public class DBCardTool extends DBTool {
   public List<Card> getFilteredCards(Set<DBCardSearchDataObject> searchParameters) {
     String fullStatement = genFilteredSearchRequest(searchParameters);
     Set<Card> returnVal = gatherCardsFromQuery(fullStatement);
-    
+
     // Convert into a list and sort before returning
     List<Card> arrayList = new ArrayList<Card>(returnVal);
     Collections.sort(arrayList);
@@ -82,20 +73,16 @@ public class DBCardTool extends DBTool {
     return returnVal;
   }
 
-  // Returns A Single Card From A Given Result Set
   private Card getCardFromResultSet(ResultSet incomingResult) {
-    Card returnVal = new Card();
+    Card returnVal = getPartialCardFromRS(incomingResult);
     try {
-      returnVal.setName(incomingResult.getString("CARD_NAME"));
-      returnVal.setText(incomingResult.getString("CARD_TEXT"));
-      returnVal.setType(incomingResult.getString("CARD_TYPE"));
       returnVal.setFlavor(incomingResult.getString("FLAVOUR_TEXT"));
       returnVal.setArtist(incomingResult.getString("ARTIST"));
       returnVal.setCardRarity(CardRarity.valueOf(incomingResult.getString("RARITY")));
       returnVal.setManaCost(incomingResult.getString("CARD_MANA_COST"));
-    } catch (Exception e) {
+      returnVal.setMultiverseID(incomingResult.getInt("MULTIVERSE_ID"));
+    } catch (SQLException e) {
       e.printStackTrace();
-      return null;
     }
     return returnVal;
   }
@@ -132,7 +119,7 @@ public class DBCardTool extends DBTool {
       st.setString(10, card.getCmc());
       st.execute();
     } catch (SQLException e) {
-     // e.printStackTrace();
+      // e.printStackTrace();
       // Probably Hit A Card That Shares The Same Name, Not Important, So Just Continue Onward
     }
   }

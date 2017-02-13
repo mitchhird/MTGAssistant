@@ -44,12 +44,7 @@ public class IndividualDeckPanel extends UIPanelBase {
   public IndividualDeckPanel() {
     super();
   }
-
-  // Sets The Editiablity Of All Applicable Items
-  public void setEditablity(boolean editable) {
-    selectedCreatedField.setEditable(editable);
-  }
-
+  
   @Override
   protected void initVariables() {
     selectedDeckNameLabel = new JLabel(Constants.DECKS_SELECT_NAME_LABEL + ":");
@@ -60,7 +55,6 @@ public class IndividualDeckPanel extends UIPanelBase {
 
     selectedDeckNameField = new JTextField();
     selectedCreatedField = new JTextField();
-    selectedCreatedField.setEditable(false);
 
     selectedFormatField = new JComboBox<>(Format.values());
     selectedDescriptionField = new JTextArea();

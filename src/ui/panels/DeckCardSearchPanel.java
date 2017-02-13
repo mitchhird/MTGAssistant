@@ -21,6 +21,7 @@ import models.cardModels.Card;
 import models.deckModels.Deck;
 import ui.DeckEditDialog;
 import ui.UIPanelBase;
+import ui.customUiElements.CardDisplayingJList;
 import ui.listRenderers.BasicCardRenderer;
 import util.Constants;
 import db.DBCardSearchDataObject;
@@ -39,11 +40,11 @@ public class DeckCardSearchPanel extends UIPanelBase {
   private JList<Card> searchDisplayList;
 
   private JTextField searchField;
-  
+
   private JSpinner quantitySpinner;
   private Deck deckToEdit;
   private final DeckEditDialog parentPanel;
-  
+
   public DeckCardSearchPanel(DeckEditDialog parent) {
     super();
     this.parentPanel = parent;
@@ -53,16 +54,16 @@ public class DeckCardSearchPanel extends UIPanelBase {
   protected void initVariables() {
     searchButton = new JButton(Constants.CARD_SEARCH_SEARCH_BUTTON);
     searchField = new JTextField();
-    
+
     quantityLabel = new JLabel("Quantity");
     currentSelectionCardLabel = new JLabel("Current Selected Card:");
     currentSelectCardDataLabel = new JLabel();
     statusLabel = new JLabel();
-    
+
     addCardToDeckButton = new JButton("Add Card To Deck");
     quantitySpinner = new JSpinner(new SpinnerNumberModel(1, 1, 4, 1));
 
-    searchDisplayList = new JList<>();
+    searchDisplayList = new CardDisplayingJList();
     searchDisplayList.setCellRenderer(new BasicCardRenderer());
   }
 
@@ -71,17 +72,17 @@ public class DeckCardSearchPanel extends UIPanelBase {
     int i = 0;
     addComponentToPanel(searchField, 0, i, 5, 1, 1.0f, 0.0f);
     addComponentToPanel(searchButton, 5, i, 1, 1, 0.0f, 0.0f);
-    
+
     i++;
     JScrollPane searchDisplayWrapper = new JScrollPane(searchDisplayList);
     addComponentToPanel(searchDisplayWrapper, 0, i, 6, 1, 1.0f, 1.0f);
-    
+
     i++;
     addComponentToPanel(currentSelectionCardLabel, 0, i, 1, 1, 0.0f, 0.0f);
     addComponentToPanel(currentSelectCardDataLabel, 1, i, 2, 1, 1.0f, 0.0f);
     addComponentToPanel(quantityLabel, 3, i, 1, 1, 0.0f, 0.0f);
     addComponentToPanel(quantitySpinner, 4, i, 2, 1, 1.0f, 0.0f);
-    
+
     i++;
     addComponentToPanel(addCardToDeckButton, 5, i, 1, 1, 0.0f, 0.0f);
   }
@@ -94,22 +95,22 @@ public class DeckCardSearchPanel extends UIPanelBase {
         handleAddButton();
       }
     });
-    
+
     searchButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
         handleSearchButton();
       }
     });
-    
-    searchField.addActionListener(new ActionListener() {  
+
+    searchField.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-         searchButton.setEnabled(searchField.getText().trim().isEmpty());
+        searchButton.setEnabled(searchField.getText().trim().isEmpty());
       }
     });
-    
-    searchDisplayList.addListSelectionListener(new ListSelectionListener() { 
+
+    searchDisplayList.addListSelectionListener(new ListSelectionListener() {
       @Override
       public void valueChanged(ListSelectionEvent e) {
         Card selectedValue = searchDisplayList.getSelectedValue();
@@ -119,14 +120,14 @@ public class DeckCardSearchPanel extends UIPanelBase {
       }
     });
   }
-  
+
   private void handleSearchButton() {
     Set<DBCardSearchDataObject> searchList = new HashSet<>();
     searchList.add(new DBCardSearchDataObject("CARD_NAME", searchField.getText().trim()));
     List<Card> cards = DBPersistanceController.getInstance().getFilteredCards(searchList);
 
     DefaultListModel<Card> displayModel = new DefaultListModel<Card>();
-    for (Card c: cards) {
+    for (Card c : cards) {
       displayModel.addElement(c);
     }
     searchDisplayList.setModel(displayModel);
@@ -144,7 +145,7 @@ public class DeckCardSearchPanel extends UIPanelBase {
     // TODO Auto-generated method stub
 
   }
-  
+
   public void setDeckToEdit(Deck incomingDeck) {
     this.deckToEdit = incomingDeck;
   }
