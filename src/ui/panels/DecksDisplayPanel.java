@@ -50,12 +50,13 @@ public class DecksDisplayPanel extends UIPanelBase {
   
   private Deck currentSelectedDeck;
   private IndividualDeckPanel deckPanel;
-  private DBPersistanceController dbController;
+  private final DBPersistanceController dbController;
   
   // Default Constructor For The Display Panel
   public DecksDisplayPanel() {
     super();
     dbController = DBPersistanceController.getInstance();
+    initializePanel();
     populateLocal();
   }
 
@@ -138,7 +139,7 @@ public class DecksDisplayPanel extends UIPanelBase {
       @Override
       public void actionPerformed(ActionEvent paramActionEvent) {
         System.out.println("Add Cards To Deck Button Has Been Pressed");
-        DeckEditDialog newDialog = new DeckEditDialog(currentSelectedDeck, deckPanel, false);
+        DeckEditDialog newDialog = new DeckEditDialog(deckPanel, false);
         newDialog.setVisible(true);
       }
     });

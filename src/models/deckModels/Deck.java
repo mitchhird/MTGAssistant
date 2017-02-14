@@ -82,6 +82,18 @@ public class Deck implements Comparable<Deck> {
   public void addCardToDeck(Card incomingCard, int quantity) {
     cardsWithinDeck.put(incomingCard, quantity);
   }
+  
+  // Removes A Particular Quantity Of Card From A Deck. If The Card Isn't Present, Then Nothing Happens
+  public void removeCardFromDeck (Card incomingCard, int quantity) {
+    Integer currentQuantity = cardsWithinDeck.get(incomingCard);
+    if (currentQuantity != null) {
+      if (currentQuantity - quantity <= 0) {
+        cardsWithinDeck.remove(incomingCard);
+      } else {
+        cardsWithinDeck.put(incomingCard, currentQuantity - quantity);
+      }
+    }
+  }
 
   public Map<Card, Integer> getCardsWithinDeck() {
     if (cardsWithinDeck == null) {

@@ -10,6 +10,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
 import models.cardModels.Card;
+import models.deckModels.Deck;
 import util.Constants;
 
 /**
@@ -22,8 +23,14 @@ public class DeckContentsTableModel extends AbstractTableModel{
   private Map<Card, Integer> cardsWithinDeck;
   private static final long serialVersionUID = 1L;
 
+  // Constructor When Deck Isn't Known
   public DeckContentsTableModel () {
     setCardsInDeck(new HashMap<Card, Integer>());
+  }
+  
+  // Constructor When Deck Is Known
+  public DeckContentsTableModel (Deck incomingDeck) {
+    setCardsInDeck(incomingDeck.getCardsWithinDeck());
   }
 
   public void setCardsInDeck(Map<Card,Integer> newMap) {
@@ -32,9 +39,13 @@ public class DeckContentsTableModel extends AbstractTableModel{
     Collections.sort(displayList);
   }
   
+  public Card getCardAtIndex(int index) {
+    return displayList.get(index);
+  }
+  
   @Override
   public int getRowCount() {
-    return cardsWithinDeck.keySet().size();
+    return displayList.size();
   }
 
   @Override

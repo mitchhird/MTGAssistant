@@ -27,6 +27,7 @@ public class CardSearchDisplayPanel extends UIPanelBase {
   public CardSearchDisplayPanel(List<Card> cardsToDisplay) {
     super();
     this.cardsToDisplay = cardsToDisplay;
+    initializePanel();
     populateLocal();
   }
   

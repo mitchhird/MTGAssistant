@@ -53,6 +53,7 @@ public class CardAdvancedSearchPanel extends UIPanelBase {
   // Default Constructor That Is Responsible For Creating
   public CardAdvancedSearchPanel() {
     super();
+    initializePanel();
     populateLocal();
   }
 

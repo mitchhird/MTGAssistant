@@ -25,7 +25,9 @@ public abstract class UIDialogBase extends JDialog {
     gbc.fill = GridBagConstraints.BOTH;
     
     setLayout(layout);
-    
+  }
+  
+  protected void initializeDialog() {
     initVariables();
     placeUIElements();
     addActionListeners();
@@ -46,5 +48,4 @@ public abstract class UIDialogBase extends JDialog {
   protected abstract void placeUIElements();
   protected abstract void addActionListeners();
   protected abstract void populateLocal ();
-  protected abstract void applyLocal();
 }

@@ -29,7 +29,7 @@ import util.Constants;
 import db.DBCardSearchDataObject;
 import db.DBPersistanceController;
 
-public class DeckCardSearchPanel extends UIPanelBase {
+public class DeckAddCardPanel extends UIPanelBase {
 
   private JButton searchButton;
   private JButton addCardToDeckButton;
@@ -44,12 +44,12 @@ public class DeckCardSearchPanel extends UIPanelBase {
   private JTextField searchField;
 
   private JSpinner quantitySpinner;
-  private Deck deckToEdit;
   private final DeckEditDialog parentPanel;
 
-  public DeckCardSearchPanel(DeckEditDialog parent) {
+  public DeckAddCardPanel(DeckEditDialog parent) {
     super();
     this.parentPanel = parent;
+    initializePanel();
   }
 
   @Override
@@ -153,15 +153,12 @@ public class DeckCardSearchPanel extends UIPanelBase {
     // TODO Auto-generated method stub
 
   }
-  
-  public void setDeckToEdit(Deck incomingDeck) {
-    this.deckToEdit = incomingDeck;
-  }
 
   private void handleAddButton() {
     Integer quantity = (Integer) quantitySpinner.getValue();
     Card cardToAdd = searchDisplayList.getSelectedValue();
     if (cardToAdd != null) {
+      Deck deckToEdit = parentPanel.getDeckToEdit();
       deckToEdit.addCardToDeck(cardToAdd, quantity);
       statusLabel.setText("Added " + quantity + "x " + cardToAdd.getName() + " to " + deckToEdit.getDeckName());
       parentPanel.refreshData();

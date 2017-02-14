@@ -43,6 +43,7 @@ public class IndividualDeckPanel extends UIPanelBase {
   // Constructor When We Know If We Want Edit Everything Or Just The Available Subset
   public IndividualDeckPanel() {
     super();
+    initializePanel();
   }
   
   @Override

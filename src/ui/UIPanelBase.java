@@ -25,7 +25,9 @@ public abstract class UIPanelBase extends JPanel {
     gbc.fill = GridBagConstraints.BOTH;
     
     setLayout(layout);
-    
+  }
+  
+  protected void initializePanel() {
     initVariables();
     placeUIElements();
     addActionListeners();

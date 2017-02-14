@@ -22,7 +22,8 @@ public class BasicCardRenderer extends UIPanelBase implements ListCellRenderer<C
   protected JTextArea textDisplayArea;
 
   public BasicCardRenderer() {
-
+    super();
+    initializePanel();
   }
 
   @Override

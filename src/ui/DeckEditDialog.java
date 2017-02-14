@@ -7,7 +7,8 @@ import javax.swing.JButton;
 import javax.swing.JTabbedPane;
 
 import models.deckModels.Deck;
-import ui.panels.DeckCardSearchPanel;
+import ui.panels.DeckAddCardPanel;
+import ui.panels.DeckRemoveCardPanel;
 import ui.panels.IndividualDeckPanel;
 import util.Constants;
 
@@ -15,15 +16,17 @@ public class DeckEditDialog extends UIDialogBase {
 
   protected Deck deckToEdit;
   protected IndividualDeckPanel deckDisplayPanel;
-  protected DeckCardSearchPanel deckAddPanel;
+  protected DeckAddCardPanel deckAddPanel;
+  protected DeckRemoveCardPanel deckRemovePanel;
   protected JTabbedPane tabWrapper;
   protected JButton closeButton;
   protected JButton applyButton;
   
-  public DeckEditDialog(Deck deckToEdit, IndividualDeckPanel panel, boolean newDeck) {
+  public DeckEditDialog(IndividualDeckPanel panel, boolean newDeck) {
     super();
-    this.deckToEdit = deckToEdit;
+    this.deckToEdit = panel.getCurrentlySelectedDeck();
     this.deckDisplayPanel = panel;
+    initializeDialog();
     setTitle(newDeck ? "New Deck" : "Editing Existing Deck - " + deckToEdit.getDeckName());
     populateLocal();
   }
@@ -32,9 +35,9 @@ public class DeckEditDialog extends UIDialogBase {
   protected void initVariables() {
     closeButton = new JButton("Close");
     applyButton = new JButton("Apply");
-    
-    deckDisplayPanel = new IndividualDeckPanel();
-    deckAddPanel = new DeckCardSearchPanel(this);
+
+    deckAddPanel = new DeckAddCardPanel(this);
+    deckRemovePanel = new DeckRemoveCardPanel(this);
     tabWrapper = new JTabbedPane();
     
     setModal(false);
@@ -44,6 +47,7 @@ public class DeckEditDialog extends UIDialogBase {
   @Override
   protected void placeUIElements() {
     tabWrapper.add("Add Cards", deckAddPanel);
+    tabWrapper.add("Remove Cards", deckRemovePanel);
     addComponentToPanel(tabWrapper, 0, 0, 6, 1, 0.9f, 1.0f);
     addComponentToPanel(closeButton, 5, 1, 1, 1, 0.05f, 0.0f);
   }
@@ -67,16 +71,14 @@ public class DeckEditDialog extends UIDialogBase {
 
   @Override
   protected void populateLocal() {
-    deckAddPanel.setDeckToEdit(deckToEdit);
-  }
-
-  @Override
-  protected void applyLocal() {
-    // TODO Auto-generated method stub
-
   }
   
   public void refreshData() {
     deckDisplayPanel.refreshTable();
+    deckRemovePanel.refreshTable();
+  }
+  
+  public Deck getDeckToEdit() {
+    return deckToEdit;
   }
 }
