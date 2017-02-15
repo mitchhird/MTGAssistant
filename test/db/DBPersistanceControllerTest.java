@@ -62,7 +62,7 @@ public class DBPersistanceControllerTest {
   }
 
   private void testFormatFetch(Format testFormat) {
-    for (Deck d: classUnderTest.getDecksByFormat(testFormat)) {
+    for (Deck d: classUnderTest.getDecksByFormatNoContent(testFormat)) {
       assertEquals(testFormat, d.getDeckFormat());
     }
   }
