@@ -28,6 +28,7 @@ public class DeckEditDialog extends UIDialogBase {
     this.deckDisplayPanel = panel;
     initializeDialog();
     setTitle(newDeck ? "New Deck" : "Editing Existing Deck - " + deckToEdit.getDeckName());
+    setIconImage(ImageManager.getInstance().getIconForKey(Constants.ICON_MAIN_ICON_KEY));
     populateLocal();
   }
 

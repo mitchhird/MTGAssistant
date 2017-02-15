@@ -20,6 +20,7 @@ import javax.swing.JTextField;
 import models.cardModels.Card;
 import models.cardModels.CardRarity;
 import models.cardModels.MagicSet;
+import ui.ImageManager;
 import ui.UIPanelBase;
 import util.Constants;
 import db.DBCardSearchDataObject;
@@ -153,6 +154,8 @@ public class CardAdvancedSearchPanel extends UIPanelBase {
     JDialog testDialog = new JDialog(new JFrame());
     CardSearchDisplayPanel display = new CardSearchDisplayPanel(filteredCards);
     testDialog.setSize(Constants.MAIN_APP_WIDTH, Constants.MAIN_APP_HEIGHT);
+    testDialog.setTitle("Advanced Search Results");
+    testDialog.setIconImage(ImageManager.getInstance().getIconForKey(Constants.ICON_MAIN_ICON_KEY));
     testDialog.add(display);
     testDialog.setVisible(true);
   }

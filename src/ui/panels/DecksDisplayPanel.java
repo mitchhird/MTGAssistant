@@ -70,6 +70,7 @@ public class DecksDisplayPanel extends UIPanelBase {
     deckFormatCombobox = new JComboBox<>(Format.values());
 
     deckPanel = new IndividualDeckPanel();
+    deckPanel.setEnabled(false);
     deckPanel.setBorder(BorderFactory.createTitledBorder("Deck Details"));
 
     newDeckButton = new JButton(Constants.DECK_TOOL_NEW_DECK);
@@ -131,6 +132,8 @@ public class DecksDisplayPanel extends UIPanelBase {
       public void actionPerformed(ActionEvent paramActionEvent) {
         System.out.println("New Deck Button Has Been Pressed");
         currentSelectedDeck = new Deck();
+        deckPanel.setEnabled(true);
+        updateButtonEnable(true);
         deckPanel.setCurrentlySelectedDeck(currentSelectedDeck);
       }
     });
@@ -184,6 +187,7 @@ public class DecksDisplayPanel extends UIPanelBase {
 
   // Updates The Deck UI Contents With The Necessary Information. 
   private void updateDeckUIContents() {
+    deckPanel.setEnabled(true);
     currentSelectedDeck = deckComboBox.getItemAt(deckComboBox.getSelectedIndex());
     if (currentSelectedDeck.getCardsWithinDeck().isEmpty()) {
       dbController.populateDeckContents(currentSelectedDeck);

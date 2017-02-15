@@ -115,6 +115,21 @@ public class IndividualDeckPanel extends UIPanelBase {
     return currentlySelectedDeck;
   }
   
+  @Override
+  public void setEnabled(boolean enabled) {
+    super.setEnabled(enabled);
+    selectedCreatedField.setEnabled(enabled);
+    selectedCreateLabel.setEnabled(enabled);
+    selectedDeckContentsLabel.setEnabled(enabled);
+    selectedDeckContentsTable.setEnabled(enabled);
+    selectedDeckNameField.setEnabled(enabled);
+    selectedDeckNameLabel.setEnabled(enabled);
+    selectedDescriptionField.setEnabled(enabled);
+    selectedDescriptionLabel.setEnabled(enabled);
+    selectedFormatField.setEnabled(enabled);
+    selectedFormatLabel.setEnabled(enabled);
+  }
+  
   public void populateDeckDetails(Deck deckToPopulate) {
     deckToPopulate.setCreatingUser(selectedCreatedField.getText().trim());
     deckToPopulate.setDeckDescription(selectedDescriptionField.getText().trim());
