@@ -55,6 +55,7 @@ public class DeckAddCardPanel extends UIPanelBase {
   @Override
   protected void initVariables() {
     searchButton = new JButton(Constants.CARD_SEARCH_SEARCH_BUTTON);
+    searchButton.setEnabled(false);
     searchField = new JTextField();
 
     quantityLabel = new JLabel("Quantity");

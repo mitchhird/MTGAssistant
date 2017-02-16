@@ -142,6 +142,7 @@ public class DecksDisplayPanel extends UIPanelBase {
       @Override
       public void actionPerformed(ActionEvent paramActionEvent) {
         System.out.println("Add Cards To Deck Button Has Been Pressed");
+        deckPanel.populateDeckDetails(currentSelectedDeck);
         DeckEditDialog newDialog = new DeckEditDialog(deckPanel, false);
         newDialog.setVisible(true);
       }
