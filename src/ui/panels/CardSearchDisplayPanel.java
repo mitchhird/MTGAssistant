@@ -6,6 +6,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 
 import models.cardModels.Card;
@@ -35,6 +36,7 @@ public class CardSearchDisplayPanel extends UIPanelBase {
   protected void initVariables() {
     resultsLabel = new JLabel();
     displayList = new CardDisplayingJList();
+    displayList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
   }
 
   @Override

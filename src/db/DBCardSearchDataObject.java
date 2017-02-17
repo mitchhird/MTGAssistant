@@ -20,6 +20,7 @@ public class DBCardSearchDataObject {
   private void initVars(String key, String value, boolean andTerm) {
       DBColumnKey = key;
      DBSearchValue = value;
+     this.andTerm = andTerm;
   }
 
   /**

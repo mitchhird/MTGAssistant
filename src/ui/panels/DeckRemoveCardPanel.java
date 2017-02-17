@@ -8,6 +8,7 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -62,7 +63,9 @@ public class DeckRemoveCardPanel extends UIPanelBase {
     
     deckModel = new DeckContentsTableModel(deckToEdit);
     selectedDeckContentsTable = new JTable(deckModel); 
+    selectedDeckContentsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     removeButton = new JButton("Remove From Deck");
+    removeButton.setEnabled(false);
   }
 
   @Override

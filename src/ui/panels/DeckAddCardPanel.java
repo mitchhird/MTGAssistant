@@ -13,6 +13,7 @@ import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -56,17 +57,21 @@ public class DeckAddCardPanel extends UIPanelBase {
   protected void initVariables() {
     searchButton = new JButton(Constants.CARD_SEARCH_SEARCH_BUTTON);
     searchButton.setEnabled(false);
+    
+    addCardToDeckButton = new JButton("Add Card To Deck");
+    addCardToDeckButton.setEnabled(false);
+
     searchField = new JTextField();
 
     quantityLabel = new JLabel("Quantity");
     currentSelectionCardLabel = new JLabel("Current Selected Card:");
     currentSelectCardDataLabel = new JLabel();
     statusLabel = new JLabel();
-
-    addCardToDeckButton = new JButton("Add Card To Deck");
+    
     quantitySpinner = new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
 
     searchDisplayList = new CardDisplayingJList();
+    searchDisplayList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     searchDisplayList.setCellRenderer(new BasicCardRenderer());
   }
 
@@ -130,6 +135,7 @@ public class DeckAddCardPanel extends UIPanelBase {
         Card selectedValue = searchDisplayList.getSelectedValue();
         if (selectedValue != null) {
           currentSelectCardDataLabel.setText(selectedValue.getName());
+          addCardToDeckButton.setEnabled(true);
         }
       }
     });

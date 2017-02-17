@@ -57,10 +57,11 @@ public class ImageManager {
       return ImageIO.read(absolutePath.toFile());
     } catch (IOException e) {
       e.printStackTrace();
-      return null;
+      return new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);
     }
   }
 
+  // Returns The Mana Symbol Image For The Text Representation
   public BufferedImage getImageForManaSymbol(String manaSymbol) {
     initMTGSymbolSpriteSheet();
     return (textToManaSymbolMap.containsKey(manaSymbol)) ? textToManaSymbolMap.get(manaSymbol) : textToManaSymbolMap.get("{U}");

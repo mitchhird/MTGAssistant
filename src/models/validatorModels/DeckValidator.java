@@ -39,7 +39,7 @@ public abstract class DeckValidator {
         if (quantity > 1) {
           validationErrors.add("Validation Error: " + c.getName() + " exceeds the restriction limit of 1");
         }
-      } else if (PM_CONTROLLER.isCardBannedInFormat(c, incomingDeck.getDeckFormat())) {
+      } else {
         validationErrors.add("Validation Error: " + c.getName() + " is banned in " + incomingDeck.getDeckFormat());
       }
     }
