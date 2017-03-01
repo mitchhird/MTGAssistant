@@ -1,6 +1,6 @@
 package app;
 
-import ui.MainApplicationFrame;
+import ui.clientui.MainApplicationFrame;
 
 /**
  * Main class for client side application of this project.

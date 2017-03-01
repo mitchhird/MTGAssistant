@@ -10,6 +10,7 @@ public interface Constants {
   // String Constants
   public static final String CENTRAL_DB_NAME = "MTG_Assistant_DB";
   public static final String MAIN_APPLICATION_NAME = "MTG Assistant";
+  public static final String MAIN_SERVER_APPLICATION_NAME = "MTG Assistent Server";
   
   public static final String DECKS_CURRENT_LABEL = "Current Decks (Click A Row To View Details)";
   public static final String DECKS_SELECT_NAME_LABEL = "Deck Name";
@@ -39,12 +40,17 @@ public interface Constants {
   public static final String DECK_TOOL_EDIT_DECK = "Edit Deck";
   public static final String DECK_TOOL_DELETE_DECK = "Delete Deck";
   
+  public static final String SERVER_START_BUTTON_TEXT = "Start Server";
+  public static final String SERVER_STATUS_TEXT = "Server Status:";
+  
   // Image Icon Constants
   public static final String ICON_NEW_KEY = "NEW_ICON";
   public static final String ICON_EDIT_KEY = "EDIT_ICON";
   public static final String ICON_DELETE_KEY = "DELETE_ICON";
   public static final String ICON_DECKS_KEY = "DECK_ICON";
   public static final String ICON_SEARCH_KEY = "SEARCH_ICON";
+  public static final String ICON_NETWORK_KEY = "NETWORK_ICON";
+  public static final String ICON_STAT_KEY = "STATISTICS_ICON";
   public static final String ICON_MAIN_ICON_KEY = "MAIN_ICON";
   
   // Integer Constants
@@ -54,4 +60,6 @@ public interface Constants {
   public static final int CONSTRUCTED_MIN_DECK_SIZE = 60;
   public static final int SINGLETON_DECK_SIZE = 100;
   public static final int TOOLTIP_DISPLAY_DELAY = 500;
+  public static final int SERVER_PORT_MIN = 1024;
+  public static final int SERVER_PORT_MAX = 66560;
 }
