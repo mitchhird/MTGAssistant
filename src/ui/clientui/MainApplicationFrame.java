@@ -16,6 +16,7 @@ import javax.swing.ToolTipManager;
 
 import ui.clientui.TabRenders.AbstractTabRenderer;
 import ui.clientui.panels.CardAdvancedSearchPanel;
+import ui.clientui.panels.ClientConnectPanel;
 import ui.clientui.panels.DecksDisplayPanel;
 import ui.shared.ImageManager;
 import util.Constants;
@@ -39,6 +40,7 @@ public final class MainApplicationFrame extends JFrame {
     pack();
   }
   
+  // Method That Simply Generates The UI That The Main Application Frame Will Be Using
   private void createAndShowUI () {
     JXTabbedPane tabbedPane = new JXTabbedPane(JTabbedPane.LEFT);
     
@@ -48,6 +50,7 @@ public final class MainApplicationFrame extends JFrame {
 
     DecksDisplayPanel editingPane = new DecksDisplayPanel();
     CardAdvancedSearchPanel searchPane = new CardAdvancedSearchPanel();
+    ClientConnectPanel clientConnectPane = new ClientConnectPanel();
     
     ImageIcon decksIcon = new ImageIcon(ImageManager.getInstance().getIconForKey(Constants.ICON_DECKS_KEY));
     tabbedPane.addTab("Decks", decksIcon, editingPane, "Deck Browsing And Manipulation");
@@ -56,12 +59,11 @@ public final class MainApplicationFrame extends JFrame {
     tabbedPane.addTab("Search", searchIcon, searchPane, "Advanced Search On Card DB");
     
     ImageIcon networkingIcon = new ImageIcon(ImageManager.getInstance().getIconForKey(Constants.ICON_NETWORK_KEY));
-    tabbedPane.addTab("Networking", networkingIcon, new JPanel(), "Networking Options And Status");
+    tabbedPane.addTab("Networking", networkingIcon, clientConnectPane, "Networking Options And Status");
     
     ImageIcon statisticsIcon = new ImageIcon(ImageManager.getInstance().getIconForKey(Constants.ICON_STAT_KEY));
     tabbedPane.addTab("Statistics", statisticsIcon, new JPanel(), "Deck and Format Statistics Information");
-    
-    tabbedPane.setEnabledAt(2, false);
+
     tabbedPane.setEnabledAt(3, false);
     this.add(tabbedPane);
   }
