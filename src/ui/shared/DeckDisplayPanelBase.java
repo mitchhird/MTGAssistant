@@ -8,7 +8,6 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.SwingUtilities;
 
 import models.cardModels.Format;
 import models.deckModels.Deck;
@@ -93,7 +92,7 @@ public abstract class DeckDisplayPanelBase extends UIPanelBase {
       @Override
       public void run() {
         Format selectedIndex = deckFormatCombobox.getItemAt(deckFormatCombobox.getSelectedIndex());
-        List<Deck> allDecksInDB = dbController.getDecksByFormatNoContent(selectedIndex);
+        List<Deck> allDecksInDB = getDecksByFormat(selectedIndex);
         DefaultComboBoxModel<Deck> displayModel = new DefaultComboBoxModel<Deck>();
         for (Deck d : allDecksInDB) {
           displayModel.addElement(d);
@@ -102,6 +101,14 @@ public abstract class DeckDisplayPanelBase extends UIPanelBase {
         populateDeckDetails();  
       }
     };
-    SwingUtilities.invokeLater(deckUpdateRunnable);
+    
+    Thread deckFetchThread = new Thread(deckUpdateRunnable);
+    deckFetchThread.setName("Deck Fetcher Thread");
+    deckFetchThread.start();
+  }
+  
+  protected List<Deck> getDecksByFormat(Format selectedIndex) {
+    List<Deck> allDecksInDB = dbController.getDecksByFormatNoContent(selectedIndex);
+    return allDecksInDB;
   }
 }

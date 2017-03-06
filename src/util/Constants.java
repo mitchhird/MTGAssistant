@@ -9,7 +9,7 @@ public interface Constants {
 
   // String Constants
   public static final String CENTRAL_DB_NAME = "MTG_Assistant_DB";
-  public static final String MAIN_APPLICATION_NAME = "MTG Assistant";
+  public static final String MAIN_APPLICATION_NAME = "MTG Assistant Client";
   public static final String MAIN_SERVER_APPLICATION_NAME = "MTG Assistent Server";
   
   public static final String DECKS_CURRENT_LABEL = "Current Decks (Click A Row To View Details)";

@@ -3,6 +3,7 @@ package ui.clientui.panels;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -10,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
 
+import models.cardModels.Format;
 import models.deckModels.Deck;
 import models.validatorModels.DeckValidator;
 import models.validatorModels.ValidatorFactory;
@@ -17,6 +19,7 @@ import ui.clientui.DeckEditDialog;
 import ui.shared.DeckDisplayPanelBase;
 import ui.shared.ImageManager;
 import util.Constants;
+import app.MTGAssistantClient;
 
 /**
  * Panel for editing decks within the Java UI. Panel contains a picker where you can select a deck, and view the details
@@ -34,11 +37,13 @@ public class DecksDisplayPanel extends DeckDisplayPanelBase {
   private JButton deleteDeckButton;
   private JButton applyButton;
   
+  private final MTGAssistantClient clientApp;
   private static final long serialVersionUID = 1L;
 
   // Default Constructor For The Display Panel
-  public DecksDisplayPanel() {
+  public DecksDisplayPanel(MTGAssistantClient mainApp) {
     super();
+    this.clientApp = mainApp;
     initializePanel();
     populateLocal();
   }
@@ -130,13 +135,6 @@ public class DecksDisplayPanel extends DeckDisplayPanelBase {
     });
   }
 
-  // Updates The Button Availability When Called
-  private void updateButtonEnable(boolean rowSelected) {
-    newDeckButton.setEnabled(true);
-    editDeckButton.setEnabled(rowSelected);
-    deleteDeckButton.setEnabled(rowSelected);
-  }
-
   // Handles The Press Of The Delete Button
   private void handleDeleteButton() {
     System.out.println("Delete Button Has Been Pressed");
@@ -173,5 +171,10 @@ public class DecksDisplayPanel extends DeckDisplayPanelBase {
     dbController.deleteDeckFromDB(currentSelectedDeck);
     dbController.addDeckToDB(currentSelectedDeck);
     statusLabel.setText("Deck (" + currentSelectedDeck.getDeckName() +") Has Been Added To The System");
+  }
+  
+  @Override
+  protected List<Deck> getDecksByFormat(Format selectedIndex) {
+    return clientApp.getDecksByFormat(selectedIndex);
   }
 }

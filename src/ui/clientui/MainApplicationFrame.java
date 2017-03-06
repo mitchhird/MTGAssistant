@@ -20,19 +20,22 @@ import ui.clientui.panels.ClientConnectPanel;
 import ui.clientui.panels.DecksDisplayPanel;
 import ui.shared.ImageManager;
 import util.Constants;
+import app.MTGAssistantClient;
 /**
  * Main class that is responsible for showing our application's main UI
  * @author Mitchell
  */
 public final class MainApplicationFrame extends JFrame {
 
+  private final MTGAssistantClient clientApp;
   private JMenuItem exitFileMenuItem;
   private JMenuItem connectMenuItem;
   private static final long serialVersionUID = 1L;
 
   // Default Constructor For The Application
-  public MainApplicationFrame () {
+  public MainApplicationFrame (MTGAssistantClient clientApp) {
     super();
+    this.clientApp = clientApp;
     initJFrameSettings();
     initMenuBar();
     addActionListeners();
@@ -48,9 +51,9 @@ public final class MainApplicationFrame extends JFrame {
     renderer.setDisplayText("This text is a prototype");
     renderer.setHorizontalTextAlignment(SwingConstants.LEADING);
 
-    DecksDisplayPanel editingPane = new DecksDisplayPanel();
+    DecksDisplayPanel editingPane = new DecksDisplayPanel(clientApp);
     CardAdvancedSearchPanel searchPane = new CardAdvancedSearchPanel();
-    ClientConnectPanel clientConnectPane = new ClientConnectPanel();
+    ClientConnectPanel clientConnectPane = new ClientConnectPanel(clientApp);
     
     ImageIcon decksIcon = new ImageIcon(ImageManager.getInstance().getIconForKey(Constants.ICON_DECKS_KEY));
     tabbedPane.addTab("Decks", decksIcon, editingPane, "Deck Browsing And Manipulation");
@@ -76,7 +79,6 @@ public final class MainApplicationFrame extends JFrame {
     setLocationByPlatform(true);
     setIconImage(ImageManager.getInstance().getIconForKey(Constants.ICON_MAIN_ICON_KEY));
     ToolTipManager.sharedInstance().setInitialDelay(Constants.TOOLTIP_DISPLAY_DELAY);
-    setVisible(true);
   }
   
   // Method responsible for adding action listeners
