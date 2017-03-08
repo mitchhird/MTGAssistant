@@ -170,14 +170,18 @@ public class DBDeckTool extends DBTool {
 
   // Deletes A Given Deck From The DB
   public void deleteDeckFromDB(Deck incomingDeck) {
-    deleteFromTable(DELETE_FROM_DECKS_TABLE, incomingDeck);
-    deleteFromTable(DELETE_FROM_DECKS_JUNC_TABLE, incomingDeck);
+    deleteDeckFromDB(incomingDeck.getCreatingUser(), incomingDeck.getDeckName());
   }
 
-  private void deleteFromTable(String command, Deck incomingDeck) {
+  public void deleteDeckFromDB(String creatingUser, String deckName) {
+    deleteFromTable(DELETE_FROM_DECKS_TABLE, creatingUser, deckName);
+    deleteFromTable(DELETE_FROM_DECKS_JUNC_TABLE, creatingUser, deckName);
+  }
+  
+  private void deleteFromTable(String command, String creatingUser, String deckName) {
     try (PreparedStatement st = parentController.getStatement(command);) {
-      st.setString(1, incomingDeck.getCreatingUser());
-      st.setString(2, incomingDeck.getDeckName());
+      st.setString(1, creatingUser);
+      st.setString(2, deckName);
       st.execute();
     } catch (SQLException e) {}
   }

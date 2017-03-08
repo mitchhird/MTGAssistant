@@ -1,43 +1,132 @@
 package networking;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import util.Constants;
+import app.MTGAssistantServer;
 
 /**
- * This class will be directly responsible for intrepreting any communications
- * that come from client connections. When started this thread runs indefinetely,
- * accepting any incoming requests. Once a request comes in, it is first parsed
+ * This class will be directly responsible for intrepreting any communications that come from client connections. When
+ * started this thread runs indefinetely, accepting any incoming requests. Once a request comes in, it is first parsed
  * and once successfully parsed, the corresponding method is called.
  * 
  * @author Mitchell
  */
 public class ServerCommandHandlerThread extends Thread {
 
+  protected String ipAddress;
   protected Socket creatingSock;
-  protected InputStream inStream;
-  protected OutputStream outStream;
+  protected BufferedReader reader;
+  protected BufferedWriter writer;
+  protected MTGAssistantServer server;
 
   // Constructor For The Command Handler Thread
-  public ServerCommandHandlerThread(Socket incomingSocket, String ip) {
+  public ServerCommandHandlerThread(Socket incomingSocket) {
     try {
       creatingSock = incomingSocket;
-      inStream = incomingSocket.getInputStream();
-      outStream = incomingSocket.getOutputStream();
+      ipAddress = incomingSocket.getInetAddress().getHostAddress();
+      server = MTGAssistantServer.getInstance();
+
+      OutputStream outputStream = incomingSocket.getOutputStream();
+      InputStream inputStream = incomingSocket.getInputStream();
+
+      writer = new BufferedWriter(new OutputStreamWriter(outputStream));
+      reader = new BufferedReader(new InputStreamReader(inputStream));
+      System.out.println("Client Connected From: " + incomingSocket.getInetAddress().getHostAddress());
+
     } catch (IOException e) {
       e.printStackTrace();
     }
-    setName("Command Handler (" + ip + ") Thread");
+    setName("Command Handler (" + ipAddress + ") Thread");
   }
-  
+
+  // Closes The Connection. Called When The Connection Is Terminated
+  protected void close() {
+    try {
+      if (reader != null) {
+        reader.close();
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    try {
+      if (reader != null) {
+        reader.close();
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  // Runs A Method For The Corresponding Command
+  protected void runMethodForCommand(NetworkingCommands command, List<String> commands) throws IOException {
+    switch (command) {
+      case LMOD:
+        handleLMODCommand();
+        break;
+      case DDELETE:
+        handleDDELETECommand(commands);
+        break;
+      default:
+        break;
+    }
+  }
+
+  // Handles The LMOD Command By Sending The Last Timestamp To The Request
+  protected void handleLMODCommand() throws IOException {
+    sendResponseToClient("" + server.getLastModifiedStamp());
+  }
+
+  // Handles The DDelete Command By Deleting The Deck
+  protected void handleDDELETECommand(List<String> commands) throws IOException {
+    String creatingUser = commands.get(0);
+    String deckName = commands.get(1);
+    server.deleteDeckFromDB(creatingUser, deckName);
+    sendResponseToClient(Constants.SERVER_GOOD_REPLY);
+  }
+
+  // Handles The DPOST Command By Adding The Deck That The Client Has Supplied
+  protected void handleDPOSTCommand() throws ClassNotFoundException, IOException {
+    sendResponseToClient("Ready");
+
+    /*
+    if (incomingObject instanceof Deck) {
+      Deck incomingDeck = (Deck) incomingObject;
+      server.addDeckToDB(incomingDeck);
+      sendResponseToClient(Constants.SERVER_GOOD_REPLY);
+    }*/
+  }
+
+  protected void sendResponseToClient(String command) throws IOException {
+    writer.write(command + "\n");
+    writer.flush();
+  }
+
   @Override
   public void run() {
     while (true) {
       try {
-        inStream.read();
+        String nextCommand = reader.readLine();
+        String[] parsedCommand = nextCommand.split(Constants.DELIMITER);
+        if (NetworkingCommands.valueOf(parsedCommand[0]) != null) {
+          NetworkingCommands command = NetworkingCommands.valueOf(parsedCommand[0]);
+          List<String> commandArgs = (parsedCommand.length > 1) ? Arrays.asList(parsedCommand).subList(1, parsedCommand.length - 1) : new ArrayList<String>();
+          runMethodForCommand(command, commandArgs);
+        }
       } catch (IOException e) {
-        e.printStackTrace();
+        this.close();
+        break;
       }
     }
   }

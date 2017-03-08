@@ -20,6 +20,7 @@ public class BasicCardRenderer extends UIPanelBase implements ListCellRenderer<C
   protected JLabel typeLabel;
   protected JLabel artistLabel;
   protected JTextArea textDisplayArea;
+  protected static final long serialVersionUID = 1L;
 
   public BasicCardRenderer() {
     super();

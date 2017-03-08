@@ -17,13 +17,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import util.TestUtil;
+import util.BaseTest;
 
 /**
  * Unit tests responsible for testing deck functionality
  * @author Mitchell
  */
-public class DeckTests {
+public class DeckTests extends BaseTest {
   
   private final String testDeckName = "testDeck";
   private final String testDeckDescription = "testDescription";
@@ -84,21 +84,21 @@ public class DeckTests {
     for (Format f: testFormats) {
       classUnderTest.getCardsWithinDeck().clear();
       classUnderTest.setDeckFormat(f);
-      testBanListValidation(TestUtil.getBanListForFormat(f));
+      testBanListValidation(getBanListForFormat(f));
     }
   }
   
   @Test
   public void testValidatorInvalidDueToRestricted() {
     classUnderTest.setDeckFormat(Format.VINTAGE);
-    for (String s: TestUtil.VINTAGE_RESTRICTED_LIST) {
+    for (String s: VINTAGE_RESTRICTED_LIST) {
       addCardToDeck(s, CardRarity.SPECIAL, 2);
     }
-    addCardToDeck("Island", CardRarity.BASIC_LAND, 60 - TestUtil.VINTAGE_RESTRICTED_LIST.length);
+    addCardToDeck("Island", CardRarity.BASIC_LAND, 60 - VINTAGE_RESTRICTED_LIST.length);
     DeckValidator validator = ValidatorFactory.getValidatorForDeck(classUnderTest);
     List<String> validationErrors = validator.validateDeck(classUnderTest);
     assertFalse(validationErrors.isEmpty());
-    assertEquals(TestUtil.VINTAGE_RESTRICTED_LIST.length, validationErrors.size());
+    assertEquals(VINTAGE_RESTRICTED_LIST.length, validationErrors.size());
   }
 
   

@@ -1,5 +1,6 @@
 package models.deckModels;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -11,13 +12,15 @@ import models.cardModels.Format;
  * 
  * @author Mitchell
  */
-public class Deck implements Comparable<Deck> {
+public class Deck implements Comparable<Deck>, Serializable {
+
   private String creatingUser;
   private String deckName;
   private String deckArchetype;
   private String deckDescription;
   private Format deckFormat;
   private Map<Card, Integer> cardsWithinDeck;
+  private static final long serialVersionUID = 1L;
 
   public Deck() {
     this.creatingUser = "";

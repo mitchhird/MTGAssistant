@@ -42,6 +42,9 @@ public interface Constants {
   
   public static final String SERVER_START_BUTTON_TEXT = "Start Server";
   public static final String SERVER_STATUS_TEXT = "Server Status:";
+  public static final String SERVER_GOOD_REPLY = "OK";
+  public static final String SERVER_BAD_REPLY = "ERROR";
+  public static final String DELIMITER="@@@@";
   
   // Image Icon Constants
   public static final String ICON_NEW_KEY = "NEW_ICON";
@@ -60,6 +63,6 @@ public interface Constants {
   public static final int CONSTRUCTED_MIN_DECK_SIZE = 60;
   public static final int SINGLETON_DECK_SIZE = 100;
   public static final int TOOLTIP_DISPLAY_DELAY = 500;
-  public static final int SERVER_PORT_MIN = 1024;
+  public static final int SERVER_PORT_MIN = 15000;
   public static final int SERVER_PORT_MAX = 66560;
 }

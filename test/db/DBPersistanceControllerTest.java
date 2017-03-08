@@ -14,14 +14,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import util.TestUtil;
+import util.BaseTest;
 
 // Tests For The DBPersistanceController Object
-public class DBPersistanceControllerTest {
+public class DBPersistanceControllerTest extends BaseTest {
 
   private DBPersistanceController classUnderTest;
-  private final String[] testCardSet = {"Island", "Swamp", "Mountain", "Forest", "Plains"};
-  private final int amountOfEachCard = 20;
   
   @Before
   public void setup() {
@@ -74,13 +72,13 @@ public class DBPersistanceControllerTest {
 
   @Test
   public void testVintageBannedList() {
-    testBanList(TestUtil.VINTAGE_BAN_LIST, Format.VINTAGE);
+    testBanList(VINTAGE_BAN_LIST, Format.VINTAGE);
   }
 
   @Test
   public void testVintageRestrictedList() {
     System.out.println("Testing Vintage Restricted List");
-    for (String s : TestUtil.VINTAGE_RESTRICTED_LIST) {
+    for (String s : VINTAGE_RESTRICTED_LIST) {
       Card testCard = new Card(s);
       boolean isCardBanned = classUnderTest.isCardRestrictedInFormat(testCard, Format.VINTAGE);
       assertTrue("DB returned invalid result for legality check on " + s, isCardBanned);
@@ -90,12 +88,12 @@ public class DBPersistanceControllerTest {
 
   @Test
   public void testModernBanList() {
-    testBanList(TestUtil.MODERN_BAN_LIST, Format.MODERN);
+    testBanList(MODERN_BAN_LIST, Format.MODERN);
   }
 
   @Test
   public void testCommanderBanList() {
-    testBanList(TestUtil.COMMANDER_BAN_LIST, Format.COMMANDER);
+    testBanList(COMMANDER_BAN_LIST, Format.COMMANDER);
   }
 
   private void testBanList(String[] bannedCards, Format testFormat) {
@@ -114,20 +112,7 @@ public class DBPersistanceControllerTest {
     List<Deck> decksToTest = new ArrayList<Deck>();
     System.out.println("Adding " + numOfDeckToTest + " decks to the current system");
     for (int i = 0; i < numOfDeckToTest; i++) {
-      Deck testDeck = new Deck();
-      testDeck.setCreatingUser("testUser" + i);
-      testDeck.setDeckDescription("testDescription" + i);
-      testDeck.setDeckName("testDeckName" + i);
-
-      Format[] availableFormats = Format.values();
-      testDeck.setDeckFormat(availableFormats[i % availableFormats.length]);
-      testDeck.setDeckArchetype("testArt" + i);
-      
-      for (String s: testCardSet) {
-        Card cardToTest = new Card(s);
-        testDeck.addCardToDeck(cardToTest, amountOfEachCard);
-      }
-      
+      Deck testDeck = createTestDeck(i);
       classUnderTest.addDeckToDB(testDeck);
       decksToTest.add(testDeck);
     }

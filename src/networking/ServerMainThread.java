@@ -27,11 +27,7 @@ public class ServerMainThread extends Thread{
       // Run Indefinitely Waiting For Incoming Connection
       while (true) {
         Socket newSocket = serverSocket.accept();
-        String clientIp = newSocket.getInetAddress().getHostAddress();
-        System.out.println("New Client Connected: " + clientIp);
-        
-        // Create The Connection And Move On
-        ServerCommandHandlerThread newHandleThread = new ServerCommandHandlerThread(newSocket, clientIp);
+        ServerCommandHandlerThread newHandleThread = new ServerCommandHandlerThread(newSocket);
         newHandleThread.start();
       }
       

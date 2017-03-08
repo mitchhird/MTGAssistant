@@ -190,7 +190,11 @@ public class DBPersistanceController {
     deckTool.deleteDeckFromDB(incomingDeck);
   }
   
-  
+  // Call To Delete Deck From The DB
+  public void deleteDeckFromDB (String creatingUser, String deckName) {
+    deckTool.deleteDeckFromDB(creatingUser, deckName);
+  }
+    
   // Call To Run Clean Up Data From The Existing Database
   public void clearDatabase() {
     deckTool.deleteAllDecksFromDB();

@@ -1,5 +1,6 @@
 package models.cardModels;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -8,7 +9,7 @@ import java.util.List;
  * @author Mitchell
  * 
  */
-public class Card implements Comparable<Card> {
+public class Card implements Comparable<Card>, Serializable{
   protected String layout;
   protected String text;
   protected String type;
@@ -22,6 +23,8 @@ public class Card implements Comparable<Card> {
   protected List<String> colorIdentity;
 
   protected CardRarity cardRarity;
+  protected static final long serialVersionUID = 1L;
+  
   
   public Card () {
     
