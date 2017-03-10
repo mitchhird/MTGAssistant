@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JSONCard extends Card {
   protected String cmc;
+  protected String manaCost;
   protected String imageName;
   protected String rarity;
   protected String power;
@@ -58,6 +59,14 @@ public class JSONCard extends Card {
    */
   public int getMultiverseid() {
     return multiverseid;
+  }
+
+  public String getManaCost() {
+    return manaCost;
+  }
+
+  public void setManaCost(String manaCost) {
+    this.manaCost = manaCost;
   }
 
   /**

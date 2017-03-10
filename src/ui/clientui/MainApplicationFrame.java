@@ -9,7 +9,6 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.ToolTipManager;
@@ -17,7 +16,9 @@ import javax.swing.ToolTipManager;
 import ui.clientui.TabRenders.AbstractTabRenderer;
 import ui.clientui.panels.CardAdvancedSearchPanel;
 import ui.clientui.panels.ClientConnectPanel;
+import ui.clientui.panels.DeckStatisticsPanel;
 import ui.clientui.panels.DecksDisplayPanel;
+import ui.clientui.panels.FormatStatisticsPanel;
 import ui.shared.ImageManager;
 import util.Constants;
 import app.MTGAssistantClient;
@@ -54,6 +55,12 @@ public final class MainApplicationFrame extends JFrame {
     DecksDisplayPanel editingPane = new DecksDisplayPanel(clientApp);
     CardAdvancedSearchPanel searchPane = new CardAdvancedSearchPanel();
     ClientConnectPanel clientConnectPane = new ClientConnectPanel(clientApp);
+    DeckStatisticsPanel statisticsPanel = new DeckStatisticsPanel(clientApp);
+    FormatStatisticsPanel formatStatPanel = new FormatStatisticsPanel(clientApp);
+    
+    JTabbedPane statsTabbedPane = new JTabbedPane();
+    statsTabbedPane.add("Individual Deck Statistics", statisticsPanel);
+    statsTabbedPane.add("Format Deck Statistics", formatStatPanel);
     
     ImageIcon decksIcon = new ImageIcon(ImageManager.getInstance().getIconForKey(Constants.ICON_DECKS_KEY));
     tabbedPane.addTab("Decks", decksIcon, editingPane, "Deck Browsing And Manipulation");
@@ -65,9 +72,8 @@ public final class MainApplicationFrame extends JFrame {
     tabbedPane.addTab("Networking", networkingIcon, clientConnectPane, "Networking Options And Status");
     
     ImageIcon statisticsIcon = new ImageIcon(ImageManager.getInstance().getIconForKey(Constants.ICON_STAT_KEY));
-    tabbedPane.addTab("Statistics", statisticsIcon, new JPanel(), "Deck and Format Statistics Information");
+    tabbedPane.addTab("Statistics", statisticsIcon, statsTabbedPane, "Deck and Format Statistics Information");
 
-    tabbedPane.setEnabledAt(3, false);
     this.add(tabbedPane);
   }
 

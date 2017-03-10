@@ -1,6 +1,8 @@
 package models.cardModels;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -16,10 +18,11 @@ public class Card implements Comparable<Card>, Serializable{
   protected String name;
   protected String flavor;
   protected String artist;
-  protected String manaCost;
+  protected int cardCMC;
   protected int multiverseID;
   protected List<String> types;
   protected List<String> subtypes;
+  protected List<String> colors;
   protected List<String> colorIdentity;
 
   protected CardRarity cardRarity;
@@ -108,8 +111,8 @@ public class Card implements Comparable<Card>, Serializable{
   /**
    * @return the manaCost
    */
-  public String getManaCost() {
-    return manaCost;
+  public int getCardCMC() {
+    return cardCMC;
   }
 
   /**
@@ -119,6 +122,20 @@ public class Card implements Comparable<Card>, Serializable{
     return multiverseID;
   }
 
+  public List<String> getColors() {
+    if (colors == null) {
+      colors = new ArrayList<>();
+    }
+    return colors;
+  }
+
+  public void setColors(List<String> colors) {
+    if (colors == null || colors.isEmpty()) {
+      this.colors = Arrays.asList("Colourless");
+    }
+    this.colors = colors;
+  }
+  
   /**
    * @param multiverseID the multiverseID to set
    */
@@ -129,8 +146,8 @@ public class Card implements Comparable<Card>, Serializable{
   /**
    * @param manaCost the manaCost to set
    */
-  public void setManaCost(String manaCost) {
-    this.manaCost = manaCost;
+  public void setCardCMC(int manaCost) {
+    this.cardCMC = manaCost;
   }
 
   /**

@@ -103,6 +103,15 @@ public class DBPersistanceController {
     return database.prepareStatement(statementToExecute);
   }
 
+  public void commitData() {
+    try {
+      database.commit();
+    } catch (SQLException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+  
   // Singleton Pattern For Accessing The DBPersistenceController
   public static DBPersistanceController getInstance() {
     if (instance == null) {
@@ -217,6 +226,7 @@ public class DBPersistanceController {
 
   public static void main(String[] args) throws Exception {
     DBPersistanceController dpc = DBPersistanceController.getInstance();
+    dpc.database.setAutoCommit(false);
     dpc.loadInJSONDBIfNecessary();
   }
 }

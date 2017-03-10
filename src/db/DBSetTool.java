@@ -103,8 +103,8 @@ public class DBSetTool extends DBTool {
           p2.execute();
           System.out.println("    --> Added Card To Junction Table: " + c);
           
-   //       parentController.addCardToDB(c);
-      //    System.out.println("    --> Card To Card Table: " + c);
+          parentController.addCardToDB(c);
+          System.out.println("    --> Card To Card Table: " + c);
           
      //     parentController.addLegalitiesToDB(c);
         //  System.out.println("    --> Card added to legal table " + c);
@@ -116,6 +116,7 @@ public class DBSetTool extends DBTool {
     } catch (SQLException e) {
       e.printStackTrace();
     }
+    parentController.commitData();
   }
   
   @Override

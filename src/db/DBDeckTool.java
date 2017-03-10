@@ -116,7 +116,7 @@ public class DBDeckTool extends DBTool {
       ResultSet rs = st.executeQuery();
       
       while (rs.next()) {
-        Card nextCard = getPartialCardFromRS(rs);
+        Card nextCard = getCardFromResultSet(rs);
         incomingDeck.addCardToDeck(nextCard, rs.getInt("CARD_QUANTITY"));
       }
     } catch (SQLException e) {

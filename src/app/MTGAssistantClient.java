@@ -35,6 +35,13 @@ public class MTGAssistantClient {
     return dbController.getDecksByFormatNoContent(formatToGather);
   }
   
+  // Returns All Of The Decks For A Given Format
+  public void populateDeckContents (Deck deckToPopulate) {
+    if (deckToPopulate.getCardsWithinDeck().isEmpty()) {
+      dbController.populateDeckContents(deckToPopulate);
+    }
+  }
+  
   // Connects The Client Application To The Server
   public void connectToServer (String ipAddress, int port) throws IOException {
     clientConnection = new ClientConnection(ipAddress, port);
