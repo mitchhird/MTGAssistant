@@ -38,15 +38,19 @@ public class BaseTest {
     }
   }
 
-  // Creates And Returns A Deck That Uses The Supplied suffix
   protected Deck createTestDeck(int suffix) {
+    Format[] availableFormats = Format.values();
+    Format formatToUse = availableFormats[suffix & availableFormats.length];
+    return createTestDeck(suffix, formatToUse);
+  }
+  
+  // Creates And Returns A Deck That Uses The Supplied suffix
+  protected Deck createTestDeck(int suffix, Format deckFormat) {
     Deck testDeck = new Deck();
     testDeck.setCreatingUser("testUser" + suffix);
     testDeck.setDeckDescription("testDescription" + suffix);
     testDeck.setDeckName("testDeckName" + suffix);
-
-    Format[] availableFormats = Format.values();
-    testDeck.setDeckFormat(availableFormats[suffix % availableFormats.length]);
+    testDeck.setDeckFormat(deckFormat);
     testDeck.setDeckArchetype("testArt" + suffix);
     
     for (String s: testCardSet) {

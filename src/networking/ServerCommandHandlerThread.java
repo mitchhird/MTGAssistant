@@ -73,20 +73,24 @@ public class ServerCommandHandlerThread extends Thread {
   }
 
   // Runs A Method For The Corresponding Command
-  protected void runMethodForCommand(NetworkingCommands command, List<String> commands) throws Exception {
-    switch (command) {
-      case LMOD:
-        handleLMODCommand(commands);
-        break;
-      case DDELETE:
-        handleDDELETECommand(commands);
-        break;
-      case DPOST:
-        handleDPOSTCommand(commands);
-      case DGET:
-        handleDGETCommand(commands);
-      default:
-        break;
+  protected void runMethodForCommand(NetworkingCommands command, List<String> commands) {
+    try {
+      switch (command) {
+        case LMOD:
+          handleLMODCommand(commands);
+          break;
+        case DDELETE:
+          handleDDELETECommand(commands);
+          break;
+        case DPOST:
+          handleDPOSTCommand(commands);
+        case DGET:
+          handleDGETCommand(commands);
+        default:
+          break;
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
     }
   }
 
