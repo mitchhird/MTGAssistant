@@ -1,9 +1,10 @@
 package integrationTests.networking;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.List;
 
 import models.cardModels.Format;
 import models.deckModels.Deck;
@@ -14,6 +15,7 @@ import org.junit.Test;
 
 import util.BaseTest;
 import util.Constants;
+import util.ModelHelper;
 
 /**
  * Test Case That Is Directly Responsible For Connecting The Client And Running Standard Testing Operations
@@ -39,15 +41,17 @@ public class ClientConnectionTest extends BaseTest {
 
   @Test
   public void testAddDeckToServer() {
-    assertTrue (classUnderTest.getServerLastModified(Format.STANDARD) > 0);
-    Deck testDeck = createTestDeck(1);
-    classUnderTest.addDeckToServer(testDeck);
-  }
-  
-  @Test
-  public void testGetDecksFromServer () {
-    assertTrue (classUnderTest.getServerLastModified(Format.STANDARD) > 0);
-    List<Deck> testFetch = classUnderTest.getServerDecksForFormat(Format.STANDARD);
-  }
+    for (Format testFormat: Format.values()) {  
+      long currentServerLastModTime = classUnderTest.getServerLastModified(testFormat);
+      assertTrue(currentServerLastModTime > 0);
 
+      Deck testDeck = createTestDeck(1000, testFormat);
+      ModelHelper.toJSONFromModel(testDeck);
+      assertTrue(classUnderTest.addDeckToServer(testDeck));
+
+      long newServerLastModTime = classUnderTest.getServerLastModified(testFormat);
+      assertFalse(newServerLastModTime == currentServerLastModTime);
+      assertNotEquals(newServerLastModTime, currentServerLastModTime);
+    }
+  }
 }

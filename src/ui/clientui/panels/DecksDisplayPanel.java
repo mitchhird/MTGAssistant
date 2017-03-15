@@ -142,7 +142,7 @@ public class DecksDisplayPanel extends DeckDisplayPanelBase {
     int selectedIndex = deckComboBox.getSelectedIndex();
     if (selectedIndex >= 0) {
       Deck incomingDeck = deckComboBox.getItemAt(selectedIndex);
-      getDBController().deleteDeckFromDB(incomingDeck);
+      clientApp.deleteDeckFromSystem(incomingDeck);
       deckComboBox.removeItemAt(selectedIndex);
       statusLabel.setText("Removed Deck (" + incomingDeck.getDeckName() + ") from system");
     }
@@ -169,8 +169,7 @@ public class DecksDisplayPanel extends DeckDisplayPanelBase {
 
   private void attemptDeckSubmission(Deck currentSelectedDeck) {
     deckPanel.populateDeckDetails(currentSelectedDeck);
-    getDBController().deleteDeckFromDB(currentSelectedDeck);
-    getDBController().addDeckToDB(currentSelectedDeck);
+    clientApp.addDeckToServer(currentSelectedDeck);
     statusLabel.setText("Deck (" + currentSelectedDeck.getDeckName() +") Has Been Added To The System");
   }
   

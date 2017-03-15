@@ -84,8 +84,10 @@ public class ServerCommandHandlerThread extends Thread {
           break;
         case DPOST:
           handleDPOSTCommand(commands);
+          break;
         case DGET:
           handleDGETCommand(commands);
+          break;
         default:
           break;
       }
@@ -116,7 +118,7 @@ public class ServerCommandHandlerThread extends Thread {
       Format formatToCheck = Format.valueOf(commands.get(0));
       sendResponseToClient("" + server.getLastModifiedStampForFormat(formatToCheck));
     } else {
-      sendResponseToClient("400 Bad Request");
+      sendResponseToClient(Constants.SERVER_BAD_REPLY);
     }
   }
 
@@ -132,10 +134,14 @@ public class ServerCommandHandlerThread extends Thread {
   protected void handleDPOSTCommand(List<String> commands) throws Exception {
     for (String serializedDeck : commands) {
       Deck actualDeckObject = ModelHelper.toModelFromJSON(serializedDeck, Deck.class);
-      server.addDeckToDB(actualDeckObject);
-      System.out.println();
+      if (server.getDbController().isDeckInDB(actualDeckObject)) {        
+        server.deleteDeckFromDB(actualDeckObject);
+        server.addDeckToDB(actualDeckObject);
+      } else {
+        server.addDeckToDB(actualDeckObject);
+      }
     }
-    sendResponseToClient("Finished");
+    sendResponseToClient(Constants.SERVER_GOOD_REPLY);
   }
 
   protected void sendResponseToClient(String command) throws IOException {

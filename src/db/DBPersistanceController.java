@@ -157,6 +157,16 @@ public class DBPersistanceController {
   public Deck getIndividualDeck (String creatingUser, String deckName) {
     return deckTool.getIndividualDeck(creatingUser, deckName);
   }
+ 
+  // Call To Return Whether Or Not A Deck Exists In The DB
+  public boolean isDeckInDB (Deck testDeck) {
+    return deckTool.doesDeckExist(testDeck.getCreatingUser(), testDeck.getDeckName());
+  }
+  
+  // Call To Return Whether Or Not A Deck Exists In The DB
+  public boolean isDeckInDB (String creatingUser, String deckName) {
+    return deckTool.doesDeckExist(creatingUser, deckName);
+  }
   
   // Call To Get The Deck Contents From The DB
   public void populateDeckContents (Deck incomingDeck) {

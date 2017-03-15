@@ -42,6 +42,33 @@ public class MTGAssistantClient {
     return localDecks;
   }
   
+  // Adds The Deck The Local DB, If Connected To Server Also Sends It To The Server
+  public void addDeckToServer(Deck incomingDeck) {
+    if (dbController.isDeckInDB(incomingDeck)) {
+      dbController.deleteDeckFromDB(incomingDeck);
+      dbController.addDeckToDB(incomingDeck);
+    } else {
+      dbController.addDeckToDB(incomingDeck);
+    }
+    
+    // If We Have A Connection, Then We Also Tell The Server To Do The Same
+    if (isValidServerConnection()) {
+      clientConnection.addDeckToServer(incomingDeck);
+    }
+  }
+  
+  // Deletes The Deck From The DB When Called
+  public void deleteDeckFromSystem (Deck incomingDeck) {
+    dbController.deleteDeckFromDB(incomingDeck);
+    if (isValidServerConnection()) {
+      clientConnection.deleteDeckFromServer(incomingDeck);
+    }
+  }
+
+  private boolean isValidServerConnection() {
+    return clientConnection != null && clientConnection.isConnectedToServer();
+  }
+  
   // Returns All Of The Decks For A Given Format
   public void populateDeckContents (Deck deckToPopulate) {
     if (deckToPopulate.getCardsWithinDeck().isEmpty()) {
@@ -63,7 +90,7 @@ public class MTGAssistantClient {
   
   // Returns Whether Or Not The Application Is Currently Connected To The Server
   public boolean isConnectedToServer () {
-    return (clientConnection != null && clientConnection.isConnectedToServer());
+    return isValidServerConnection();
   }
   
   /**

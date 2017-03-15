@@ -71,7 +71,9 @@ public class DeckStatisticsCalculator extends BaseStatsCalculator {
         addOrIncrementMap(typeMap, type, quantity);
       }
 
-      addOrIncrementMap(cmcMap, cardInDeck.getCardCMC(), quantity);
+      if (!deckCardDataObject.getCardInDeck().getTypes().contains("Land")) {
+        addOrIncrementMap(cmcMap, cardInDeck.getCardCMC(), quantity);
+      }
     }
   }
 

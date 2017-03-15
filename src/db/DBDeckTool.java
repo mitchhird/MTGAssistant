@@ -168,6 +168,19 @@ public class DBDeckTool extends DBTool {
     }
   }
 
+  // Returns All Decks Present Within The DB
+  public boolean doesDeckExist (String creatingUser, String deckName) {
+    try (PreparedStatement st = parentController.getStatement(SELECT_ALL_FROM_DECKS_INDIVIDUAL);) {
+      st.setString(1, deckName);
+      st.setString(2, creatingUser);
+      ResultSet rs = st.executeQuery();
+      return rs.next();
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
+    }
+  }
+  
   // Deletes A Given Deck From The DB
   public void deleteDeckFromDB(Deck incomingDeck) {
     deleteDeckFromDB(incomingDeck.getCreatingUser(), incomingDeck.getDeckName());

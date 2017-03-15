@@ -50,7 +50,7 @@ public class FormatStatisticsPanel extends UIPanelBase {
     currentFormatLabel = new JLabel("Format:");
     topCreaturesTableLabel = new JLabel("Top Creatures:");
     topSpellsTableLabel = new JLabel("Top Spells:");
-    statisicsStatusLabel = new JLabel("Current Statistics Status:Ready");
+    statisicsStatusLabel = new JLabel("Current Statistics Status: Ready");
     
     currentFormatCombo = new JComboBox<>(Format.values());
     creatureDataTable = new JTable();
@@ -96,6 +96,8 @@ public class FormatStatisticsPanel extends UIPanelBase {
     Runnable formatFetchRunner = new Runnable() {     
       @Override
       public void run() {
+        statisicsStatusLabel.setText("Current Statistics Status: Calculating");
+        
         Format selectedFormat = currentFormatCombo.getItemAt(currentFormatCombo.getSelectedIndex());
         statsCalculator.calculateFormatStatistics(selectedFormat);
         
@@ -109,6 +111,8 @@ public class FormatStatisticsPanel extends UIPanelBase {
         
         JFreeChart typePieChartData = ChartFactory.createPieChart("Type Chart (" + selectedFormat + ")", statsCalculator.getTypeDataSet(), true, true, true);
         typeChartPanel.setChart(typePieChartData);
+        
+        statisicsStatusLabel.setText("Current Statistics Status: Finished");
       }
     };
     Thread formatFetchingThread = new Thread(formatFetchRunner);
