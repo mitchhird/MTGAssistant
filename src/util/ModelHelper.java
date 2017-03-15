@@ -43,7 +43,11 @@ public class ModelHelper {
    * @return
    * @throws JsonProcessingException
    */
-  public static <T> String toJSONFromModel (T modelToParse) throws JsonProcessingException {
-    return OBJ_MAPPER.writeValueAsString(modelToParse);
+  public static <T> String toJSONFromModel (T modelToParse) {
+    try {
+      return OBJ_MAPPER.writeValueAsString(modelToParse);
+    } catch (JsonProcessingException e) {
+      return null;
+    }
   }
 }

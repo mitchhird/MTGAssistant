@@ -11,7 +11,9 @@ import javax.swing.table.AbstractTableModel;
 
 import models.cardModels.Card;
 import models.deckModels.Deck;
+import models.deckModels.DeckCardDataObject;
 import util.Constants;
+import util.MTGHelper;
 
 /**
  * Table model that is responsible for rendering out JTable
@@ -20,12 +22,12 @@ import util.Constants;
 public class DeckContentsTableModel extends AbstractTableModel{
 
   private List<Card> displayList;
-  private Map<Card, Integer> cardsWithinDeck;
+  private Map<String, DeckCardDataObject> cardsWithinDeck;
   private static final long serialVersionUID = 1L;
 
   // Constructor When Deck Isn't Known
   public DeckContentsTableModel () {
-    setCardsInDeck(new HashMap<Card, Integer>());
+    setCardsInDeck(new HashMap<String, DeckCardDataObject>());
   }
   
   // Constructor When Deck Is Known
@@ -33,10 +35,14 @@ public class DeckContentsTableModel extends AbstractTableModel{
     setCardsInDeck(incomingDeck.getCardsWithinDeck());
   }
 
-  public void setCardsInDeck(Map<Card,Integer> newMap) {
+  public void setCardsInDeck(Map<String, DeckCardDataObject> newMap) {
     cardsWithinDeck = newMap;
-    displayList = new ArrayList<Card>(cardsWithinDeck.keySet());
+    displayList = new ArrayList<Card>();
+    for (String card : newMap.keySet()) {
+      displayList.add(newMap.get(card).getCardInDeck());
+    }
     Collections.sort(displayList);
+    fireTableStructureChanged();
   }
   
   public Card getCardAtIndex(int index) {
@@ -83,7 +89,7 @@ public class DeckContentsTableModel extends AbstractTableModel{
     switch (columnIndex) {
       case 0: return card.getName();
       case 1: return card.getType();
-      case 2: return cardsWithinDeck.get(card);
+      case 2: return cardsWithinDeck.get(MTGHelper.generateCardKey(card)).getQuantityOfCard();
       default: return "";
     }
   }

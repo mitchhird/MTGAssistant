@@ -15,10 +15,12 @@ import javax.swing.event.ListSelectionListener;
 
 import models.cardModels.Card;
 import models.deckModels.Deck;
+import models.deckModels.DeckCardDataObject;
 import models.tableModels.DeckContentsTableModel;
 import ui.clientui.DeckEditDialog;
 import ui.shared.UIPanelBase;
 import util.Constants;
+import util.MTGHelper;
 
 /**
  * Panel that is directly responsible for handling removals from decks
@@ -133,7 +135,9 @@ public class DeckRemoveCardPanel extends UIPanelBase {
     if (selectedRow >= 0) {
       Card cardSelected = deckModel.getCardAtIndex(selectedRow);
       currentSelectedDataLabel.setText(cardSelected.getName());
-      removalSpinModel.setMaximum(deckToEdit.getCardsWithinDeck().get(cardSelected));
+      
+      DeckCardDataObject deckCardDataObject = deckToEdit.getCardsWithinDeck().get(MTGHelper.generateCardKey(cardSelected));
+      removalSpinModel.setMaximum(deckCardDataObject.getQuantityOfCard());
     }
   }
 }

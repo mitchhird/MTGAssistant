@@ -31,12 +31,10 @@ public abstract class DeckDisplayPanelBase extends UIPanelBase {
   
   protected Deck currentSelectedDeck;
   protected IndividualDeckPanel deckPanel;
-  protected final DBPersistanceController dbController;
   
   // Default Constructor For The Display Panel
   public DeckDisplayPanelBase() {
     super();
-    dbController = DBPersistanceController.getInstance();
   }
 
   @Override
@@ -81,7 +79,7 @@ public abstract class DeckDisplayPanelBase extends UIPanelBase {
     deckPanel.setEnabled(true);
     currentSelectedDeck = deckComboBox.getItemAt(deckComboBox.getSelectedIndex());
     if (currentSelectedDeck.getCardsWithinDeck().isEmpty()) {
-      dbController.populateDeckContents(currentSelectedDeck);
+      getDBController().populateDeckContents(currentSelectedDeck);
     }
     deckPanel.setCurrentlySelectedDeck(currentSelectedDeck);
   }
@@ -108,7 +106,9 @@ public abstract class DeckDisplayPanelBase extends UIPanelBase {
   }
   
   protected List<Deck> getDecksByFormat(Format selectedIndex) {
-    List<Deck> allDecksInDB = dbController.getDecksByFormatNoContent(selectedIndex);
+    List<Deck> allDecksInDB = getDBController().getDecksByFormatNoContent(selectedIndex);
     return allDecksInDB;
   }
+  
+  protected abstract DBPersistanceController getDBController();
 }

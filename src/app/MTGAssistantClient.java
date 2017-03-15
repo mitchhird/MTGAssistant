@@ -8,7 +8,9 @@ import java.util.concurrent.TimeUnit;
 import models.cardModels.Format;
 import models.deckModels.Deck;
 import networking.ClientConnection;
+import networking.ClientConnectionStatusThread;
 import ui.clientui.MainApplicationFrame;
+import util.Constants;
 import db.DBPersistanceController;
 
 /**
@@ -22,17 +24,22 @@ public class MTGAssistantClient {
   private final MainApplicationFrame applicationUI;
   private final ScheduledThreadPoolExecutor scheduledExecutor;
   private ClientConnection clientConnection;
+  private ClientConnectionStatusThread statusThread;
   
   // Default Constructor For The Main Application
   public MTGAssistantClient () {
     scheduledExecutor = new ScheduledThreadPoolExecutor(5);
-    dbController = DBPersistanceController.getInstance();
+    dbController = DBPersistanceController.getInstance(Constants.CLIENT_DB);
     applicationUI = new MainApplicationFrame(this);
   }
   
   // Returns All Of The Decks For A Given Format
   public List<Deck> getDecksByFormat (Format formatToGather) {
-    return dbController.getDecksByFormatNoContent(formatToGather);
+    List<Deck> localDecks = dbController.getDecksByFormatNoContent(formatToGather);
+    if (statusThread != null) {
+      localDecks.addAll(statusThread.getDecksForFormat(formatToGather));
+    }
+    return localDecks;
   }
   
   // Returns All Of The Decks For A Given Format
@@ -45,6 +52,8 @@ public class MTGAssistantClient {
   // Connects The Client Application To The Server
   public void connectToServer (String ipAddress, int port) throws IOException {
     clientConnection = new ClientConnection(ipAddress, port);
+    statusThread = new ClientConnectionStatusThread(clientConnection);
+    statusThread.start();
   }
   
   // Adds A New Execution Thread To Our Scheduler
@@ -57,6 +66,13 @@ public class MTGAssistantClient {
     return (clientConnection != null && clientConnection.isConnectedToServer());
   }
   
+  /**
+   * @return the dbController
+   */
+  public DBPersistanceController getDbController() {
+    return dbController;
+  }
+
   // Main Method For This Class
 	public static void main (String[] args) {
 	  MTGAssistantClient newClient = new MTGAssistantClient();

@@ -6,21 +6,25 @@ import java.util.Map;
 
 import models.cardModels.Card;
 import models.cardModels.Format;
+import util.MTGHelper;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * Class that is the main focal point of the project, this simple model contains the deck that user will be creating
  * 
  * @author Mitchell
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Deck implements Comparable<Deck>, Serializable {
 
-  private String creatingUser;
-  private String deckName;
-  private String deckArchetype;
-  private String deckDescription;
-  private Format deckFormat;
-  private Map<Card, Integer> cardsWithinDeck;
-  private static final long serialVersionUID = 1L;
+  protected String creatingUser;
+  protected String deckName;
+  protected String deckArchetype;
+  protected String deckDescription;
+  protected Format deckFormat;
+  protected Map<String, DeckCardDataObject> cardsWithinDeck;
+  protected static final long serialVersionUID = 1L;
 
   public Deck() {
     this.creatingUser = "";
@@ -73,38 +77,39 @@ public class Deck implements Comparable<Deck>, Serializable {
 
   // Adds A Card To The Deck, It The Card Already Exists, Then It's Quantity Value Is Updated
   public void addCardToDeck(Card incomingCard) {
-    if (cardsWithinDeck.containsKey(incomingCard)) {
-      Integer quanity = cardsWithinDeck.get(incomingCard);
-      cardsWithinDeck.put(incomingCard, quanity + 1);
-    }
-    else {
-      cardsWithinDeck.put(incomingCard, 1);
-    }
+    addCardToDeck(incomingCard, 1);
   }
 
   public void addCardToDeck(Card incomingCard, int quantity) {
-    cardsWithinDeck.put(incomingCard, quantity);
+    if (cardsWithinDeck.containsKey(incomingCard)) {
+      DeckCardDataObject cardInDeck = cardsWithinDeck.get(MTGHelper.generateCardKey(incomingCard));
+      cardInDeck.setQuantityOfCard(cardInDeck.getQuantityOfCard() + quantity);
+    }
+    else {
+      DeckCardDataObject newAddition = new DeckCardDataObject(incomingCard, quantity);
+      cardsWithinDeck.put(MTGHelper.generateCardKey(incomingCard), newAddition);
+    }
   }
   
   // Removes A Particular Quantity Of Card From A Deck. If The Card Isn't Present, Then Nothing Happens
   public void removeCardFromDeck (Card incomingCard, int quantity) {
-    Integer currentQuantity = cardsWithinDeck.get(incomingCard);
-    if (currentQuantity != null) {
-      if (currentQuantity - quantity <= 0) {
-        cardsWithinDeck.remove(incomingCard);
+    DeckCardDataObject cardInDeck = cardsWithinDeck.get(MTGHelper.generateCardKey(incomingCard));
+    if (cardInDeck != null) {
+      if (cardInDeck.getQuantityOfCard() - quantity <= 0) {
+        cardsWithinDeck.remove(MTGHelper.generateCardKey(incomingCard));
       } else {
-        cardsWithinDeck.put(incomingCard, currentQuantity - quantity);
+        cardInDeck.setQuantityOfCard(cardInDeck.getQuantityOfCard() - quantity);
       }
     }
   }
 
-  public Map<Card, Integer> getCardsWithinDeck() {
+  public Map<String, DeckCardDataObject> getCardsWithinDeck() {
     if (cardsWithinDeck == null) {
       cardsWithinDeck = new LinkedHashMap<>();
     }
     return cardsWithinDeck;
   }
-
+  
   @Override
   public String toString() {
     return deckName + " (" + deckFormat + "): Created by: " + creatingUser;

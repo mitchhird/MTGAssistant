@@ -9,6 +9,7 @@ import java.util.Map;
 import models.cardModels.Card;
 import models.cardModels.Format;
 import models.deckModels.Deck;
+import models.deckModels.DeckCardDataObject;
 
 import org.jfree.data.general.DefaultPieDataset;
 
@@ -49,8 +50,13 @@ public class FormatStatisticsCalculator extends BaseStatsCalculator {
     List<Deck> decksInApp = clientApp.getDecksByFormat(gameFormat);
     for (Deck d : decksInApp) {
       clientApp.populateDeckContents(d);
-      for (Card c : d.getCardsWithinDeck().keySet()) {
-        Integer quantity = d.getCardsWithinDeck().get(c);
+      
+      Map<String, DeckCardDataObject> cardsWithinDeck = d.getCardsWithinDeck();
+      for (String nextCardID : cardsWithinDeck.keySet()) {
+        DeckCardDataObject deckCardDO = cardsWithinDeck.get(nextCardID);
+        Card c = deckCardDO.getCardInDeck();
+        int quantity = deckCardDO.getQuantityOfCard();
+        
         if (!c.getTypes().contains("Land")) {
           Map<String, FormatStatCardDO> mapToUse = c.getTypes().contains("Creature") ? creatureMap : spellsMap;
           addOrIncrementToDOMap(mapToUse, c.getName(), quantity);

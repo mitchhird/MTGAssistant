@@ -57,9 +57,9 @@ public class ClientConnectPanel extends UIPanelBase {
     userNameLabel = new JLabel("User Name:");
     passwordLabel = new JLabel("Password:");
     currentStatusLabel = new JLabel("Current Connection Status:");
-    currentStatusDataLabel = new JLabel("Disconnected");
-    currentStatusDataLabel.setForeground(Color.RED);
-
+    currentStatusDataLabel = new JLabel("");
+    setConnectedToServer(false);
+    
     ipAddressField = new JTextField("127.0.0.1");
     userNameField = new JTextField();
     passwordField = new JPasswordField();
@@ -139,7 +139,15 @@ public class ClientConnectPanel extends UIPanelBase {
   private void performPostConnection() {
     connectButton.setEnabled(false);
     connectAndStoreButton.setEnabled(false);
+    setConnectedToServer(true);
     JOptionPane.showMessageDialog(this, "Client Connection Succeeded");
+  }
+  
+  public void setConnectedToServer (boolean connected) {
+    String connectionStatus = connected ? "Connected" : "Disconnected";
+    Color displayColour = connected ? Color.GREEN : Color.RED;
+    currentStatusDataLabel.setForeground(displayColour);
+    currentStatusDataLabel.setText(connectionStatus);
   }
 
   /*

@@ -1,11 +1,11 @@
 package models.validatorModels;
 
 import java.util.List;
-import java.util.Map;
 
 import models.cardModels.Card;
 import models.cardModels.CardRarity;
 import models.deckModels.Deck;
+import models.deckModels.DeckCardDataObject;
 import db.DBPersistanceController;
 
 /**
@@ -21,26 +21,31 @@ public abstract class DeckValidator {
    * @param cardsInDeck
    * @param c
    */
-  protected void testPlaysetQunanity(List<String> validationErrors, Map<Card, Integer> cardsInDeck, Card c, int maxAllowed) {
-    int quantity = cardsInDeck.get(c);
-    boolean isAnUnlimitedCard = c.getName().equals("Relentless Rats") || c.getName().equals("Shadowborn Apostle");
-    if (c.getCardRarity() != CardRarity.BASIC_LAND && quantity > maxAllowed && !isAnUnlimitedCard) {
-      validationErrors.add("Validation Error: Number of " + c.getName() + " exceeds the limit of " + maxAllowed);
+  protected void testPlaysetQunanity(List<String> validationErrors, DeckCardDataObject cardsInDeck, int maxAllowed) {
+    int quantity = cardsInDeck.getQuantityOfCard();
+    Card cardToTest = cardsInDeck.getCardInDeck();
+    
+    boolean isAnUnlimitedCard = cardToTest.getName().equals("Relentless Rats") || cardToTest.getName().equals("Shadowborn Apostle");
+    if (cardToTest.getCardRarity() != CardRarity.BASIC_LAND && quantity > maxAllowed && !isAnUnlimitedCard) {
+      validationErrors.add("Validation Error: Number of " + cardToTest.getName() + " exceeds the limit of " + maxAllowed);
     }
   }
   
   /**
    * Tests all of the cards to see if their banned or exceeding the restricted listed on the format
    */
-  protected void testBanAndRestrictedRules(Deck incomingDeck, List<String> validationErrors, Map<Card, Integer> cardsInDeck, Card c) {
-    if (!PM_CONTROLLER.isCardLegalInFormat(c, incomingDeck.getDeckFormat())) {
-      if (PM_CONTROLLER.isCardRestrictedInFormat(c, incomingDeck.getDeckFormat())) {
-        int quantity = cardsInDeck.get(c);
+  protected void testBanAndRestrictedRules(Deck incomingDeck, List<String> validationErrors, DeckCardDataObject deckCard) {
+    Card actualCard = deckCard.getCardInDeck();
+    int cardQuantity = deckCard.getQuantityOfCard();
+    
+    if (!PM_CONTROLLER.isCardLegalInFormat(actualCard, incomingDeck.getDeckFormat())) {
+      if (PM_CONTROLLER.isCardRestrictedInFormat(actualCard, incomingDeck.getDeckFormat())) {
+        int quantity = cardQuantity;
         if (quantity > 1) {
-          validationErrors.add("Validation Error: " + c.getName() + " exceeds the restriction limit of 1");
+          validationErrors.add("Validation Error: " + actualCard.getName() + " exceeds the restriction limit of 1");
         }
       } else {
-        validationErrors.add("Validation Error: " + c.getName() + " is banned in " + incomingDeck.getDeckFormat());
+        validationErrors.add("Validation Error: " + actualCard.getName() + " is banned in " + incomingDeck.getDeckFormat());
       }
     }
   }

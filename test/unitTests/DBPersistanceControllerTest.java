@@ -9,12 +9,14 @@ import java.util.List;
 import models.cardModels.Card;
 import models.cardModels.Format;
 import models.deckModels.Deck;
+import models.deckModels.DeckCardDataObject;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import util.BaseTest;
+import util.Constants;
 import db.DBPersistanceController;
 
 // Tests For The DBPersistanceController Object
@@ -24,7 +26,7 @@ public class DBPersistanceControllerTest extends BaseTest {
   
   @Before
   public void setup() {
-    classUnderTest = DBPersistanceController.getInstance();
+    classUnderTest = DBPersistanceController.getInstance(Constants.CLIENT_DB);
   }
 
   @Test
@@ -43,11 +45,10 @@ public class DBPersistanceControllerTest extends BaseTest {
       assertEquals(d.getDeckDescription(), sqlDeck.getDeckDescription());
       
       for (String s: testCardSet) {
-        Card testCard = new Card(s);
-        Integer originalContent = d.getCardsWithinDeck().get(testCard);
-        Integer sqlContent = sqlDeck.getCardsWithinDeck().get(testCard);
-        assertEquals(amountOfEachCard, sqlContent.intValue());
-        assertEquals(originalContent, sqlContent);
+        DeckCardDataObject deckCardDataObject = d.getCardsWithinDeck().get(s);
+        DeckCardDataObject sqlDeckCardObject = sqlDeck.getCardsWithinDeck().get(s);
+        assertEquals(amountOfEachCard, sqlDeckCardObject.getQuantityOfCard());
+        assertEquals(deckCardDataObject.getQuantityOfCard(), sqlDeckCardObject.getQuantityOfCard());
       }
       System.out.println("  ---> Finished Verification Of " + d.getDeckName());
     }
@@ -122,6 +123,6 @@ public class DBPersistanceControllerTest extends BaseTest {
 
   @After
   public void teardown() {
-    //classUnderTest.clearDatabase();
+    classUnderTest.clearDatabase();
   }
 }

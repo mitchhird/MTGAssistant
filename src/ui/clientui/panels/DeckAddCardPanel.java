@@ -145,7 +145,7 @@ public class DeckAddCardPanel extends UIPanelBase {
   private void handleSearchButton() {
     Set<DBCardSearchDataObject> searchList = new HashSet<>();
     searchList.add(new DBCardSearchDataObject("CARD_NAME", searchField.getText().trim()));
-    List<Card> cards = DBPersistanceController.getInstance().getFilteredCards(searchList);
+    List<Card> cards = DBPersistanceController.getInstance(Constants.CLIENT_DB).getFilteredCards(searchList);
 
     DefaultListModel<Card> displayModel = new DefaultListModel<Card>();
     for (Card c : cards) {

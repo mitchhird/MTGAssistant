@@ -7,6 +7,7 @@ import javax.swing.BorderFactory;
 import ui.shared.ImageManager;
 import ui.shared.UIFrameBase;
 import util.Constants;
+import app.MTGAssistantServer;
 
 /**
  * Main Frame For The Server Application. Contains A Simple Status UI and a current deck
@@ -18,10 +19,12 @@ public class MainServerUIFrame extends UIFrameBase {
   // Complex UI Items
   private ServerDeckDisplayPanel displayPanel;
   private ServerDetailsPanel detailsPanel;
+  private final MTGAssistantServer mtgServer;
   
   // Default Constructor For This Class
-  public MainServerUIFrame () {
+  public MainServerUIFrame (MTGAssistantServer mtgServer) {
     super();
+    this.mtgServer = mtgServer;
     initializePanel();
     populateLocal();
     initJFrameSettings();
@@ -39,7 +42,7 @@ public class MainServerUIFrame extends UIFrameBase {
   
   @Override
   protected void initVariables() {
-    displayPanel = new ServerDeckDisplayPanel();
+    displayPanel = new ServerDeckDisplayPanel(mtgServer);
     displayPanel.setBorder(BorderFactory.createTitledBorder("Deck Details"));
     
     detailsPanel = new ServerDetailsPanel();

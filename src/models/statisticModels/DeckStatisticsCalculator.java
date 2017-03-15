@@ -5,6 +5,7 @@ import java.util.Map;
 
 import models.cardModels.Card;
 import models.deckModels.Deck;
+import models.deckModels.DeckCardDataObject;
 
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
@@ -57,17 +58,20 @@ public class DeckStatisticsCalculator extends BaseStatsCalculator {
 
   // Collects The Information That We Will Be Using Within Our Map
   private void collectMapInformation(Deck incomingDeck) {
-    for (Card c : incomingDeck.getCardsWithinDeck().keySet()) {
-      Integer quantity = incomingDeck.getCardsWithinDeck().get(c);
-      for (String color : c.getColors()) {
+    for (String c : incomingDeck.getCardsWithinDeck().keySet()) {
+      DeckCardDataObject deckCardDataObject = incomingDeck.getCardsWithinDeck().get(c);
+      Card cardInDeck = deckCardDataObject.getCardInDeck();
+      int quantity = deckCardDataObject.getQuantityOfCard();
+      
+      for (String color : cardInDeck.getColors()) {
         addOrIncrementMap(colourMap, color, quantity);
       }
 
-      for (String type : c.getTypes()) {
+      for (String type : cardInDeck.getTypes()) {
         addOrIncrementMap(typeMap, type, quantity);
       }
 
-      addOrIncrementMap(cmcMap, c.getCardCMC(), quantity);
+      addOrIncrementMap(cmcMap, cardInDeck.getCardCMC(), quantity);
     }
   }
 

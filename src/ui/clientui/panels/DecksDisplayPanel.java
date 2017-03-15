@@ -20,6 +20,7 @@ import ui.shared.DeckDisplayPanelBase;
 import ui.shared.ImageManager;
 import util.Constants;
 import app.MTGAssistantClient;
+import db.DBPersistanceController;
 
 /**
  * Panel for editing decks within the Java UI. Panel contains a picker where you can select a deck, and view the details
@@ -141,7 +142,7 @@ public class DecksDisplayPanel extends DeckDisplayPanelBase {
     int selectedIndex = deckComboBox.getSelectedIndex();
     if (selectedIndex >= 0) {
       Deck incomingDeck = deckComboBox.getItemAt(selectedIndex);
-      dbController.deleteDeckFromDB(incomingDeck);
+      getDBController().deleteDeckFromDB(incomingDeck);
       deckComboBox.removeItemAt(selectedIndex);
       statusLabel.setText("Removed Deck (" + incomingDeck.getDeckName() + ") from system");
     }
@@ -168,13 +169,18 @@ public class DecksDisplayPanel extends DeckDisplayPanelBase {
 
   private void attemptDeckSubmission(Deck currentSelectedDeck) {
     deckPanel.populateDeckDetails(currentSelectedDeck);
-    dbController.deleteDeckFromDB(currentSelectedDeck);
-    dbController.addDeckToDB(currentSelectedDeck);
+    getDBController().deleteDeckFromDB(currentSelectedDeck);
+    getDBController().addDeckToDB(currentSelectedDeck);
     statusLabel.setText("Deck (" + currentSelectedDeck.getDeckName() +") Has Been Added To The System");
   }
   
   @Override
   protected List<Deck> getDecksByFormat(Format selectedIndex) {
     return clientApp.getDecksByFormat(selectedIndex);
+  }
+
+  @Override
+  protected DBPersistanceController getDBController() {
+    return clientApp.getDbController();
   }
 }

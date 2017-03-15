@@ -3,6 +3,8 @@ package ui.serverui;
 import java.awt.GridBagConstraints;
 
 import ui.shared.DeckDisplayPanelBase;
+import app.MTGAssistantServer;
+import db.DBPersistanceController;
 
 /**
  * Model That Contains The Display Information For The
@@ -11,9 +13,12 @@ import ui.shared.DeckDisplayPanelBase;
  */
 public class ServerDeckDisplayPanel extends DeckDisplayPanelBase {
 
+  private final MTGAssistantServer mtgServer;
+  
   // Default Constructor For The Display Panel
-  public ServerDeckDisplayPanel() {
+  public ServerDeckDisplayPanel(MTGAssistantServer mtgServer) {
     super();
+    this.mtgServer = mtgServer;
     initializePanel();
     populateLocal();
   }
@@ -46,8 +51,13 @@ public class ServerDeckDisplayPanel extends DeckDisplayPanelBase {
   protected void updateDeckUIContents() {
     currentSelectedDeck = deckComboBox.getItemAt(deckComboBox.getSelectedIndex());
     if (currentSelectedDeck.getCardsWithinDeck().isEmpty()) {
-      dbController.populateDeckContents(currentSelectedDeck);
+      mtgServer.getDbController().populateDeckContents(currentSelectedDeck);
     }
     deckPanel.setCurrentlySelectedDeck(currentSelectedDeck);
+  }
+
+  @Override
+  protected DBPersistanceController getDBController() {
+    return mtgServer.getDbController();
   }
 }

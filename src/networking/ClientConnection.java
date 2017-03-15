@@ -8,9 +8,13 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
+import models.cardModels.Format;
 import models.deckModels.Deck;
 import util.Constants;
+import util.ModelHelper;
 
 /**
  * Main class that is directly responsible for allow the client to make commands to the server
@@ -41,8 +45,8 @@ public class ClientConnection {
   }
 
   // Asks The Server For What It's Current Time Stamp Is
-  public long getServerLastModified() {
-    String serverReply = quote(NetworkingCommands.LMOD);
+  public long getServerLastModified(Format deckFormat) {
+    String serverReply = quote(NetworkingCommands.LMOD, deckFormat.name());
     return Long.parseLong(serverReply);
   }
   
@@ -54,12 +58,28 @@ public class ClientConnection {
 
   // Adds A Deck To The Server. First Sends A Message, Waits For A Reply And Then Sends The Deck Object
   public boolean addDeckToServer (Deck incomingDeck) {
-    String serverReply = quote(NetworkingCommands.DPOST);
-    if (serverReply.equals(Constants.SERVER_GOOD_REPLY)) {
-      return false;
-    } else {
-      return false;
+    String serverReply = quote(NetworkingCommands.DPOST, ModelHelper.toJSONFromModel(incomingDeck));
+    return serverReply.equals(Constants.SERVER_GOOD_REPLY);
+  }
+  
+  // Gets All Of The Decks In A Format From The Server When Called
+  public List<Deck> getServerDecksForFormat (Format formatToFetch) {
+    List<Deck> returnVal = new ArrayList<Deck>();
+    String serverReply = quote(NetworkingCommands.DGET, formatToFetch.name());
+    int quantityOfDecks = Integer.parseInt(serverReply);
+    
+    // We Have The Quantity So Get Ready To Return It
+    for (int i = 0; i < quantityOfDecks; i++) {
+      try {
+        String serializedDeck = reader.readLine();
+        Deck actualDeckObject = ModelHelper.toModelFromJSON(serializedDeck, Deck.class);
+        returnVal.add(actualDeckObject);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     }
+    
+    return returnVal;
   }
   
   // Sends A Command Over To The Server And Waits Until A Response Is Returned

@@ -22,8 +22,8 @@ import models.cardModels.MagicSet;
 import ui.clientui.CardAdvancedSearchResultDialog;
 import ui.shared.UIPanelBase;
 import util.Constants;
+import app.MTGAssistantClient;
 import db.DBCardSearchDataObject;
-import db.DBPersistanceController;
 
 /**
  * Panel that is responsbile for holding all of the information regarding card lookups
@@ -50,10 +50,12 @@ public class CardAdvancedSearchPanel extends UIPanelBase {
   private JList<CardRarity> rarityComboBox;
 
   private JButton searchButton;
-
+  private final MTGAssistantClient clientApp;
+  
   // Default Constructor That Is Responsible For Creating
-  public CardAdvancedSearchPanel() {
+  public CardAdvancedSearchPanel(MTGAssistantClient client) {
     super();
+    clientApp = client;
     initializePanel();
     populateLocal();
   }
@@ -151,7 +153,7 @@ public class CardAdvancedSearchPanel extends UIPanelBase {
     List<CardRarity> raritiesSelected = rarityComboBox.getSelectedValuesList();
     addSearchIfDefined(searchRequests, raritiesSelected, "RARITY");
 
-    List<Card> filteredCards = DBPersistanceController.getInstance().getFilteredCards(searchRequests);
+    List<Card> filteredCards = clientApp.getDbController().getFilteredCards(searchRequests);
 
     CardAdvancedSearchResultDialog testDialog = new CardAdvancedSearchResultDialog(filteredCards);
     testDialog.setVisible(true);
@@ -190,7 +192,7 @@ public class CardAdvancedSearchPanel extends UIPanelBase {
 
   @Override
   protected void populateLocal() {
-    List<MagicSet> mtgSets = DBPersistanceController.getInstance().getAllMagicSetsInDB();
+    List<MagicSet> mtgSets = clientApp.getDbController().getAllMagicSetsInDB();
     Collections.sort(mtgSets);
     MagicSet[] mtgSetsArray = mtgSets.toArray(new MagicSet[mtgSets.size()]);
     DefaultComboBoxModel<MagicSet> model = new DefaultComboBoxModel<MagicSet>(mtgSetsArray);

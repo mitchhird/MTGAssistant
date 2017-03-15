@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import models.cardModels.Card;
 import models.cardModels.Format;
 import models.deckModels.Deck;
+import models.deckModels.DeckCardDataObject;
 import util.Constants;
 
 /**
@@ -25,13 +25,14 @@ public class SingletonDeckValidator extends DeckValidator {
     int cardCounter = 0;
     List<String> validationErrors = new ArrayList<String>();
     
-    Map<Card, Integer> cardsInDeck = incomingDeck.getCardsWithinDeck();
-    for (Card c: cardsInDeck.keySet()) {
-      testPlaysetQunanity(validationErrors, cardsInDeck, c, 1);  
+    Map<String, DeckCardDataObject> cardsInDeck = incomingDeck.getCardsWithinDeck();
+    for (String s: cardsInDeck.keySet()) {
+      DeckCardDataObject nextCard = cardsInDeck.get(s);
+      testPlaysetQunanity(validationErrors, nextCard,  1);  
       if (incomingDeck.getDeckFormat() == Format.COMMANDER) {
-        testBanAndRestrictedRules(incomingDeck, validationErrors, cardsInDeck, c);
+        testBanAndRestrictedRules(incomingDeck, validationErrors, nextCard);
       }
-      cardCounter += cardsInDeck.get(c);
+      cardCounter += nextCard.getQuantityOfCard();
     }
     
     testDeckSize(validationErrors, cardCounter);

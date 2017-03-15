@@ -12,7 +12,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import models.cardModels.Format;
+import models.deckModels.Deck;
 import util.Constants;
+import util.ModelHelper;
 import app.MTGAssistantServer;
 
 /**
@@ -70,22 +73,47 @@ public class ServerCommandHandlerThread extends Thread {
   }
 
   // Runs A Method For The Corresponding Command
-  protected void runMethodForCommand(NetworkingCommands command, List<String> commands) throws IOException {
+  protected void runMethodForCommand(NetworkingCommands command, List<String> commands) throws Exception {
     switch (command) {
       case LMOD:
-        handleLMODCommand();
+        handleLMODCommand(commands);
         break;
       case DDELETE:
         handleDDELETECommand(commands);
         break;
+      case DPOST:
+        handleDPOSTCommand(commands);
+      case DGET:
+        handleDGETCommand(commands);
       default:
         break;
     }
   }
 
+  // Handles The DGET Command By Quoting The Decks To Be Sent, And Then Sends Them
+  protected void handleDGETCommand(List<String> commands) throws IOException {
+    if (!commands.isEmpty()) {
+      Format formatToCollect = Format.valueOf(commands.get(0));
+      List<Deck> decksToRecieve = server.getDbController().getDecksByFormatNoContent(formatToCollect);
+      sendResponseToClient("" + decksToRecieve.size());
+      
+      // Client Has Been Quoted About The Decks That They Have Access To, So Ship Them Over
+      for (Deck d: decksToRecieve) {
+        server.getDbController().populateDeckContents(d);
+        String dataToSend = ModelHelper.toJSONFromModel(d);
+        sendResponseToClient(dataToSend);
+      }
+    }
+  }
+
   // Handles The LMOD Command By Sending The Last Timestamp To The Request
-  protected void handleLMODCommand() throws IOException {
-    sendResponseToClient("" + server.getLastModifiedStamp());
+  protected void handleLMODCommand(List<String> commands) throws IOException {
+    if (!commands.isEmpty()) {
+      Format formatToCheck = Format.valueOf(commands.get(0));
+      sendResponseToClient("" + server.getLastModifiedStampForFormat(formatToCheck));
+    } else {
+      sendResponseToClient("400 Bad Request");
+    }
   }
 
   // Handles The DDelete Command By Deleting The Deck
@@ -97,15 +125,13 @@ public class ServerCommandHandlerThread extends Thread {
   }
 
   // Handles The DPOST Command By Adding The Deck That The Client Has Supplied
-  protected void handleDPOSTCommand() throws ClassNotFoundException, IOException {
-    sendResponseToClient("Ready");
-
-    /*
-    if (incomingObject instanceof Deck) {
-      Deck incomingDeck = (Deck) incomingObject;
-      server.addDeckToDB(incomingDeck);
-      sendResponseToClient(Constants.SERVER_GOOD_REPLY);
-    }*/
+  protected void handleDPOSTCommand(List<String> commands) throws Exception {
+    for (String serializedDeck : commands) {
+      Deck actualDeckObject = ModelHelper.toModelFromJSON(serializedDeck, Deck.class);
+      server.addDeckToDB(actualDeckObject);
+      System.out.println();
+    }
+    sendResponseToClient("Finished");
   }
 
   protected void sendResponseToClient(String command) throws IOException {
@@ -121,10 +147,10 @@ public class ServerCommandHandlerThread extends Thread {
         String[] parsedCommand = nextCommand.split(Constants.DELIMITER);
         if (NetworkingCommands.valueOf(parsedCommand[0]) != null) {
           NetworkingCommands command = NetworkingCommands.valueOf(parsedCommand[0]);
-          List<String> commandArgs = (parsedCommand.length > 1) ? Arrays.asList(parsedCommand).subList(1, parsedCommand.length - 1) : new ArrayList<String>();
+          List<String> commandArgs = (parsedCommand.length > 1) ? Arrays.asList(parsedCommand).subList(1, parsedCommand.length) : new ArrayList<String>();
           runMethodForCommand(command, commandArgs);
         }
-      } catch (IOException e) {
+      } catch (Exception e) {
         this.close();
         break;
       }

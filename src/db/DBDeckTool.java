@@ -9,7 +9,7 @@ import java.util.List;
 import models.cardModels.Card;
 import models.cardModels.Format;
 import models.deckModels.Deck;
-import util.MTGHelper;
+import models.deckModels.DeckCardDataObject;
 
 /**
  * A tool that handles simple deck based operations for the application. This includes the saving, modification, lookup,
@@ -70,13 +70,13 @@ public class DBDeckTool extends DBTool {
 
   // Gathers All Cards For The Supplied Deck
   private void addDeckCardsToDB(Deck incomingDeck) {
-    for (Card c : incomingDeck.getCardsWithinDeck().keySet()) {
-      Integer quanityValue = incomingDeck.getCardsWithinDeck().get(c);
+    for (String c : incomingDeck.getCardsWithinDeck().keySet()) {
+      DeckCardDataObject deckCard = incomingDeck.getCardsWithinDeck().get(c);
       try (PreparedStatement st2 = parentController.getStatement(INSERT_INTO_JUNC_TABLE);) {
         st2.setString(1, incomingDeck.getCreatingUser());
         st2.setString(2, incomingDeck.getDeckName());
-        st2.setString(3, MTGHelper.generateCardKey(c));
-        st2.setInt(4, quanityValue.intValue());
+        st2.setString(3, c);
+        st2.setInt(4, deckCard.getQuantityOfCard());
         st2.execute();
       } catch (SQLException e) {
         e.printStackTrace();

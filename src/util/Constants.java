@@ -8,7 +8,8 @@ package util;
 public interface Constants {
 
   // String Constants
-  public static final String CENTRAL_DB_NAME = "MTG_Assistant_DB";
+  public static final String CLIENT_DB = "MTG_Assistant_DB_Client";
+  public static final String SERVER_DB = "MTG_Assistant_DB_Server";
   public static final String MAIN_APPLICATION_NAME = "MTG Assistant Client";
   public static final String MAIN_SERVER_APPLICATION_NAME = "MTG Assistent Server";
   
@@ -42,8 +43,8 @@ public interface Constants {
   
   public static final String SERVER_START_BUTTON_TEXT = "Start Server";
   public static final String SERVER_STATUS_TEXT = "Server Status:";
-  public static final String SERVER_GOOD_REPLY = "OK";
-  public static final String SERVER_BAD_REPLY = "ERROR";
+  public static final String SERVER_GOOD_REPLY = "200 OK";
+  public static final String SERVER_BAD_REPLY = "500 ERROR";
   public static final String DELIMITER="@@@@";
   
   // Image Icon Constants
@@ -65,4 +66,5 @@ public interface Constants {
   public static final int TOOLTIP_DISPLAY_DELAY = 500;
   public static final int SERVER_PORT_MIN = 15000;
   public static final int SERVER_PORT_MAX = 66560;
+  public static final int STATUS_UPDATE_INTERVAL = 5000;
 }

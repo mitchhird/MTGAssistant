@@ -53,7 +53,7 @@ public final class MainApplicationFrame extends JFrame {
     renderer.setHorizontalTextAlignment(SwingConstants.LEADING);
 
     DecksDisplayPanel editingPane = new DecksDisplayPanel(clientApp);
-    CardAdvancedSearchPanel searchPane = new CardAdvancedSearchPanel();
+    CardAdvancedSearchPanel searchPane = new CardAdvancedSearchPanel(clientApp);
     ClientConnectPanel clientConnectPane = new ClientConnectPanel(clientApp);
     DeckStatisticsPanel statisticsPanel = new DeckStatisticsPanel(clientApp);
     FormatStatisticsPanel formatStatPanel = new FormatStatisticsPanel(clientApp);

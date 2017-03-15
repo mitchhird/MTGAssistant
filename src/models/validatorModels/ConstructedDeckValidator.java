@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import models.cardModels.Card;
 import models.deckModels.Deck;
+import models.deckModels.DeckCardDataObject;
 import util.Constants;
 
 /**
@@ -25,11 +25,12 @@ public class ConstructedDeckValidator extends DeckValidator{
     int cardCounter = 0;
     List<String> validationErrors = new ArrayList<String>();
     
-    Map<Card, Integer> cardsInDeck = incomingDeck.getCardsWithinDeck();
-    for (Card c: cardsInDeck.keySet()) {
-      testPlaysetQunanity(validationErrors, cardsInDeck, c, Constants.CONSTRUCTED_MAX_PLAY_SET);
-      testBanAndRestrictedRules(incomingDeck, validationErrors, cardsInDeck, c);
-      cardCounter += cardsInDeck.get(c);
+    Map<String, DeckCardDataObject> cardsInDeck = incomingDeck.getCardsWithinDeck();
+    for (String c: cardsInDeck.keySet()) {
+      DeckCardDataObject nextCard = cardsInDeck.get(c);
+      testPlaysetQunanity(validationErrors, nextCard, Constants.CONSTRUCTED_MAX_PLAY_SET);
+      testBanAndRestrictedRules(incomingDeck, validationErrors, nextCard);
+      cardCounter += nextCard.getQuantityOfCard();
     }
     
     testDeckSize(validationErrors, cardCounter);

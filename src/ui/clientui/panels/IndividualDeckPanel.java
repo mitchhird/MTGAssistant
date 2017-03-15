@@ -148,6 +148,6 @@ public class IndividualDeckPanel extends UIPanelBase {
   public void refreshTable() {
     deckModel.setCardsInDeck(currentlySelectedDeck.getCardsWithinDeck());
     selectedDeckContentsTable.invalidate();
-    selectedDeckContentsTable.repaint();
+    selectedDeckContentsTable.updateUI();
   }
 }

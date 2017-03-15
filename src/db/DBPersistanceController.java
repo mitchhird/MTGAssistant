@@ -39,16 +39,22 @@ public class DBPersistanceController {
   private List<DBTool> databaseTools;
   private static DBPersistanceController instance;
 
-  // Default Constructor
   private DBPersistanceController() {
-    initDatabase();
+    initDatabase(Constants.CLIENT_DB);
+    initTools();
+    createTablesIfNeeded();
+  }
+  
+  // Default Constructor
+  private DBPersistanceController(String dbName) {
+    initDatabase(dbName);
     initTools();
     createTablesIfNeeded();
   }
 
   // Method Responsible For Creating The DB
-  private void initDatabase() {
-      Path databaseLocation = Paths.get("database/" + Constants.CENTRAL_DB_NAME);
+  private void initDatabase(String dbName) {
+      Path databaseLocation = Paths.get("database/" + dbName);
       initDatabase(databaseLocation);
   }
   
@@ -116,6 +122,13 @@ public class DBPersistanceController {
   public static DBPersistanceController getInstance() {
     if (instance == null) {
       instance = new DBPersistanceController();
+    }
+    return instance;
+  }
+  
+  public static DBPersistanceController getInstance(String name) {
+    if (instance == null) {
+      instance = new DBPersistanceController(name);
     }
     return instance;
   }
@@ -225,7 +238,7 @@ public class DBPersistanceController {
   }
 
   public static void main(String[] args) throws Exception {
-    DBPersistanceController dpc = DBPersistanceController.getInstance();
+    DBPersistanceController dpc = DBPersistanceController.getInstance(Constants.CLIENT_DB);
     dpc.database.setAutoCommit(false);
     dpc.loadInJSONDBIfNecessary();
   }
