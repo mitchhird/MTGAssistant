@@ -248,7 +248,7 @@ public class DBPersistanceController {
   }
 
   public static void main(String[] args) throws Exception {
-    DBPersistanceController dpc = DBPersistanceController.getInstance(Constants.CLIENT_DB);
+    DBPersistanceController dpc = DBPersistanceController.getInstance(Constants.SERVER_DB);
     dpc.database.setAutoCommit(false);
     dpc.loadInJSONDBIfNecessary();
   }
