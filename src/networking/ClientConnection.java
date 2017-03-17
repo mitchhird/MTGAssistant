@@ -10,6 +10,7 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 import models.cardModels.Format;
 import models.deckModels.Deck;
@@ -21,7 +22,7 @@ import util.ModelHelper;
  * 
  * @author Mitchell
  */
-public class ClientConnection {
+public class ClientConnection extends Observable {
   private Socket connectionSocket;
   private BufferedWriter writer;
   private BufferedReader reader;
@@ -42,12 +43,15 @@ public class ClientConnection {
     
     reader = new BufferedReader(new InputStreamReader(inputStream));
     writer = new BufferedWriter(new OutputStreamWriter(outputStream));
+    
+    setChanged();
+    notifyObservers();
   }
 
   // Asks The Server For What It's Current Time Stamp Is
   public long getServerLastModified(Format deckFormat) {
     String serverReply = quote(NetworkingCommands.LMOD, deckFormat.name());
-    return Long.parseLong(serverReply);
+    return (serverReply != null && !serverReply.isEmpty()) ? Long.parseLong(serverReply) : -1;
   }
   
   // Deletes A Deck On The Server. Returns True If Success
@@ -73,9 +77,9 @@ public class ClientConnection {
       try {
         String serializedDeck = reader.readLine();
         Deck actualDeckObject = ModelHelper.toModelFromJSON(serializedDeck, Deck.class);
+        actualDeckObject.setFromServer(true);
         returnVal.add(actualDeckObject);
       } catch (Exception e) {
-        e.printStackTrace();
       }
     }
     
@@ -99,7 +103,7 @@ public class ClientConnection {
         writer.flush();
         return reader.readLine();
       } catch (IOException e) {
-        e.printStackTrace();
+        close();
       }
     }
     return "";
@@ -116,6 +120,9 @@ public class ClientConnection {
       writer.close();
       reader.close();
       connectionSocket.close();
+      
+      setChanged();
+      notifyObservers();
     } catch (IOException e) {
       e.printStackTrace();
     }

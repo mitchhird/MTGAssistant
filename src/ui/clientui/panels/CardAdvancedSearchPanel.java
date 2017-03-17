@@ -108,11 +108,11 @@ public class CardAdvancedSearchPanel extends UIPanelBase {
     addComponentToPanel(cardArtistLabel, 0, i, 1, 1, 0.0f, 0.0f);
     addComponentToPanel(cardArtistTextField, 1, i, 5, 1, 1.0f, 0.0f);
 
-   // i++;
-  //  addComponentToPanel(cardNameSuperTypeLabel, 0, i, 1, 1, 0.0f, 0.0f);
-   // addComponentToPanel(cardSuperTypeField, 1, i, 2, 1, 1.0f, 0.0f);
-  //  addComponentToPanel(cardNameSubTypeLabel, 3, i, 1, 1, 0.0f, 0.0f);
-  //  addComponentToPanel(cardSubTypeField, 4, i, 2, 1, 1.0f, 0.0f);
+    i++;
+    addComponentToPanel(cardNameSuperTypeLabel, 0, i, 1, 1, 0.0f, 0.0f);
+    addComponentToPanel(cardSuperTypeField, 1, i, 2, 1, 1.0f, 0.0f);
+    addComponentToPanel(cardNameSubTypeLabel, 3, i, 1, 1, 0.0f, 0.0f);
+    addComponentToPanel(cardSubTypeField, 4, i, 2, 1, 1.0f, 0.0f);
 
     i++;
     JScrollPane setScrollWrapper = new JScrollPane(setComboBox);

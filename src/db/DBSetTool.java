@@ -106,8 +106,8 @@ public class DBSetTool extends DBTool {
           parentController.addCardToDB(c);
           System.out.println("    --> Card To Card Table: " + c);
           
-     //     parentController.addLegalitiesToDB(c);
-        //  System.out.println("    --> Card added to legal table " + c);
+          parentController.addLegalitiesToDB(c);
+          System.out.println("    --> Card added to legal table " + c);
           
         } catch (SQLException e) {
           e.printStackTrace();

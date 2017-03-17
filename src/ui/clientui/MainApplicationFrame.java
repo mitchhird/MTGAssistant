@@ -29,6 +29,7 @@ import app.MTGAssistantClient;
 public final class MainApplicationFrame extends JFrame {
 
   private final MTGAssistantClient clientApp;
+  private JXTabbedPane tabbedPane;
   private JMenuItem exitFileMenuItem;
   private JMenuItem connectMenuItem;
   private static final long serialVersionUID = 1L;
@@ -46,7 +47,7 @@ public final class MainApplicationFrame extends JFrame {
   
   // Method That Simply Generates The UI That The Main Application Frame Will Be Using
   private void createAndShowUI () {
-    JXTabbedPane tabbedPane = new JXTabbedPane(JTabbedPane.LEFT);
+    tabbedPane = new JXTabbedPane(JTabbedPane.LEFT);
     
     AbstractTabRenderer renderer = (AbstractTabRenderer)tabbedPane.getTabRenderer();
     renderer.setDisplayText("This text is a prototype");
@@ -100,6 +101,7 @@ public final class MainApplicationFrame extends JFrame {
       @Override
       public void actionPerformed(ActionEvent e) {
         System.out.println("Connect To Server Button Pressed");
+        tabbedPane.setSelectedIndex(2);
       }
     });
   }
@@ -114,7 +116,6 @@ public final class MainApplicationFrame extends JFrame {
     
     JMenu networkingMenu = new JMenu ("Networking");
     connectMenuItem = new JMenuItem ("Connect To Server");
-    connectMenuItem.setEnabled(false);
     networkingMenu.add(connectMenuItem);
     
     menu.add(fileMenuItem);

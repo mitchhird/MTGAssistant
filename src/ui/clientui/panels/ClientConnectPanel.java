@@ -1,20 +1,25 @@
 package ui.clientui.panels;
 
 import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.Observable;
+import java.util.Observer;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPasswordField;
-import javax.swing.JScrollPane;
+import javax.swing.JPanel;
 import javax.swing.JSpinner;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
+import networking.ClientConnection;
 import ui.shared.UIPanelBase;
 import util.Constants;
 import app.MTGAssistantClient;
@@ -23,24 +28,20 @@ import app.MTGAssistantClient;
  * Panel That Governs All Of The Server Based Connection Information. Includes IP, PORT, current status of the
  * connection, and other things
  */
-public class ClientConnectPanel extends UIPanelBase {
+public class ClientConnectPanel extends UIPanelBase implements Observer {
 
   private JLabel ipLabel;
   private JLabel portLabel;
-  private JLabel userNameLabel;
-  private JLabel passwordLabel;
   private JLabel currentStatusLabel;
   private JLabel currentStatusDataLabel;
 
   private JTextField ipAddressField;
-  private JTextField userNameField;
   private JSpinner portSpinner;
-  private JPasswordField passwordField;
-  private JTable storedConnectionTable;
 
   private JButton connectButton;
-  private JButton connectAndStoreButton;
+  private JButton disconnectButton;
   
+  private ClientConnection clientConnection;
   private final MTGAssistantClient clientApp;
 
   // Default Constructor For This Panel
@@ -54,22 +55,16 @@ public class ClientConnectPanel extends UIPanelBase {
   protected void initVariables() {
     ipLabel = new JLabel("Server IP:");
     portLabel = new JLabel("Server Port:");
-    userNameLabel = new JLabel("User Name:");
-    passwordLabel = new JLabel("Password:");
     currentStatusLabel = new JLabel("Current Connection Status:");
     currentStatusDataLabel = new JLabel("");
-    setConnectedToServer(false);
     
     ipAddressField = new JTextField("127.0.0.1");
-    userNameField = new JTextField();
-    passwordField = new JPasswordField();
-    storedConnectionTable = new JTable();
-
     SpinnerNumberModel spinnerData = new SpinnerNumberModel(Constants.SERVER_PORT_MIN, Constants.SERVER_PORT_MIN, Constants.SERVER_PORT_MAX, 1);
     portSpinner = new JSpinner(spinnerData);
 
     connectButton = new JButton("Connect To Server");
-    connectAndStoreButton = new JButton("Connect and Store");
+    disconnectButton = new JButton("Disconnect From Server");
+    setConnectedToServer(false);
   }
 
   /**
@@ -77,33 +72,45 @@ public class ClientConnectPanel extends UIPanelBase {
    */
   @Override
   protected void placeUIElements() {
+    
+    GridBagConstraints gbc = new GridBagConstraints();
+    JPanel placeHolderPanel = new JPanel(new GridBagLayout());
+    placeHolderPanel.setBorder(BorderFactory.createTitledBorder("Connection Details"));
+    gbc.insets = new Insets(5, 5, 5, 5);
+    gbc.fill = GridBagConstraints.BOTH;
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    
+    gbc.weightx = 0.0f;
+    placeHolderPanel.add(ipLabel, gbc);
+    
+    gbc.gridx = 1;
+    gbc.weightx = 1.0f;
+    placeHolderPanel.add(ipAddressField, gbc);
+    
+    gbc.gridx = 0;
+    gbc.gridy = 1;
+    gbc.weightx = 0.0f;
+    placeHolderPanel.add(portLabel, gbc);
+    
+    gbc.gridx = 1;
+    gbc.weightx = 1.0f;
+    placeHolderPanel.add(portSpinner, gbc);
+    
     int i = 0;
-    JScrollPane scrollWrapper = new JScrollPane(storedConnectionTable);
-    addComponentToPanel(scrollWrapper, 0, i, 4, 1, 1.0f, 1.0f);
+    addComponentToPanel(placeHolderPanel, 0, 0, 4, 1, 1.0f, 0.0f);
 
     i++;
-    addComponentToPanel(ipLabel, 0, i, 1, 1, 0.0f, 0.0f);
-    addComponentToPanel(ipAddressField, 1, i, 3, 1, 1.0f, 0.0f);
-
-    i++;
-    addComponentToPanel(portLabel, 0, i, 1, 1, 0.0f, 0.0f);
-    addComponentToPanel(portSpinner, 1, i, 3, 1, 1.0f, 0.0f);
-
-    i++;
-    addComponentToPanel(userNameLabel, 0, i, 1, 1, 0.0f, 0.0f);
-    addComponentToPanel(userNameField, 1, i, 3, 1, 1.0f, 0.0f);
-
-    i++;
-    addComponentToPanel(passwordLabel, 0, i, 1, 1, 0.0f, 0.0f);
-    addComponentToPanel(passwordField, 1, i, 3, 1, 1.0f, 0.0f);
+    JLabel blankSpaceLabel = new JLabel();
+    addComponentToPanel(blankSpaceLabel, 0, i, 4, 1, 0.0f, 1.0f);
 
     i++;
     addComponentToPanel(currentStatusLabel, 0, i, 1, 1, 0.0f, 0.0f);
-    addComponentToPanel(currentStatusDataLabel, 1, i, 3, 1, 1.0f, 0.0f);
-
+    addComponentToPanel(currentStatusDataLabel, 1, i, 2, 1, 1.0f, 0.0f);
+    
     i++;
-    addComponentToPanel(connectButton, 0, i, 2, 1, 1.0f, 0.0f);
-    addComponentToPanel(connectAndStoreButton, 2, i, 2, 1, 1.0f, 0.0f);
+    addComponentToPanel(disconnectButton, 0, i, 2, 1, 1.0f, 0.0f);
+    addComponentToPanel(connectButton, 2, i, 1, 2, 1.0f, 0.0f);
   }
 
   /*
@@ -119,35 +126,45 @@ public class ClientConnectPanel extends UIPanelBase {
         handleConnectButton();
       }
     });
+    
+    disconnectButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        handleDisconnectButton();
+      }
+    });
+  }
+  
+  // Handles The Delete Button Press By Attempting To Disconnect The Connection
+  private void handleDisconnectButton () {
+    clientApp.disconnectFromServer();
+    clientConnection = null;
+    JOptionPane.showMessageDialog(this, "Client Connection Has Been Terminated");
   }
 
   // Handles The Connect Button Press By Attempting To Connect To The Server Specifed
   private void handleConnectButton() {
     try {
-      System.out.println("Connect To Server Button Has Been Pressed");
       String ipAddress = ipAddressField.getText().trim();
       int connectPort = (int) portSpinner.getValue();
       
-      clientApp.connectToServer(ipAddress, connectPort);
-      performPostConnection();
+      this.clientConnection = clientApp.connectToServer(ipAddress, connectPort);
+      clientConnection.addObserver(this);
+      setConnectedToServer(true);
+      JOptionPane.showMessageDialog(this, "Client Connection Succeeded");
     } catch (IOException e) {
       e.printStackTrace();
       JOptionPane.showMessageDialog(this, e.getLocalizedMessage(), "Connection Error", JOptionPane.ERROR_MESSAGE);
     }
   }
 
-  private void performPostConnection() {
-    connectButton.setEnabled(false);
-    connectAndStoreButton.setEnabled(false);
-    setConnectedToServer(true);
-    JOptionPane.showMessageDialog(this, "Client Connection Succeeded");
-  }
-  
   public void setConnectedToServer (boolean connected) {
     String connectionStatus = connected ? "Connected" : "Disconnected";
     Color displayColour = connected ? Color.GREEN : Color.RED;
     currentStatusDataLabel.setForeground(displayColour);
     currentStatusDataLabel.setText(connectionStatus);
+    connectButton.setEnabled(!connected);
+    disconnectButton.setEnabled(connected);
   }
 
   /*
@@ -158,5 +175,10 @@ public class ClientConnectPanel extends UIPanelBase {
   @Override
   protected void populateLocal() {
     // TODO Auto-generated method stub
+  }
+
+  @Override
+  public void update(Observable o, Object arg) {
+    setConnectedToServer(clientConnection != null && clientConnection.isConnectedToServer());
   }
 }

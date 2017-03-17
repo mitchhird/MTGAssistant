@@ -111,23 +111,25 @@ public class DeckStatisticsPanel extends UIPanelBase {
       Runnable deckStatRun = new Runnable() {
         @Override
         public void run() {
-          statsStatusLabel.setText("Statistics Status: Calculating");
           Deck deckToCalc = deckComboBox.getItemAt(deckComboBox.getSelectedIndex());
-          clientApp.populateDeckContents(deckToCalc);
-          statsCalculator.calcDeckStatistics(deckToCalc);
-          
-          JFreeChart colourChartData = ChartFactory.createBarChart("Colour Chart (" + deckToCalc.getDeckName() +")", "Colour", "Quantity", statsCalculator.getColourDataSet());
-          colourChartData.removeLegend();
-          colourChart.setChart(colourChartData);
-          
-          JFreeChart cmcChartData = ChartFactory.createBarChart("CMC Chart (" + deckToCalc.getDeckName() +")", "CMC (Converted Mana Cost)", "Quantity", statsCalculator.getCmcDataSet());
-          cmcChartData.removeLegend();
-          cmcChart.setChart(cmcChartData);
-          
-          JFreeChart typePieChartData = ChartFactory.createPieChart("Type Chart (" + deckToCalc.getDeckName() + ")", statsCalculator.getTypeDataSet(), true, true, true);
-          typeChart.setChart(typePieChartData);
-          
-          statsStatusLabel.setText("Statistics Status: Finished");
+          if (deckToCalc != null) {
+            statsStatusLabel.setText("Statistics Status: Calculating");
+            clientApp.populateDeckContents(deckToCalc);
+            statsCalculator.calcDeckStatistics(deckToCalc);
+  
+            JFreeChart colourChartData = ChartFactory.createBarChart("Colour Chart (" + deckToCalc.getDeckName() + ")", "Colour", "Quantity", statsCalculator.getColourDataSet());
+            colourChartData.removeLegend();
+            colourChart.setChart(colourChartData);
+  
+            JFreeChart cmcChartData = ChartFactory.createBarChart("CMC Chart (" + deckToCalc.getDeckName() + ")", "CMC (Converted Mana Cost)", "Quantity", statsCalculator.getCmcDataSet());
+            cmcChartData.removeLegend();
+            cmcChart.setChart(cmcChartData);
+  
+            JFreeChart typePieChartData = ChartFactory.createPieChart("Type Chart (" + deckToCalc.getDeckName() + ")", statsCalculator.getTypeDataSet(), true, true, true);
+            typeChart.setChart(typePieChartData);
+  
+            statsStatusLabel.setText("Statistics Status: Finished");
+          }
         }
       };
       Thread statCalcThread = new Thread(deckStatRun);

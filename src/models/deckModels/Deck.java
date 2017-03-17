@@ -23,6 +23,7 @@ public class Deck implements Comparable<Deck>, Serializable {
   protected String deckArchetype;
   protected String deckDescription;
   protected Format deckFormat;
+  protected boolean fromServer;
   protected Map<String, DeckCardDataObject> cardsWithinDeck;
   protected static final long serialVersionUID = 1L;
 
@@ -32,6 +33,7 @@ public class Deck implements Comparable<Deck>, Serializable {
     this.deckDescription = "";
     this.deckArchetype = "";
     this.deckFormat = Format.STANDARD;
+    this.fromServer = false;
     cardsWithinDeck = new LinkedHashMap<>();
   }
 
@@ -74,6 +76,14 @@ public class Deck implements Comparable<Deck>, Serializable {
   public void setDeckFormat(Format deckFormat) {
     this.deckFormat = deckFormat;
   }
+  
+  public void setFromServer(boolean fromServer) {
+    this.fromServer = fromServer;
+  }
+
+  public boolean isFromServer() {
+    return fromServer;
+  }
 
   // Adds A Card To The Deck, It The Card Already Exists, Then It's Quantity Value Is Updated
   public void addCardToDeck(Card incomingCard) {
@@ -112,7 +122,8 @@ public class Deck implements Comparable<Deck>, Serializable {
   
   @Override
   public String toString() {
-    return deckName + " (" + deckFormat + "): Created by: " + creatingUser;
+    String prefix = (fromServer) ? "Online Deck - " : "Local - ";
+    return prefix + deckName + " (" + deckFormat + "): Created by: " + creatingUser;
   }
 
   @Override

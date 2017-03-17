@@ -15,13 +15,14 @@ import util.Constants;
  * @author Mitchell
  */
 public class ClientConnectionStatusThread extends Thread {
+  private boolean statusThreadRunning;
   private final ClientConnection connection;
-  
   private final Map<Format, Long> formatLastModifiedMap;
   private final Map<Format, List<Deck>> decksForFormats;
   
   // Constructor For The Status Updating Thread
   public ClientConnectionStatusThread(ClientConnection clientConnection) {
+    statusThreadRunning = true;
     connection = clientConnection;
     formatLastModifiedMap = new HashMap<Format, Long>();
     decksForFormats = new ConcurrentHashMap<Format, List<Deck>>();
@@ -34,13 +35,11 @@ public class ClientConnectionStatusThread extends Thread {
   
   @Override
   public void run() {
-    while (connection.isConnectedToServer()) {
+    while (statusThreadRunning && connection.isConnectedToServer()) {
       try {
         Thread.sleep(Constants.STATUS_UPDATE_INTERVAL);
       } catch (InterruptedException e) {
       }
-      
-      System.out.println("COMMITING STATUS UPDATE!!! " + System.currentTimeMillis());
       
       // Now Get All The Last Modified Stamps And Call The Fetch Methods Accordingly
       for (Format f: formatLastModifiedMap.keySet()) {
@@ -62,5 +61,9 @@ public class ClientConnectionStatusThread extends Thread {
       return decksInFormat;
     }
     return new ArrayList<Deck>();
+  }
+
+  public void close() {
+    this.statusThreadRunning = false;
   }
 }

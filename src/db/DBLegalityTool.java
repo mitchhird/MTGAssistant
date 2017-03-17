@@ -37,8 +37,6 @@ public class DBLegalityTool extends DBTool {
         st.setString(3, legal.getLegality().toUpperCase());
         st.execute();
       } catch (SQLException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
       }
     }
   }

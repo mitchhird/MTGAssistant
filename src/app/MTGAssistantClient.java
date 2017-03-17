@@ -44,11 +44,15 @@ public class MTGAssistantClient {
   
   // Adds The Deck The Local DB, If Connected To Server Also Sends It To The Server
   public void addDeckToServer(Deck incomingDeck) {
-    if (dbController.isDeckInDB(incomingDeck)) {
-      dbController.deleteDeckFromDB(incomingDeck);
-      dbController.addDeckToDB(incomingDeck);
-    } else {
-      dbController.addDeckToDB(incomingDeck);
+    // If The Deck Is Local Then Perform Local Operations
+    if (!incomingDeck.isFromServer()) {
+      if (dbController.isDeckInDB(incomingDeck)) {
+        dbController.deleteDeckFromDB(incomingDeck);
+        dbController.addDeckToDB(incomingDeck);
+      }
+      else {
+        dbController.addDeckToDB(incomingDeck);
+      }
     }
     
     // If We Have A Connection, Then We Also Tell The Server To Do The Same
@@ -59,7 +63,10 @@ public class MTGAssistantClient {
   
   // Deletes The Deck From The DB When Called
   public void deleteDeckFromSystem (Deck incomingDeck) {
-    dbController.deleteDeckFromDB(incomingDeck);
+    if (!incomingDeck.isFromServer()) {
+      dbController.deleteDeckFromDB(incomingDeck);
+    }
+    
     if (isValidServerConnection()) {
       clientConnection.deleteDeckFromServer(incomingDeck);
     }
@@ -77,10 +84,19 @@ public class MTGAssistantClient {
   }
   
   // Connects The Client Application To The Server
-  public void connectToServer (String ipAddress, int port) throws IOException {
+  public ClientConnection connectToServer (String ipAddress, int port) throws IOException {
     clientConnection = new ClientConnection(ipAddress, port);
     statusThread = new ClientConnectionStatusThread(clientConnection);
     statusThread.start();
+    return clientConnection;
+  }
+  
+  // Disconnects From The Server When Called
+  public void disconnectFromServer () {
+    clientConnection.close();
+    statusThread.close();
+    clientConnection = null;
+    statusThread = null;
   }
   
   // Adds A New Execution Thread To Our Scheduler

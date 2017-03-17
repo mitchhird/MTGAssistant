@@ -3,13 +3,13 @@ package ui.clientui.panels;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import models.cardModels.Format;
 import models.deckModels.Deck;
 import models.tableModels.DeckContentsTableModel;
+import ui.clientui.customUiElements.CardDisplayingJTable;
 import ui.shared.UIPanelBase;
 import util.Constants;
 
@@ -35,7 +35,7 @@ public class IndividualDeckPanel extends UIPanelBase {
   private JTextArea selectedDescriptionField;
   
   private DeckContentsTableModel deckModel;
-  private JTable selectedDeckContentsTable;
+  private CardDisplayingJTable selectedDeckContentsTable;
 
   // Data for the retrieval of necessary for rendering
   private Deck currentlySelectedDeck;
@@ -61,7 +61,7 @@ public class IndividualDeckPanel extends UIPanelBase {
     selectedDescriptionField = new JTextArea();
 
     deckModel = new DeckContentsTableModel();
-    selectedDeckContentsTable = new JTable(deckModel);
+    selectedDeckContentsTable = new CardDisplayingJTable(deckModel);
     selectedDeckContentsTable.setAutoCreateRowSorter(false);
   }
 

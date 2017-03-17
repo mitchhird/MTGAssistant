@@ -5,6 +5,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JList;
 
 import models.cardModels.Card;
+import util.MTGHelper;
 
 /**
  * Custom JList Renderer Which Uses A Small Bit Of Logic To Show The Currently Moused Over Card
@@ -23,8 +24,8 @@ public class CardDisplayingJList extends JList<Card> {
     int index = locationToIndex(event.getPoint());
     if (index > -1) {
       Card item = getModel().getElementAt(index);
-      String toolTipURL = "http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=" + item.getMultiverseID() + "&type=card";
-      return "<html><body><img src='" + toolTipURL + "'>";
+      String actualToolTip = MTGHelper.getToolTipForDisplay(item);
+      return actualToolTip;
     }
     else {
       return null;
