@@ -18,6 +18,6 @@ This is my Honours Project at Carleton University for the Winter 2017 semester. 
     
 --- 
 # Client Application Screen Shots
-![alt text](https://github.com/mitchhird/MTGAssistant/raw/master/external_resources/screencaps/advanced_search_shot.png "Advanced Search Screenshot
+![alt text](https://github.com/mitchhird/MTGAssistant/raw/master/external_resources/screencaps/advanced_search_shot.png "Advanced Search Screenshot")
     
 
