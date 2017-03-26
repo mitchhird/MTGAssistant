@@ -18,6 +18,11 @@ This is my Honours Project at Carleton University for the Winter 2017 semester. 
     
 --- 
 # Client Application Screen Shots
-![alt text](https://github.com/mitchhird/MTGAssistant/raw/master/external_resources/screencaps/advanced_search_shot.png "Advanced Search Screenshot")
-    
+![Alt text](https://github.com/mitchhird/MTGAssistant/raw/master/external_resources/screencaps/advanced_search_shot.png?raw=true "Optional Title")
+![Alt text](https://github.com/mitchhird/MTGAssistant/raw/master/external_resources/screencaps/deck_stats_shot.png?raw=true "Optional Title")
+![Alt text](https://github.com/mitchhird/MTGAssistant/raw/master/external_resources/screencaps/format_stats_shot.png?raw=true "Optional Title")
+![Alt text](https://github.com/mitchhird/MTGAssistant/raw/master/external_resources/screencaps/main_client_shot.png?raw=true "Optional Title")
 
+--- 
+# Server Applicaiton Screen Shots
+![Alt text](https://github.com/mitchhird/MTGAssistant/raw/master/external_resources/screencaps/server_screen_shot.png?raw=true "Optional Title")
