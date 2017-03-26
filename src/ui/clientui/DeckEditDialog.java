@@ -17,7 +17,7 @@ import util.Constants;
 public class DeckEditDialog extends UIDialogBase {
 
   protected Deck deckToEdit;
-  protected IndividualDeckPanel deckDisplayPanel;
+  protected IndividualDeckPanel editDetailsPanel;
   protected DeckAddCardPanel deckAddPanel;
   protected DeckRemoveCardPanel deckRemovePanel;
   protected JTabbedPane tabWrapper;
@@ -27,8 +27,8 @@ public class DeckEditDialog extends UIDialogBase {
   public DeckEditDialog(IndividualDeckPanel panel, boolean newDeck) {
     super();
     this.deckToEdit = panel.getCurrentlySelectedDeck();
-    this.deckDisplayPanel = panel;
     initializeDialog();
+    setModal(true);
     setTitle(newDeck ? "New Deck" : "Editing Existing Deck - " + deckToEdit.getDeckName());
     setIconImage(ImageManager.getInstance().getIconForKey(Constants.ICON_MAIN_ICON_KEY));
     populateLocal();
@@ -36,11 +36,14 @@ public class DeckEditDialog extends UIDialogBase {
 
   @Override
   protected void initVariables() {
-    closeButton = new JButton("Close");
+    closeButton = new JButton("Finish");
     applyButton = new JButton("Apply");
 
     deckAddPanel = new DeckAddCardPanel(this);
     deckRemovePanel = new DeckRemoveCardPanel(this);
+    editDetailsPanel = new IndividualDeckPanel();
+    editDetailsPanel.setCurrentlySelectedDeck(deckToEdit);
+    
     tabWrapper = new JTabbedPane();
     
     setModal(false);
@@ -49,6 +52,7 @@ public class DeckEditDialog extends UIDialogBase {
 
   @Override
   protected void placeUIElements() {
+    tabWrapper.add("Deck Details", editDetailsPanel);
     tabWrapper.add("Add Cards", deckAddPanel);
     tabWrapper.add("Remove Cards", deckRemovePanel);
     addComponentToPanel(tabWrapper, 0, 0, 6, 1, 0.9f, 1.0f);
@@ -60,13 +64,7 @@ public class DeckEditDialog extends UIDialogBase {
     closeButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        dispose();
-      }
-    });
-
-    applyButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
+        editDetailsPanel.populateDeckDetails(deckToEdit);
         dispose();
       }
     });
@@ -77,7 +75,7 @@ public class DeckEditDialog extends UIDialogBase {
   }
   
   public void refreshData() {
-    deckDisplayPanel.refreshTable();
+    editDetailsPanel.refreshTable();
     deckRemovePanel.refreshTable();
   }
   

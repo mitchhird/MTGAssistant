@@ -105,7 +105,13 @@ public class DecksDisplayPanel extends DeckDisplayPanelBase {
       @Override
       public void actionPerformed(ActionEvent paramActionEvent) {
         System.out.println("New Deck Button Has Been Pressed");
+        deckPanel.setEnabled(false);
         currentSelectedDeck = new Deck();
+        deckPanel.setCurrentlySelectedDeck(currentSelectedDeck);
+        
+        DeckEditDialog newDialog = new DeckEditDialog(deckPanel, false);
+        newDialog.setVisible(true);
+        
         deckPanel.setEnabled(true);
         deckPanel.setCurrentlySelectedDeck(currentSelectedDeck);
       }
