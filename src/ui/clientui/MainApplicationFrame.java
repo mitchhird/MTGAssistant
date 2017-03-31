@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -32,6 +33,8 @@ public final class MainApplicationFrame extends JFrame {
   private JXTabbedPane tabbedPane;
   private JMenuItem exitFileMenuItem;
   private JMenuItem connectMenuItem;
+  private JMenu networkStatusItem;
+  
   private static final long serialVersionUID = 1L;
 
   // Default Constructor For The Application
@@ -106,6 +109,10 @@ public final class MainApplicationFrame extends JFrame {
     });
   }
   
+  public void updateNetworkStatusMessages(String text) {
+    networkStatusItem.setText("Network: " + text);
+  }
+  
   // Setup Of The Menu Item
   private void initMenuBar () {
     JMenuBar menu = new JMenuBar();
@@ -118,8 +125,13 @@ public final class MainApplicationFrame extends JFrame {
     connectMenuItem = new JMenuItem ("Connect To Server");
     networkingMenu.add(connectMenuItem);
     
+    networkStatusItem = new JMenu("");
+    networkStatusItem.setEnabled(false);
+
     menu.add(fileMenuItem);
     menu.add(networkingMenu);
+    menu.add(Box.createHorizontalGlue());
+    menu.add(networkStatusItem);
     setJMenuBar(menu);
   }
 }

@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import models.cardModels.Format;
 import models.deckModels.Deck;
 import util.Constants;
+import app.MTGAssistantClient;
 
 /**
  * Small Thread Who's Sole Purpose Will Be Retrieving Updates On A Periodic Basis
@@ -16,12 +17,16 @@ import util.Constants;
  */
 public class ClientConnectionStatusThread extends Thread {
   private boolean statusThreadRunning;
+  private String currentNetworkStatus;
   private final ClientConnection connection;
   private final Map<Format, Long> formatLastModifiedMap;
   private final Map<Format, List<Deck>> decksForFormats;
+
+  private final MTGAssistantClient client;
   
   // Constructor For The Status Updating Thread
-  public ClientConnectionStatusThread(ClientConnection clientConnection) {
+  public ClientConnectionStatusThread(MTGAssistantClient client, ClientConnection clientConnection) {
+    this.client = client;
     statusThreadRunning = true;
     connection = clientConnection;
     formatLastModifiedMap = new HashMap<Format, Long>();
@@ -31,6 +36,7 @@ public class ClientConnectionStatusThread extends Thread {
     }
     
     setName("Client Status Updater Thread");
+    setStatusMessage("Idle");
   }
   
   @Override
@@ -43,15 +49,27 @@ public class ClientConnectionStatusThread extends Thread {
       
       // Now Get All The Last Modified Stamps And Call The Fetch Methods Accordingly
       for (Format f: formatLastModifiedMap.keySet()) {
+        setStatusMessage("Polling Server");
         long serverLastMod = connection.getServerLastModified(f);
         long ourLastMod = formatLastModifiedMap.get(f);
         if (ourLastMod != serverLastMod) {
+          setStatusMessage("Downloading " + f + " decks");
           formatLastModifiedMap.put(f, serverLastMod);
           List<Deck> decksForFormat = connection.getServerDecksForFormat(f);
           decksForFormats.put(f, decksForFormat);
+          setStatusMessage("Finished Download");
         }
+        
       }
+      setStatusMessage("Idle");
     }
+    setStatusMessage("");
+  }
+  
+  // Update Status Message
+  private void setStatusMessage (String text) {
+    currentNetworkStatus = text;
+    client.updateNetworkStatus(currentNetworkStatus);
   }
   
   // Returns The Decks For The Given Formats

@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
@@ -59,13 +60,7 @@ public class ServerDetailsPanel extends UIPanelBase {
     startServerButton.addActionListener(new ActionListener() {   
       @Override
       public void actionPerformed(ActionEvent e) {
-        int portToLaunchServer = (int) portSpinner.getValue();
-        ServerMainThread newServerThread = new ServerMainThread(portToLaunchServer);
-        newServerThread.start();
-        
-        serverStatusDataLabel.setText("Server Running On Port " + portToLaunchServer);
-        startServerButton.setEnabled(false);
-        portSpinner.setEnabled(false);
+        handleStartServerButton();
       }
     });
   }
@@ -74,5 +69,17 @@ public class ServerDetailsPanel extends UIPanelBase {
   protected void populateLocal() {
     // TODO Auto-generated method stub
     
+  }
+
+  public void handleStartServerButton() {
+    int portToLaunchServer = (int) portSpinner.getValue();
+    ServerMainThread newServerThread = new ServerMainThread(portToLaunchServer);
+    newServerThread.start();
+    
+    String serverStartMsg = "Server Running On Port " + portToLaunchServer;
+    JOptionPane.showMessageDialog(this, serverStartMsg, "Server Started", JOptionPane.INFORMATION_MESSAGE);
+    serverStatusDataLabel.setText(serverStartMsg);
+    startServerButton.setEnabled(false);
+    portSpinner.setEnabled(false);
   }
 }

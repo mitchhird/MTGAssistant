@@ -86,9 +86,13 @@ public class MTGAssistantClient {
   // Connects The Client Application To The Server
   public ClientConnection connectToServer (String ipAddress, int port) throws IOException {
     clientConnection = new ClientConnection(ipAddress, port);
-    statusThread = new ClientConnectionStatusThread(clientConnection);
+    statusThread = new ClientConnectionStatusThread(this, clientConnection);
     statusThread.start();
     return clientConnection;
+  }
+  
+  public void updateNetworkStatus (String text) {
+    applicationUI.updateNetworkStatusMessages(text);
   }
   
   // Disconnects From The Server When Called
