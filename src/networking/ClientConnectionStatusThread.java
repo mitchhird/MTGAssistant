@@ -53,7 +53,7 @@ public class ClientConnectionStatusThread extends Thread {
         long serverLastMod = connection.getServerLastModified(f);
         long ourLastMod = formatLastModifiedMap.get(f);
         if (ourLastMod != serverLastMod) {
-          setStatusMessage("Downloading " + f + " decks");
+          setStatusMessage("Fetching " + f + " decks");
           formatLastModifiedMap.put(f, serverLastMod);
           List<Deck> decksForFormat = connection.getServerDecksForFormat(f);
           decksForFormats.put(f, decksForFormat);

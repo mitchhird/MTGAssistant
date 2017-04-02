@@ -23,6 +23,8 @@ public class BaseTest {
   protected String[] VINTAGE_BAN_LIST = { "Falling Star", "Chaos Orb", "Amulet of Quoz", "Bronze Tablet", "Contract from Below", "Darkpact", "Demonic Attorney", "Jeweled Bird",
       "Rebirth", "Tempest Efreet", "Timmerian Fiends" };
 
+  protected String[] STANDARD_BAN_LIST = { "Reflector Mage", "Smuggler's Copter", "Emrakul, the Promised End"};
+  
   protected String[] VINTAGE_RESTRICTED_LIST = { "Ancestral Recall", "Balance", "Black Lotus", "Brainstorm", "Chalice of the Void", "Channel", "Demonic Consultation", "Demonic Tutor", 
     "Dig Through Time", "Fastbond", "Flash", "Imperial Seal", "Library of Alexandria", "Lion's Eye Diamond", "Lodestone Golem", "Lotus Petal", "Mana Crypt", 
     "Mana Vault", "Memory Jar", "Merchant Scroll", "Mind's Desire", "Mox Emerald", "Mox Jet", "Mox Pearl", "Mox Ruby", "Mox Sapphire", "Mystical Tutor", 
@@ -40,7 +42,7 @@ public class BaseTest {
 
   protected Deck createTestDeck(int suffix) {
     Format[] availableFormats = Format.values();
-    Format formatToUse = availableFormats[suffix & availableFormats.length];
+    Format formatToUse = availableFormats[suffix % availableFormats.length];
     return createTestDeck(suffix, formatToUse);
   }
   

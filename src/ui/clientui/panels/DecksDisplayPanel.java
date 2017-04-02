@@ -124,6 +124,9 @@ public class DecksDisplayPanel extends DeckDisplayPanelBase {
         deckPanel.populateDeckDetails(currentSelectedDeck);
         DeckEditDialog newDialog = new DeckEditDialog(deckPanel, false);
         newDialog.setVisible(true);
+        
+        deckPanel.setEnabled(true);
+        deckPanel.setCurrentlySelectedDeck(currentSelectedDeck);
       }
     });
 

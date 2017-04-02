@@ -43,6 +43,14 @@ public class FormatStatisticsModel extends AbstractTableModel {
     return "";
   }
   
+  public String getCardNameAtIndex(int index) {
+    if (index >= 0 && index < listToRender.size()) {
+      return listToRender.get(index).getCardName();      
+    } else {
+      return "";
+    }
+  }
+  
   @Override
   public boolean isCellEditable(int rowIndex, int columnIndex) {
     return false;

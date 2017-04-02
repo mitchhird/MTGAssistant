@@ -7,7 +7,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
-import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ListSelectionEvent;
@@ -18,6 +17,7 @@ import models.deckModels.Deck;
 import models.deckModels.DeckCardDataObject;
 import models.tableModels.DeckContentsTableModel;
 import ui.clientui.DeckEditDialog;
+import ui.clientui.customUiElements.CardDisplayingJTable;
 import ui.shared.UIPanelBase;
 import util.Constants;
 import util.MTGHelper;
@@ -40,7 +40,7 @@ public class DeckRemoveCardPanel extends UIPanelBase {
   
   private SpinnerNumberModel removalSpinModel;
   private JSpinner removalQuantitySpinner;
-  private JTable selectedDeckContentsTable;
+  private CardDisplayingJTable selectedDeckContentsTable;
   private JButton removeButton;
   
   // Default Constructor For This Panel
@@ -64,7 +64,7 @@ public class DeckRemoveCardPanel extends UIPanelBase {
     removalQuantitySpinner = new JSpinner(removalSpinModel);
     
     deckModel = new DeckContentsTableModel(deckToEdit);
-    selectedDeckContentsTable = new JTable(deckModel); 
+    selectedDeckContentsTable = new CardDisplayingJTable(deckModel); 
     selectedDeckContentsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     removeButton = new JButton("Remove From Deck");
     removeButton.setEnabled(false);

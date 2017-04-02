@@ -71,10 +71,21 @@ public class DBPersistanceControllerTest extends BaseTest {
     System.out.println("  ---> Finished Format Only Fetch Tests");
   }
 
+  @Test
+  public void testGetMultiverseID() {
+    int expectedMultiverseID = 129732;
+    int multiverseIDFromDB = classUnderTest.getMultiverseIDFromDB("Shock");
+    assertEquals(expectedMultiverseID, multiverseIDFromDB);
+  }
 
   @Test
   public void testVintageBannedList() {
     testBanList(VINTAGE_BAN_LIST, Format.VINTAGE);
+  }
+
+  @Test
+  public void testStandardBannedList() {
+    testBanList(STANDARD_BAN_LIST, Format.STANDARD);
   }
 
   @Test

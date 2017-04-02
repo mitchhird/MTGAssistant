@@ -150,6 +150,9 @@ public class DBPersistanceController {
   
   // Call To Add Legalities To The DB
   public void addLegalitiesToDB(JSONCard card) {
+    if (card.getName().startsWith("Emra")) {
+      System.out.println();
+    }
     legalTool.insertIntoLegalTable(card);
   }
 
@@ -225,6 +228,11 @@ public class DBPersistanceController {
   // Call To Delete Deck From The DB
   public void deleteDeckFromDB (String creatingUser, String deckName) {
     deckTool.deleteDeckFromDB(creatingUser, deckName);
+  }
+    
+  // Call To Delete Deck From The DB
+  public int getMultiverseIDFromDB (String cardName) {
+    return setTool.getMultiverseIDForCard(cardName);
   }
     
   // Call To Run Clean Up Data From The Existing Database

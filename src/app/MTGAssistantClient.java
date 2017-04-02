@@ -42,6 +42,11 @@ public class MTGAssistantClient {
     return localDecks;
   }
   
+  // Returns The MultiVerse ID For A Given Card Name
+  public int getMultiverseID (String cardName) {
+    return dbController.getMultiverseIDFromDB(cardName);
+  }
+  
   // Adds The Deck The Local DB, If Connected To Server Also Sends It To The Server
   public void addDeckToServer(Deck incomingDeck) {
     // If The Deck Is Local Then Perform Local Operations

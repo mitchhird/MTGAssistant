@@ -68,4 +68,11 @@ public class MTGHelper {
     String actualToolTip = "<html><body><img src='" + toolTipURL + "'>";
     return actualToolTip;
   }
+  
+  // Returns A Tool Tip Display For Card When Requested
+  public static String getToolTipForDisplay(int multiverseID) {
+    String toolTipURL = "http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=" + multiverseID + "&type=card";
+    String actualToolTip = "<html><body><img src='" + toolTipURL + "'>";
+    return actualToolTip;
+  }
 }

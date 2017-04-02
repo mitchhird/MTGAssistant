@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 
 import models.cardModels.Format;
 import models.statisticModels.FormatStatisticsCalculator;
@@ -17,6 +16,7 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.DefaultXYDataset;
 
+import ui.clientui.customUiElements.CardDisplayingFormatJTable;
 import ui.shared.UIPanelBase;
 import app.MTGAssistantClient;
 
@@ -31,8 +31,8 @@ public class FormatStatisticsPanel extends UIPanelBase {
   private JLabel topSpellsTableLabel;
   private JLabel statisicsStatusLabel;
   private JComboBox<Format> currentFormatCombo;
-  private JTable creatureDataTable;
-  private JTable spellDataTable;
+  private CardDisplayingFormatJTable creatureDataTable;
+  private CardDisplayingFormatJTable spellDataTable;
   private ChartPanel typeChartPanel;
   
   private final FormatStatisticsCalculator statsCalculator;
@@ -53,8 +53,8 @@ public class FormatStatisticsPanel extends UIPanelBase {
     statisicsStatusLabel = new JLabel("Current Statistics Status: Ready");
     
     currentFormatCombo = new JComboBox<>(Format.values());
-    creatureDataTable = new JTable();
-    spellDataTable = new JTable();
+    creatureDataTable = new CardDisplayingFormatJTable(clientApp);
+    spellDataTable = new CardDisplayingFormatJTable(clientApp);
     typeChartPanel = new ChartPanel(ChartFactory.createXYLineChart("", "", "", new DefaultXYDataset()));
   }
 
@@ -102,10 +102,10 @@ public class FormatStatisticsPanel extends UIPanelBase {
         statsCalculator.calculateFormatStatistics(selectedFormat);
         
         FormatStatisticsModel createModel = new FormatStatisticsModel(statsCalculator.getCreatureDetailsList());
-        creatureDataTable.setModel(createModel);
+        creatureDataTable.setStatisticModel(createModel);
 
         FormatStatisticsModel spellModel = new FormatStatisticsModel(statsCalculator.getSpellDetailsList());
-        spellDataTable.setModel(spellModel);
+        spellDataTable.setStatisticModel(spellModel);
         spellDataTable.invalidate();
         spellDataTable.repaint();
         

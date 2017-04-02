@@ -34,6 +34,7 @@ public class DBSetTool extends DBTool {
   private static String INSERT_SET_INTO_TABLE = "INSERT INTO SET_TABLE (CODE, NAME, GATHERER_CODE, BORDER, RELEASE_DATE, MAGIC_CARDS_INFO_CODE) VALUES (?,?,?,?,?,?)";
   private static String INSERT_SET_INTO_JUNCTION_TABLE = "INSERT INTO SET_JUNC_TABLE (CODE, CARD_ID, ARTIST, FLAVOUR_TEXT, RARITY, MULTIVERSE_ID) VALUES (?,?,?,?,?,?)";
   private static String SELECT_ALL_SETS = "SELECT * FROM SET_TABLE";
+  private static String SELECT_CARD_MULTIVERSE_ID = "SELECT MULTIVERSE_ID FROM SET_JUNC_TABLE WHERE CARD_ID=?";
   
   // Default constructor for the tool
   public DBSetTool(DBPersistanceController controller) {
@@ -70,6 +71,20 @@ public class DBSetTool extends DBTool {
       e.printStackTrace();
     }
     return returnVal;
+  }
+  
+  // Collects All Available Sets From The Database
+  public int getMultiverseIDForCard (String cardName) {
+    try (PreparedStatement st = parentController.getStatement(SELECT_CARD_MULTIVERSE_ID);) {
+      st.setString(1, cardName);
+      ResultSet rs = st.executeQuery();
+      rs.next();
+      
+      return rs.getInt("MULTIVERSE_ID");
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return 0;
   }
 
   /**
