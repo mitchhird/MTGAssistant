@@ -21,7 +21,7 @@ import util.JSONConvertTools.JSONCard;
 public class DBCardTool extends DBTool {
 
   //Table Creation String
-  private final String CREATE_CARD_TABLE = "CREATE TABLE IF NOT EXISTS CARD_TABLE (CARD_ID varchar(" + DB_CHAR_COLUMN_LIMIT + ") PRIMARY KEY," 
+  private final static String CREATE_CARD_TABLE = "CREATE TABLE IF NOT EXISTS CARD_TABLE (CARD_ID varchar(" + DB_CHAR_COLUMN_LIMIT + ") PRIMARY KEY," 
                                                                                 + "CARD_NAME varchar(" + DB_CHAR_COLUMN_LIMIT + ")," 
                                                                                 + "CARD_TEXT varchar(" + DB_CHAR_COLUMN_LIMIT + "),"
                                                                                 + "CARD_TYPE varchar(" + DB_CHAR_COLUMN_LIMIT + "),"
@@ -35,9 +35,9 @@ public class DBCardTool extends DBTool {
                                                                                 + "CARD_MANA_COST varchar(" + DB_CHAR_COLUMN_LIMIT + "))";
 
   // Insertion String
-  private final String INSERT_CARD_TABLE = "INSERT INTO CARD_TABLE (CARD_ID, CARD_NAME, CARD_TEXT, CARD_TYPE, CARD_SUPERTYPES, CARD_SUBTYPES, CARD_POWER, CARD_TOUGHNESS, CARD_LOYALITY, CARD_CMC, CARD_COLORS, CARD_COLOR_IDENTITY, CARD_MANA_COST) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);";;
-  private final String SELECT_CARD_TABLE_BASE = "SELECT * FROM CARD_TABLE NATURAL JOIN SET_JUNC_TABLE";
-  private final String SELECT_DISTINCT_CARD_NAME = "SELECT DISTINCT CARD_NAME FROM CARD_TABLE;";
+  private final static String INSERT_CARD_TABLE = "INSERT INTO CARD_TABLE (CARD_ID, CARD_NAME, CARD_TEXT, CARD_TYPE, CARD_SUPERTYPES, CARD_SUBTYPES, CARD_POWER, CARD_TOUGHNESS, CARD_LOYALITY, CARD_CMC, CARD_COLORS, CARD_COLOR_IDENTITY, CARD_MANA_COST) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);";;
+  private final static String SELECT_CARD_TABLE_BASE = "SELECT * FROM CARD_TABLE NATURAL JOIN SET_JUNC_TABLE";
+  private final static String SELECT_DISTINCT_CARD_NAME = "SELECT DISTINCT CARD_NAME FROM CARD_TABLE;";
 
   public DBCardTool(DBPersistanceController controller) {
     super(controller);

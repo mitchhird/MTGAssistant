@@ -12,11 +12,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import app.MTGAssistantServer;
 import models.cardModels.Format;
 import models.deckModels.Deck;
 import util.Constants;
 import util.ModelHelper;
-import app.MTGAssistantServer;
 
 /**
  * This class will be directly responsible for intrepreting any communications that come from client connections. When
@@ -32,25 +32,30 @@ public class ServerCommandHandlerThread extends Thread {
   protected BufferedReader reader;
   protected BufferedWriter writer;
   protected MTGAssistantServer server;
+  protected ServerMainThread parent;
 
   // Constructor For The Command Handler Thread
-  public ServerCommandHandlerThread(Socket incomingSocket) {
+  public ServerCommandHandlerThread(ServerMainThread parentThread, Socket incomingSocket) {
     try {
+      parent = parentThread;
       creatingSock = incomingSocket;
       ipAddress = incomingSocket.getInetAddress().getHostAddress();
       server = MTGAssistantServer.getInstance();
-
-      OutputStream outputStream = incomingSocket.getOutputStream();
-      InputStream inputStream = incomingSocket.getInputStream();
-
-      writer = new BufferedWriter(new OutputStreamWriter(outputStream));
-      reader = new BufferedReader(new InputStreamReader(inputStream));
-      System.out.println("Client Connected From: " + incomingSocket.getInetAddress().getHostAddress());
-
+      initializeStreams(incomingSocket);
     } catch (IOException e) {
       e.printStackTrace();
     }
     setName("Command Handler (" + ipAddress + ") Thread");
+  }
+
+  // Initializes The Streams For The Class When Called
+  private void initializeStreams(Socket incomingSocket) throws IOException {
+    OutputStream outputStream = incomingSocket.getOutputStream();
+    InputStream inputStream = incomingSocket.getInputStream();
+
+    writer = new BufferedWriter(new OutputStreamWriter(outputStream));
+    reader = new BufferedReader(new InputStreamReader(inputStream));
+    System.out.println("Client Connected From: " + incomingSocket.getInetAddress().getHostAddress());
   }
 
   // Closes The Connection. Called When The Connection Is Terminated
@@ -70,6 +75,7 @@ public class ServerCommandHandlerThread extends Thread {
     } catch (IOException e) {
       e.printStackTrace();
     }
+    parent.removeActiveHandler(this);
   }
 
   // Runs A Method For The Corresponding Command
@@ -102,9 +108,9 @@ public class ServerCommandHandlerThread extends Thread {
       Format formatToCollect = Format.valueOf(commands.get(0));
       List<Deck> decksToRecieve = server.getDbController().getDecksByFormatNoContent(formatToCollect);
       sendResponseToClient("" + decksToRecieve.size());
-      
+
       // Client Has Been Quoted About The Decks That They Have Access To, So Ship Them Over
-      for (Deck d: decksToRecieve) {
+      for (Deck d : decksToRecieve) {
         server.getDbController().populateDeckContents(d);
         String dataToSend = ModelHelper.toJSONFromModel(d);
         sendResponseToClient(dataToSend);
@@ -117,7 +123,8 @@ public class ServerCommandHandlerThread extends Thread {
     if (!commands.isEmpty()) {
       Format formatToCheck = Format.valueOf(commands.get(0));
       sendResponseToClient("" + server.getLastModifiedStampForFormat(formatToCheck));
-    } else {
+    }
+    else {
       sendResponseToClient(Constants.SERVER_BAD_REPLY);
     }
   }
@@ -134,16 +141,18 @@ public class ServerCommandHandlerThread extends Thread {
   protected void handleDPOSTCommand(List<String> commands) throws Exception {
     for (String serializedDeck : commands) {
       Deck actualDeckObject = ModelHelper.toModelFromJSON(serializedDeck, Deck.class);
-      if (server.getDbController().isDeckInDB(actualDeckObject)) {        
+      if (server.getDbController().isDeckInDB(actualDeckObject)) {
         server.deleteDeckFromDB(actualDeckObject);
         server.addDeckToDB(actualDeckObject);
-      } else {
+      }
+      else {
         server.addDeckToDB(actualDeckObject);
       }
     }
     sendResponseToClient(Constants.SERVER_GOOD_REPLY);
   }
 
+  // Sends The Response To The Client So The Application Doesn't Get Desynchronized
   protected void sendResponseToClient(String command) throws IOException {
     writer.write(command + "\n");
     writer.flush();
