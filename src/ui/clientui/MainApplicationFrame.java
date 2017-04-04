@@ -109,8 +109,9 @@ public final class MainApplicationFrame extends JFrame {
     });
   }
   
-  public void updateNetworkStatusMessages(String text) {
-    networkStatusItem.setText("Network: " + text);
+  public void updateNetworkStatusMessages(String text, boolean isConnected) {
+    String displayText = (isConnected) ? "Network: " + text: "";
+    networkStatusItem.setText(displayText);
   }
   
   // Setup Of The Menu Item

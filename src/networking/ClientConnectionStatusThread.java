@@ -41,27 +41,31 @@ public class ClientConnectionStatusThread extends Thread {
   
   @Override
   public void run() {
-    while (statusThreadRunning && connection.isConnectedToServer()) {
-      try {
-        Thread.sleep(Constants.STATUS_UPDATE_INTERVAL);
-      } catch (InterruptedException e) {
-      }
-      
-      // Now Get All The Last Modified Stamps And Call The Fetch Methods Accordingly
-      for (Format f: formatLastModifiedMap.keySet()) {
-        setStatusMessage("Polling Server");
-        long serverLastMod = connection.getServerLastModified(f);
-        long ourLastMod = formatLastModifiedMap.get(f);
-        if (ourLastMod != serverLastMod) {
-          setStatusMessage("Fetching " + f + " decks");
-          formatLastModifiedMap.put(f, serverLastMod);
-          List<Deck> decksForFormat = connection.getServerDecksForFormat(f);
-          decksForFormats.put(f, decksForFormat);
-          setStatusMessage("Finished Download");
+    try {
+      while (statusThreadRunning && connection.isConnectedToServer()) {
+        try {
+          Thread.sleep(Constants.STATUS_UPDATE_INTERVAL);
+        } catch (InterruptedException e) {
         }
         
+        // Now Get All The Last Modified Stamps And Call The Fetch Methods Accordingly
+        for (Format f: formatLastModifiedMap.keySet()) {
+          setStatusMessage("Polling Server");
+          long serverLastMod = connection.getServerLastModified(f);
+          long ourLastMod = formatLastModifiedMap.get(f);
+          if (ourLastMod != serverLastMod) {
+            setStatusMessage("Fetching " + f + " decks");
+            formatLastModifiedMap.put(f, serverLastMod);
+            List<Deck> decksForFormat = connection.getServerDecksForFormat(f);
+            decksForFormats.put(f, decksForFormat);
+            setStatusMessage("Finished Download");
+          }
+          
+        }
+        setStatusMessage("Idle");
       }
-      setStatusMessage("Idle");
+    } catch (Exception e) {
+      client.disconnectFromServer();
     }
     setStatusMessage("");
   }

@@ -29,7 +29,10 @@ public class DBSetTool extends DBTool {
                                                                                              + "ARTIST varchar(" + DB_CHAR_COLUMN_LIMIT + ")," 
                                                                                              + "FLAVOUR_TEXT varchar(" + DB_CHAR_COLUMN_LIMIT + ")," 
                                                                                              + "RARITY varchar(15),"
-                                                                                             + "MULTIVERSE_ID integer);";
+                                                                                             + "MULTIVERSE_ID integer,"
+                                                                                             + "FOREIGN KEY(CODE) REFERENCES SET_TABLE(CODE),"
+                                                                                             + "FOREIGN KEY(CARD_ID) REFERENCES CARD_TABLE(CARD_ID),"
+                                                                                             + "PRIMARY KEY(CODE, CARD_ID));";
 
   private static String INSERT_SET_INTO_TABLE = "INSERT INTO SET_TABLE (CODE, NAME, GATHERER_CODE, BORDER, RELEASE_DATE, MAGIC_CARDS_INFO_CODE) VALUES (?,?,?,?,?,?)";
   private static String INSERT_SET_INTO_JUNCTION_TABLE = "INSERT INTO SET_JUNC_TABLE (CODE, CARD_ID, ARTIST, FLAVOUR_TEXT, RARITY, MULTIVERSE_ID) VALUES (?,?,?,?,?,?)";
@@ -105,33 +108,35 @@ public class DBSetTool extends DBTool {
 
       // Load In All Of The Necessary Cards
       for (JSONCard c : incomingSet.getCards()) {
-        try (PreparedStatement p2 = parentController.getStatement(INSERT_SET_INTO_JUNCTION_TABLE);) {
-          p2.setString(1, incomingSet.getCode());
-          p2.setString(2, MTGHelper.generateCardKey(c));
-          p2.setString(3, c.getArtist());
-          p2.setString(4, c.getFlavor());
-
-          String jsonRarity = c.getRarity().toUpperCase().replace(" ", "_");
-          CardRarity cardRarity = CardRarity.valueOf(jsonRarity);
-          p2.setString(5, cardRarity.name());
-          p2.setInt(6, c.getMultiverseid());
-          p2.execute();
-          System.out.println("    --> Added Card To Junction Table: " + c);
-          
-          parentController.addCardToDB(c);
-          System.out.println("    --> Card To Card Table: " + c);
-          
-          parentController.addLegalitiesToDB(c);
-          System.out.println("    --> Card added to legal table " + c);
-          
-        } catch (SQLException e) {
-          e.printStackTrace();
-        }
+        parentController.addCardToDB(c);
+        System.out.println("    --> Card To Card Table: " + c);
+        
+        parentController.addLegalitiesToDB(c);
+        System.out.println("    --> Card added to legal table " + c);
+        
+        addSetToJuncTable(incomingSet, c);
+        System.out.println("    --> Added Card To Junction Table: " + c);
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      // Failed Because Set Already Exists... No Biggy
     }
     parentController.commitData();
+  }
+
+  public void addSetToJuncTable(JSONSet incomingSet, JSONCard c) {
+    try (PreparedStatement p2 = parentController.getStatement(INSERT_SET_INTO_JUNCTION_TABLE);) {
+      p2.setString(1, incomingSet.getCode());
+      p2.setString(2, MTGHelper.generateCardKey(c));
+      p2.setString(3, c.getArtist());
+      p2.setString(4, c.getFlavor());
+
+      String jsonRarity = c.getRarity().toUpperCase().replace(" ", "_");
+      CardRarity cardRarity = CardRarity.valueOf(jsonRarity);
+      p2.setString(5, cardRarity.name());
+      p2.setInt(6, c.getMultiverseid());
+      p2.execute();  
+    } catch (SQLException e) {
+    }
   }
   
   @Override

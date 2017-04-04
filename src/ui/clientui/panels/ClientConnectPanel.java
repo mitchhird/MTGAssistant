@@ -139,6 +139,7 @@ public class ClientConnectPanel extends UIPanelBase implements Observer {
   private void handleDisconnectButton () {
     clientApp.disconnectFromServer();
     clientConnection = null;
+    setConnectedToServer(false);
     JOptionPane.showMessageDialog(this, "Client Connection Has Been Terminated");
   }
 

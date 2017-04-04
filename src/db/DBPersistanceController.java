@@ -150,9 +150,6 @@ public class DBPersistanceController {
   
   // Call To Add Legalities To The DB
   public void addLegalitiesToDB(JSONCard card) {
-    if (card.getName().startsWith("Emra")) {
-      System.out.println();
-    }
     legalTool.insertIntoLegalTable(card);
   }
 
@@ -256,7 +253,7 @@ public class DBPersistanceController {
   }
 
   public static void main(String[] args) throws Exception {
-    DBPersistanceController dpc = DBPersistanceController.getInstance(Constants.SERVER_DB);
+    DBPersistanceController dpc = DBPersistanceController.getInstance(Constants.CLIENT_DB);
     dpc.database.setAutoCommit(false);
     dpc.loadInJSONDBIfNecessary();
   }
