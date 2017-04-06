@@ -37,7 +37,7 @@ public class DeckRemoveCardPanel extends UIPanelBase {
   private JLabel currentSelectedLabel;
   private JLabel currentSelectedDataLabel;
   private JLabel removalQuantityLabel;
-  
+
   private SpinnerNumberModel removalSpinModel;
   private JSpinner removalQuantitySpinner;
   private CardDisplayingJTable selectedDeckContentsTable;
@@ -118,7 +118,7 @@ public class DeckRemoveCardPanel extends UIPanelBase {
       Card cardSelected = deckModel.getCardAtIndex(selectedRow);
       int spinnerValue = (int) removalQuantitySpinner.getValue();
       deckToEdit.removeCardFromDeck(cardSelected, spinnerValue);
-      
+      statusLabel.setText("Removed " + spinnerValue + " " + cardSelected.getName());
       parentPanel.refreshData();
     }
   }

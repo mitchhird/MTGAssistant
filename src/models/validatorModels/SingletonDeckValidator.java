@@ -48,7 +48,7 @@ public class SingletonDeckValidator extends DeckValidator {
   @Override
   protected void testDeckSize(List<String> validationErrors, int currentCardCount) {
     if (currentCardCount != Constants.SINGLETON_DECK_SIZE) {
-      validationErrors.add("Validation Error: Deck doesn't contain the minimum of "+ Constants.SINGLETON_DECK_SIZE + " cards");
+      validationErrors.add("Validation Error: Deck doesn't contain exactly " + Constants.SINGLETON_DECK_SIZE + " cards");
     }
   }
 }
