@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import db.DBPersistanceController;
 import models.cardModels.Format;
 import models.deckModels.Deck;
 import networking.ClientConnection;
 import networking.ClientConnectionStatusThread;
 import ui.clientui.MainApplicationFrame;
 import util.Constants;
-import db.DBPersistanceController;
 
 /**
  * Main class for client side application of this project. Spaans the UI elements when evoked.
@@ -48,7 +48,7 @@ public class MTGAssistantClient {
   }
 
   // Adds The Deck The Local DB, If Connected To Server Also Sends It To The Server
-  public void addDeckToServer(Deck incomingDeck) {
+  public void addDeckToServer(Deck incomingDeck, boolean submitNetwork) {
     // If The Deck Is Local Then Perform Local Operations
     if (!incomingDeck.isFromServer()) {
       if (dbController.isDeckInDB(incomingDeck)) {
@@ -61,7 +61,7 @@ public class MTGAssistantClient {
     }
 
     // If We Have A Connection, Then We Also Tell The Server To Do The Same
-    if (isValidServerConnection()) {
+    if (isValidServerConnection() && submitNetwork) {
       clientConnection.addDeckToServer(incomingDeck);
     }
   }
@@ -77,6 +77,7 @@ public class MTGAssistantClient {
     }
   }
 
+  // Returns If The Valid Server Connection
   private boolean isValidServerConnection() {
     return clientConnection != null && clientConnection.isConnectedToServer();
   }
@@ -96,8 +97,11 @@ public class MTGAssistantClient {
     return clientConnection;
   }
 
+  // Updates The Network Status When Calleds
   public void updateNetworkStatus(String text) {
-    applicationUI.updateNetworkStatusMessages(text, clientConnection.isConnectedToServer());
+    if (clientConnection != null && clientConnection.isConnectedToServer()) { 
+      applicationUI.updateNetworkStatusMessages(text, clientConnection.isConnectedToServer());
+    }
   }
 
   // Disconnects From The Server When Called
@@ -116,7 +120,7 @@ public class MTGAssistantClient {
 
   // Adds A New Execution Thread To Our Scheduler
   public void addNewExcutingThread(Runnable methodToRun, long delay, TimeUnit delayUnit) {
-    scheduledExecutor.schedule(methodToRun, delay, delayUnit);
+    scheduledExecutor.scheduleWithFixedDelay(methodToRun, 0, delay, delayUnit);
   }
 
   // Returns Whether Or Not The Application Is Currently Connected To The Server

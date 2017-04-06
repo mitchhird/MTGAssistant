@@ -4,6 +4,7 @@ import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -11,6 +12,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
 
+import app.MTGAssistantClient;
+import db.DBPersistanceController;
 import models.cardModels.Format;
 import models.deckModels.Deck;
 import models.validatorModels.DeckValidator;
@@ -19,8 +22,6 @@ import ui.clientui.DeckEditDialog;
 import ui.shared.DeckDisplayPanelBase;
 import ui.shared.ImageManager;
 import util.Constants;
-import app.MTGAssistantClient;
-import db.DBPersistanceController;
 
 /**
  * Panel for editing decks within the Java UI. Panel contains a picker where you can select a deck, and view the details
@@ -37,6 +38,7 @@ public class DecksDisplayPanel extends DeckDisplayPanelBase {
   private JButton editDeckButton;
   private JButton deleteDeckButton;
   private JButton applyButton;
+  private JButton applyOnlineButton;
   
   private final MTGAssistantClient clientApp;
   private static final long serialVersionUID = 1L;
@@ -57,8 +59,10 @@ public class DecksDisplayPanel extends DeckDisplayPanelBase {
     newDeckButton = new JButton(Constants.DECK_TOOL_NEW_DECK);
     editDeckButton = new JButton(Constants.DECK_TOOL_EDIT_DECK);
     deleteDeckButton = new JButton(Constants.DECK_TOOL_DELETE_DECK);
-    applyButton = new JButton("Submit Deck");
-
+    applyButton = new JButton("Submit Deck (Local Only)");
+    applyOnlineButton = new JButton("Submit Deck (Local And Online)");
+    applyOnlineButton.setEnabled(false);
+    
     newDeckButton.setIcon(new ImageIcon(ImageManager.getInstance().getIconForKey(Constants.ICON_NEW_KEY)));
     editDeckButton.setIcon(new ImageIcon(ImageManager.getInstance().getIconForKey(Constants.ICON_EDIT_KEY)));
     deleteDeckButton.setIcon(new ImageIcon(ImageManager.getInstance().getIconForKey(Constants.ICON_DELETE_KEY)));
@@ -68,6 +72,19 @@ public class DecksDisplayPanel extends DeckDisplayPanelBase {
     deckOperationPanel.add(editDeckButton);
     deckOperationPanel.add(deleteDeckButton);
     deckOperationPanel.setFloatable(false);
+    
+    initOnlineButtonUpdateRun();
+  }
+
+  // Initializes And Pushes Of Our Online Only Button Runner
+  public void initOnlineButtonUpdateRun() {
+    Runnable onlineSubmissionRunnable = new Runnable() {
+      @Override
+      public void run() {
+        applyOnlineButton.setEnabled(clientApp.isConnectedToServer());
+      }
+    };
+    clientApp.addNewExcutingThread(onlineSubmissionRunnable, 1, TimeUnit.SECONDS);
   }
 
   @Override
@@ -87,14 +104,15 @@ public class DecksDisplayPanel extends DeckDisplayPanelBase {
 
     i++;
     gbc.anchor = GridBagConstraints.CENTER;
-    addComponentToPanel(deckPanel, 0, 3, 4, 1, 1.0f, 1.0f);
+    addComponentToPanel(deckPanel, 0, i, 4, 1, 1.0f, 1.0f);
 
     i++;
-    gbc.fill = GridBagConstraints.NONE;
-    gbc.anchor = GridBagConstraints.SOUTHEAST;
     addComponentToPanel(new JLabel("Status:"), 0, i, 1, 1, 0f, 0f);
-    addComponentToPanel(statusLabel, 1, i, 1, 1, 0.0f, 0f);
-    addComponentToPanel(applyButton, 3, 4, 1, 1, 0f, 0.0f);
+    addComponentToPanel(statusLabel, 1, i, 1, 1, 1.0f, 0f);
+    
+    i++;
+    addComponentToPanel(applyOnlineButton, 0, i, 2, 1, 1.0f, 0.0f);
+    addComponentToPanel(applyButton, 2, i, 2, 1, 1.0f, 0.0f);
   }
 
   @Override
@@ -140,7 +158,14 @@ public class DecksDisplayPanel extends DeckDisplayPanelBase {
     applyButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        handleApplyButton();
+        handleApplyButton(false);
+      }
+    });
+    
+    applyOnlineButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        handleApplyButton(true);
       }
     });
   }
@@ -158,11 +183,11 @@ public class DecksDisplayPanel extends DeckDisplayPanelBase {
   }
   
   // Handles The Press Of The Apply Button
-  private void handleApplyButton () {
+  private void handleApplyButton (boolean submitOnline) {
     Deck currentSelectedDeck = deckPanel.getCurrentlySelectedDeck();
     DeckValidator validator = ValidatorFactory.getValidatorForDeck(currentSelectedDeck);
     if (validator.isDeckValid(currentSelectedDeck)) {
-      attemptDeckSubmission(currentSelectedDeck);
+      attemptDeckSubmission(currentSelectedDeck, submitOnline);
     } else {
       displayDeckErrors(currentSelectedDeck, validator);
     }
@@ -176,9 +201,9 @@ public class DecksDisplayPanel extends DeckDisplayPanelBase {
     JOptionPane.showMessageDialog(this, sb.toString(), "Validation Error", JOptionPane.ERROR_MESSAGE);
   }
 
-  private void attemptDeckSubmission(Deck currentSelectedDeck) {
+  private void attemptDeckSubmission(Deck currentSelectedDeck, boolean submitOnlineCopy) {
     deckPanel.populateDeckDetails(currentSelectedDeck);
-    clientApp.addDeckToServer(currentSelectedDeck);
+    clientApp.addDeckToServer(currentSelectedDeck, submitOnlineCopy);
     statusLabel.setText("Deck (" + currentSelectedDeck.getDeckName() +") Has Been Added To The System");
   }
   

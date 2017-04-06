@@ -6,13 +6,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
-import models.cardModels.Format;
-import models.deckModels.Deck;
-import networking.ClientConnection;
-
 import org.junit.Before;
 import org.junit.Test;
 
+import models.cardModels.Format;
+import models.deckModels.Deck;
+import networking.ClientConnection;
 import util.BaseTest;
 import util.Constants;
 import util.ModelHelper;
@@ -28,7 +27,7 @@ public class ClientConnectionTest extends BaseTest {
 
   @Before
   public void setup() throws IOException {
-    serverIP = "127.0.0.1";
+    serverIP = "192.168.1.187";
     serverPort = Constants.SERVER_PORT_MIN;
     classUnderTest = new ClientConnection(serverIP, serverPort);
     assertTrue(classUnderTest.isConnectedToServer());
