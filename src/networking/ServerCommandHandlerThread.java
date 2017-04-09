@@ -15,6 +15,8 @@ import java.util.List;
 import app.MTGAssistantServer;
 import models.cardModels.Format;
 import models.deckModels.Deck;
+import models.validatorModels.DeckValidator;
+import models.validatorModels.ValidatorFactory;
 import util.Constants;
 import util.ModelHelper;
 
@@ -139,8 +141,12 @@ public class ServerCommandHandlerThread extends Thread {
 
   // Handles The DPOST Command By Adding The Deck That The Client Has Supplied
   protected void handleDPOSTCommand(List<String> commands) throws Exception {
-    for (String serializedDeck : commands) {
-      Deck actualDeckObject = ModelHelper.toModelFromJSON(serializedDeck, Deck.class);
+    String serializedDeck = commands.get(0);
+    Deck actualDeckObject = ModelHelper.toModelFromJSON(serializedDeck, Deck.class);
+    DeckValidator validator = ValidatorFactory.getValidatorForDeck(actualDeckObject);
+
+    // If The Decks Is Valid Then Save It. Otherwise Reject It
+    if (validator.isDeckValid(actualDeckObject)) {
       if (server.getDbController().isDeckInDB(actualDeckObject)) {
         server.deleteDeckFromDB(actualDeckObject);
         server.addDeckToDB(actualDeckObject);
@@ -148,8 +154,11 @@ public class ServerCommandHandlerThread extends Thread {
       else {
         server.addDeckToDB(actualDeckObject);
       }
+      sendResponseToClient(Constants.SERVER_GOOD_REPLY);
     }
-    sendResponseToClient(Constants.SERVER_GOOD_REPLY);
+    else {
+      sendResponseToClient(Constants.SERVER_BAD_REPLY);
+    }
   }
 
   // Sends The Response To The Client So The Application Doesn't Get Desynchronized

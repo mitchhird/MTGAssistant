@@ -4,7 +4,7 @@
   router="FAN">  
   <class id="1" language="java" name="networking.ClientConnection" project="MTGAssistant" 
     file="/MTGAssistant/src/networking/ClientConnection.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="592" y="730"/>    
+    <position height="-1" width="-1" x="205" y="710"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="false"/>      
@@ -13,7 +13,7 @@
   </class>  
   <class id="2" language="java" name="networking.ClientConnectionStatusThread" project="MTGAssistant" 
     file="/MTGAssistant/src/networking/ClientConnectionStatusThread.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="996" y="341"/>    
+    <position height="-1" width="-1" x="653" y="346"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="false"/>      
@@ -30,45 +30,49 @@
     </display>  
   </class>  
   <association id="4">    
-    <end type="SOURCE" refId="3" navigable="false">      
-      <attribute id="5" name="statusThread">        
-        <position height="18" width="72" x="719" y="323"/>      
-      </attribute>      
-      <multiplicity id="6" minimum="0" maximum="1">        
-        <position height="16" width="23" x="791" y="324"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="2" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="7">    
     <end type="SOURCE" refId="2" navigable="false">      
-      <attribute id="8" name="client">        
+      <attribute id="5" name="client">        
         <position height="18" width="33" x="353" y="377"/>      
       </attribute>      
-      <multiplicity id="9" minimum="0" maximum="1"/>    
+      <multiplicity id="6" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
     </end>    
     <end type="TARGET" refId="3" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="10">    
+  <association id="7">    
     <end type="SOURCE" refId="2" navigable="false">      
-      <attribute id="11" name="connection">        
-        <position height="18" width="61" x="722" y="619"/>      
+      <attribute id="8" name="connection">        
+        <position height="18" width="61" x="341" y="629"/>      
       </attribute>      
-      <multiplicity id="12" minimum="0" maximum="1">        
-        <position height="16" width="23" x="735" y="600"/>      
+      <multiplicity id="9" minimum="0" maximum="1">        
+        <position height="16" width="23" x="339" y="614"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="1" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
+  <association id="10">    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="11" name="statusThread">        
+        <position height="18" width="72" x="376" y="328"/>      
+      </attribute>      
+      <multiplicity id="12" minimum="0" maximum="1">        
+        <position height="16" width="23" x="448" y="329"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="2" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
   <association id="13">    
     <end type="SOURCE" refId="3" navigable="false">      
       <attribute id="14" name="clientConnection">        
-        <position height="18" width="87" x="371" y="621"/>      
+        <position height="18" width="87" x="203" y="533"/>      
       </attribute>      
-      <multiplicity id="15" minimum="0" maximum="1"/>    
+      <multiplicity id="15" minimum="0" maximum="1">        
+        <position height="16" width="23" x="211" y="521"/>      
+      </multiplicity>    
     </end>    
     <end type="TARGET" refId="1" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  

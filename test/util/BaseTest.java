@@ -1,6 +1,7 @@
 package util;
 
 import models.cardModels.Card;
+import models.cardModels.CardRarity;
 import models.cardModels.Format;
 import models.deckModels.Deck;
 
@@ -57,6 +58,7 @@ public class BaseTest {
     
     for (String s: testCardSet) {
       Card cardToTest = new Card(s);
+      cardToTest.setCardRarity(CardRarity.BASIC_LAND);
       testDeck.addCardToDeck(cardToTest, amountOfEachCard);
     }
    
