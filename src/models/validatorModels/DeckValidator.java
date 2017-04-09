@@ -2,18 +2,22 @@ package models.validatorModels;
 
 import java.util.List;
 
+import db.DBPersistanceController;
 import models.cardModels.Card;
 import models.cardModels.CardRarity;
 import models.deckModels.Deck;
 import models.deckModels.DeckCardDataObject;
-import db.DBPersistanceController;
 
 /**
  * Base Class For The Deck Validators
  * @author Mitchell
  */
 public abstract class DeckValidator {
-  protected static DBPersistanceController PM_CONTROLLER = DBPersistanceController.getInstance();
+  protected DBPersistanceController persistanceController;
+  
+  protected DeckValidator (DBPersistanceController controller) {
+    this.persistanceController = controller;
+  }
   
   /**
    * Tests if the deck's contents exceeds the playset limit on the format
@@ -38,8 +42,8 @@ public abstract class DeckValidator {
     Card actualCard = deckCard.getCardInDeck();
     int cardQuantity = deckCard.getQuantityOfCard();
     
-    if (!PM_CONTROLLER.isCardLegalInFormat(actualCard, incomingDeck.getDeckFormat())) {
-      if (PM_CONTROLLER.isCardRestrictedInFormat(actualCard, incomingDeck.getDeckFormat())) {
+    if (!persistanceController.isCardLegalInFormat(actualCard, incomingDeck.getDeckFormat())) {
+      if (persistanceController.isCardRestrictedInFormat(actualCard, incomingDeck.getDeckFormat())) {
         int quantity = cardQuantity;
         if (quantity > 1) {
           validationErrors.add("Validation Error: " + actualCard.getName() + " exceeds the restriction limit of 1");

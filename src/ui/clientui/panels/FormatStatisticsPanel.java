@@ -7,18 +7,17 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
-import models.cardModels.Format;
-import models.statisticModels.FormatStatisticsCalculator;
-import models.tableModels.FormatStatisticsModel;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.DefaultXYDataset;
 
+import app.MTGAssistantClient;
+import models.cardModels.Format;
+import models.statisticModels.FormatStatisticsCalculator;
+import models.tableModels.FormatStatisticsModel;
 import ui.clientui.customUiElements.CardDisplayingFormatJTable;
 import ui.shared.UIPanelBase;
-import app.MTGAssistantClient;
 
 /**
  * Panel That Contains All Of The UI That Is Responsible For Showing Format Statistics
@@ -48,8 +47,8 @@ public class FormatStatisticsPanel extends UIPanelBase {
   @Override
   protected void initVariables() {
     currentFormatLabel = new JLabel("Format:");
-    topCreaturesTableLabel = new JLabel("Top Creatures:");
-    topSpellsTableLabel = new JLabel("Top Spells:");
+    topCreaturesTableLabel = new JLabel("Top Creatures (Hover Over Row To View Card):");
+    topSpellsTableLabel = new JLabel("Top Spells (Hover Over Row To View Card):");
     statisicsStatusLabel = new JLabel("Current Statistics Status: Ready");
     
     currentFormatCombo = new JComboBox<>(Format.values());

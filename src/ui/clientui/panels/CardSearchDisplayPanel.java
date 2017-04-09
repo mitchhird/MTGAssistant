@@ -21,6 +21,7 @@ import ui.shared.UIPanelBase;
 public class CardSearchDisplayPanel extends UIPanelBase {
 
   private JLabel resultsLabel;
+  private JLabel returnAmountLabel;
   private JList<Card> displayList;
   private final List<Card> cardsToDisplay;
   private static final long serialVersionUID = 1L;
@@ -35,17 +36,19 @@ public class CardSearchDisplayPanel extends UIPanelBase {
   @Override
   protected void initVariables() {
     resultsLabel = new JLabel();
+    returnAmountLabel = new JLabel();
     displayList = new CardDisplayingJList();
     displayList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
   }
 
   @Override
   protected void placeUIElements() {
-    addComponentToPanel(resultsLabel, 0, 0, 1, 1, 0.1f, 0.0f);
-    
+    addComponentToPanel(resultsLabel, 0, 0, 1, 1, 0.f, 0.0f);
+    addComponentToPanel(resultsLabel, 1, 0, 1, 1, 0.f, 0.0f);
+
     JScrollPane displayWrapper = new JScrollPane(displayList);
     displayWrapper.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-    addComponentToPanel(displayWrapper, 0, 1, 1, 1, 0.9f, 1.0f);
+    addComponentToPanel(displayWrapper, 0, 1, 2, 1, 1.0f, 1.0f);
   }
 
   @Override
@@ -63,6 +66,7 @@ public class CardSearchDisplayPanel extends UIPanelBase {
     displayList.setCellRenderer(new BasicCardRenderer());
     displayList.setModel(displayModel);
     displayList.repaint();  
-    resultsLabel.setText("Number of Results Returned: " + displayModel.size());
+    resultsLabel.setText("Search Display (Hover Over Item To View)");
+    returnAmountLabel.setText("Results Returned: " + displayModel.size());
   }
 }

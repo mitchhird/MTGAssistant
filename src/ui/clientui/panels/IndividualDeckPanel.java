@@ -81,7 +81,7 @@ public class IndividualDeckPanel extends UIPanelBase {
     JScrollPane descriptionScroller = new JScrollPane(selectedDescriptionField);
     addComponentToPanel(descriptionScroller, 1, 3, 3, 1, 1.0f, 0.2f);
 
-    addComponentToPanel(selectedDeckContentsLabel, 0, 4, 1, 1, 0.0f, 0.0f);
+    addComponentToPanel(selectedDeckContentsLabel, 0, 4, 2, 1, 0.0f, 0.0f);
 
     JScrollPane selectedDecksScroller = new JScrollPane(selectedDeckContentsTable);
     addComponentToPanel(selectedDecksScroller, 0, 5, 4, 1, 1.0f, 0.8f);

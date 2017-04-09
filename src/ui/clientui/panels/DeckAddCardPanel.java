@@ -167,7 +167,7 @@ public class DeckAddCardPanel extends UIPanelBase {
     if (cardToAdd != null) {
       Deck deckToEdit = parentPanel.getDeckToEdit();
       deckToEdit.addCardToDeck(cardToAdd, quantity);
-      statusLabel.setText("Added " + quantity + "x " + cardToAdd.getName() + " to " + deckToEdit.getDeckName());
+      statusLabel.setText("Added " + quantity + "x " + cardToAdd.getName());
       parentPanel.refreshData();
     }
   }

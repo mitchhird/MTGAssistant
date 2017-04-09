@@ -1,5 +1,6 @@
 package models.validatorModels;
 
+import db.DBPersistanceController;
 import models.deckModels.Deck;
 
 /**
@@ -7,11 +8,11 @@ import models.deckModels.Deck;
  * @author Mitchell
  */
 public class ValidatorFactory {
-  public static DeckValidator getValidatorForDeck(Deck deckToValidate) {
+  public static DeckValidator getValidatorForDeck(DBPersistanceController dbControl, Deck deckToValidate) {
      switch (deckToValidate.getDeckFormat()) {
-      case COMMANDER: return new SingletonDeckValidator();
-      case HIGHLANDER: return new SingletonDeckValidator();
-      default: return new ConstructedDeckValidator();
+      case COMMANDER: return new SingletonDeckValidator(dbControl);
+      case HIGHLANDER: return new SingletonDeckValidator(dbControl);
+      default: return new ConstructedDeckValidator(dbControl);
      }
   }
 }

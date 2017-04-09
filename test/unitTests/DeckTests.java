@@ -6,17 +6,17 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import db.DBPersistanceController;
 import models.cardModels.Card;
 import models.cardModels.CardRarity;
 import models.cardModels.Format;
 import models.deckModels.Deck;
 import models.validatorModels.DeckValidator;
 import models.validatorModels.ValidatorFactory;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import util.BaseTest;
 import util.ModelHelper;
 
@@ -33,7 +33,8 @@ public class DeckTests extends BaseTest {
   private final Format testFormat = Format.COMMANDER;
 
   private Deck classUnderTest;
-
+  private DBPersistanceController persistController;
+  
   @Before
   public void setup() {
     classUnderTest = new Deck();
@@ -41,6 +42,7 @@ public class DeckTests extends BaseTest {
     classUnderTest.setDeckDescription(testDeckDescription);
     classUnderTest.setDeckName(testDeckName);
     classUnderTest.setDeckFormat(testFormat);
+    persistController = DBPersistanceController.getInstance();
   }
 
   @Test
@@ -55,7 +57,7 @@ public class DeckTests extends BaseTest {
   @Test
   public void testSingletonValidator() {
     addCardToDeck("Island", CardRarity.BASIC_LAND, 100);
-    DeckValidator validator = ValidatorFactory.getValidatorForDeck(classUnderTest);
+    DeckValidator validator = ValidatorFactory.getValidatorForDeck(persistController, classUnderTest);
     List<String> validationErrors = validator.validateDeck(classUnderTest);
     assertTrue(validationErrors.isEmpty());
   }
@@ -64,7 +66,7 @@ public class DeckTests extends BaseTest {
   public void testSingletonValidatorInvalidQuant() {
     addCardToDeck("Island", CardRarity.BASIC_LAND, 98);
     addCardToDeck("Force of Will", CardRarity.RARE, 2);
-    DeckValidator validator = ValidatorFactory.getValidatorForDeck(classUnderTest);
+    DeckValidator validator = ValidatorFactory.getValidatorForDeck(persistController, classUnderTest);
     List<String> validationErrors = validator.validateDeck(classUnderTest);
     assertFalse(validationErrors.isEmpty());
     assertEquals(1, validationErrors.size());
@@ -74,7 +76,7 @@ public class DeckTests extends BaseTest {
   public void testSingletonValidatorInvalidTotal() {
     addCardToDeck("Island", CardRarity.BASIC_LAND, 100);
     addCardToDeck("Force of Will", CardRarity.RARE, 1);
-    DeckValidator validator = ValidatorFactory.getValidatorForDeck(classUnderTest);
+    DeckValidator validator = ValidatorFactory.getValidatorForDeck(persistController, classUnderTest);
     List<String> validationErrors = validator.validateDeck(classUnderTest);
     assertFalse(validationErrors.isEmpty());
     assertEquals(1, validationErrors.size());
@@ -97,7 +99,7 @@ public class DeckTests extends BaseTest {
       addCardToDeck(s, CardRarity.SPECIAL, 2);
     }
     addCardToDeck("Island", CardRarity.BASIC_LAND, 60 - VINTAGE_RESTRICTED_LIST.length);
-    DeckValidator validator = ValidatorFactory.getValidatorForDeck(classUnderTest);
+    DeckValidator validator = ValidatorFactory.getValidatorForDeck(persistController, classUnderTest);
     List<String> validationErrors = validator.validateDeck(classUnderTest);
     assertFalse(validationErrors.isEmpty());
     assertEquals(VINTAGE_RESTRICTED_LIST.length, validationErrors.size());
@@ -131,7 +133,7 @@ public class DeckTests extends BaseTest {
       addCardToDeck(s, CardRarity.SPECIAL, 1);
     }
     addCardToDeck("Island", CardRarity.BASIC_LAND, 100 - banList.length);
-    DeckValidator validator = ValidatorFactory.getValidatorForDeck(classUnderTest);
+    DeckValidator validator = ValidatorFactory.getValidatorForDeck(persistController, classUnderTest);
     List<String> validationErrors = validator.validateDeck(classUnderTest);
     assertFalse(validationErrors.isEmpty());
     assertEquals(banList.length, validationErrors.size());

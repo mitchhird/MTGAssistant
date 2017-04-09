@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import db.DBPersistanceController;
 import models.cardModels.Format;
 import models.deckModels.Deck;
 import models.deckModels.DeckCardDataObject;
@@ -19,6 +20,11 @@ import util.Constants;
  * @author Mitchell
  */
 public class SingletonDeckValidator extends DeckValidator {
+
+  // Default Constructor For The Validator Class
+  public SingletonDeckValidator(DBPersistanceController controller) {
+    super(controller);
+  }
 
   @Override
   public List<String> validateDeck(Deck incomingDeck) {

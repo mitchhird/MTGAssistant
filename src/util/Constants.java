@@ -18,7 +18,7 @@ public interface Constants {
   public static final String DECKS_SELECT_ARCHETYPE_LABEL = "Deck Archetype";
   public static final String DECKS_SELECT_CREATE_LABEL = "Created By";
   public static final String DECKS_SELECT_DESCRIPTION_LABEL = "Deck Description";
-  public static final String DECKS_SELECT_CONTENTS_LABEL = "Deck Contents";
+  public static final String DECKS_SELECT_CONTENTS_LABEL = "Deck Contents (Hover Over Row To View Card Image)";
   public static final String DECKS_SELECT_FORMAT_LABEL = "Deck Format";
   
   public static final String CARD_SEARCH_CARD_NAME = "Name";

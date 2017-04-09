@@ -66,6 +66,9 @@ public class DecksDisplayPanel extends DeckDisplayPanelBase {
     newDeckButton.setIcon(new ImageIcon(ImageManager.getInstance().getIconForKey(Constants.ICON_NEW_KEY)));
     editDeckButton.setIcon(new ImageIcon(ImageManager.getInstance().getIconForKey(Constants.ICON_EDIT_KEY)));
     deleteDeckButton.setIcon(new ImageIcon(ImageManager.getInstance().getIconForKey(Constants.ICON_DELETE_KEY)));
+    
+    editDeckButton.setEnabled(false);
+    deleteDeckButton.setEnabled(false);
 
     deckOperationPanel = new JToolBar();
     deckOperationPanel.add(newDeckButton);
@@ -117,7 +120,23 @@ public class DecksDisplayPanel extends DeckDisplayPanelBase {
 
   @Override
   protected void addActionListeners() {
-    super.addActionListeners();
+    deckComboBox.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        populateDeckDetails();
+        editDeckButton.setEnabled(true);
+        deleteDeckButton.setEnabled(true);
+      }
+    });
+
+    deckFormatCombobox.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        populateLocal();
+        editDeckButton.setEnabled(deckComboBox.getModel().getSize() != 0);
+        deleteDeckButton.setEnabled(deckComboBox.getModel().getSize() != 0);
+      }
+    });
     
     newDeckButton.addActionListener(new ActionListener() {
       @Override
@@ -185,7 +204,7 @@ public class DecksDisplayPanel extends DeckDisplayPanelBase {
   // Handles The Press Of The Apply Button
   private void handleApplyButton (boolean submitOnline) {
     Deck currentSelectedDeck = deckPanel.getCurrentlySelectedDeck();
-    DeckValidator validator = ValidatorFactory.getValidatorForDeck(currentSelectedDeck);
+    DeckValidator validator = ValidatorFactory.getValidatorForDeck(clientApp.getDbController(), currentSelectedDeck);
     if (validator.isDeckValid(currentSelectedDeck)) {
       attemptDeckSubmission(currentSelectedDeck, submitOnline);
     } else {

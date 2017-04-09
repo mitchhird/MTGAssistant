@@ -143,7 +143,7 @@ public class ServerCommandHandlerThread extends Thread {
   protected void handleDPOSTCommand(List<String> commands) throws Exception {
     String serializedDeck = commands.get(0);
     Deck actualDeckObject = ModelHelper.toModelFromJSON(serializedDeck, Deck.class);
-    DeckValidator validator = ValidatorFactory.getValidatorForDeck(actualDeckObject);
+    DeckValidator validator = ValidatorFactory.getValidatorForDeck(server.getDbController(), actualDeckObject);
 
     // If The Decks Is Valid Then Save It. Otherwise Reject It
     if (validator.isDeckValid(actualDeckObject)) {

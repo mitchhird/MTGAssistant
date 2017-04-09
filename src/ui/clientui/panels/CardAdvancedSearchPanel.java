@@ -16,14 +16,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
+import app.MTGAssistantClient;
+import db.DBCardSearchDataObject;
 import models.cardModels.Card;
 import models.cardModels.CardRarity;
 import models.cardModels.MagicSet;
 import ui.clientui.CardAdvancedSearchResultDialog;
 import ui.shared.UIPanelBase;
 import util.Constants;
-import app.MTGAssistantClient;
-import db.DBCardSearchDataObject;
 
 /**
  * Panel that is responsbile for holding all of the information regarding card lookups
@@ -164,12 +164,14 @@ public class CardAdvancedSearchPanel extends UIPanelBase {
     addSearchIfDefined(curSearch, key, value, true);
   }
 
+  // Adds A Search Parameter If It Is Defined
   private void addSearchIfDefined(Set<DBCardSearchDataObject> curSearch, String key, String value, boolean andTerm) {
     if (value != null && !value.trim().isEmpty()) {
       curSearch.add(new DBCardSearchDataObject(key, value, true));
     }
   }
 
+  // Another Implementation Of Add Search Object Function
   private void addSearchIfDefined(Set<DBCardSearchDataObject> curSearch, String key, List<MagicSet> values) {
     if (values != null) {
       for (int i = 0; i < values.size(); i++) {

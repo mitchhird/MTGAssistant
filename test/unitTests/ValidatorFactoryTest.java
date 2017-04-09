@@ -1,6 +1,12 @@
 package unitTests;
 
 import static org.junit.Assert.assertTrue;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import db.DBPersistanceController;
 import models.cardModels.Format;
 import models.deckModels.Deck;
 import models.validatorModels.ConstructedDeckValidator;
@@ -8,16 +14,15 @@ import models.validatorModels.DeckValidator;
 import models.validatorModels.SingletonDeckValidator;
 import models.validatorModels.ValidatorFactory;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 public class ValidatorFactoryTest {
 
   private static ValidatorFactory classUnderTest;
+  private static DBPersistanceController persistanceController;
 
   @BeforeClass
-  public static void setUpBeforeClass() throws Exception {}
+  public static void setUpBeforeClass() throws Exception {
+    persistanceController = DBPersistanceController.getInstance();
+  }
 
   @AfterClass
   public static void tearDownAfterClass() throws Exception {}
@@ -29,7 +34,7 @@ public class ValidatorFactoryTest {
     for (Format f : singletonFormats) {
       Deck deckToTest = new Deck();
       deckToTest.setDeckFormat(f);
-      DeckValidator deckValidator = ValidatorFactory.getValidatorForDeck(deckToTest);
+      DeckValidator deckValidator = ValidatorFactory.getValidatorForDeck(persistanceController, deckToTest);
       assertTrue(deckValidator instanceof SingletonDeckValidator);
     }
   }
@@ -41,7 +46,7 @@ public class ValidatorFactoryTest {
     for (Format f : constructedFormats) {
       Deck deckToTest = new Deck();
       deckToTest.setDeckFormat(f);
-      DeckValidator deckValidator = ValidatorFactory.getValidatorForDeck(deckToTest);
+      DeckValidator deckValidator = ValidatorFactory.getValidatorForDeck(persistanceController, deckToTest);
       assertTrue(deckValidator instanceof ConstructedDeckValidator);
     }
   }
