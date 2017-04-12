@@ -12,6 +12,7 @@ public class ValidatorFactory {
      switch (deckToValidate.getDeckFormat()) {
       case COMMANDER: return new SingletonDeckValidator(dbControl);
       case HIGHLANDER: return new SingletonDeckValidator(dbControl);
+      case FREEFORM: return new FreeFormDeckValidator(dbControl);
       default: return new ConstructedDeckValidator(dbControl);
      }
   }

@@ -10,5 +10,6 @@ public enum Format {
   MODERN,
   HIGHLANDER,
   COMMANDER,
-  STANDARD
+  STANDARD,
+  FREEFORM
 }

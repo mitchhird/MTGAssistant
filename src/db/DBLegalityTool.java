@@ -53,16 +53,25 @@ public class DBLegalityTool extends DBTool {
   
   // Returns Whether Or Not A Card Is Legal In A Given Format
   public boolean isCardLegalInFormat (Card incomingCard, Format formatToCheck) {
+    if (formatToCheck == Format.FREEFORM) {
+      return true;
+    }
     return isCardValidInFormat(incomingCard, formatToCheck, "LEGAL");
   }
 
   // Returns Whether Or Not A Card Is Banned In A Given Format
   public boolean isCardBannedInFormat (Card incomingCard, Format formatToCheck) {
+    if (formatToCheck == Format.FREEFORM) {
+      return false;
+    }
     return isCardValidInFormat(incomingCard, formatToCheck, "BANNED");
   }
   
   // Returns Whether Or Not A Card Is Restricted In A Given Format
   public boolean isCardRestrictedInFormat (Card incomingCard, Format formatToCheck) {
+    if (formatToCheck == Format.FREEFORM) {
+      return false;
+    }
     return isCardValidInFormat(incomingCard, formatToCheck, "RESTRICTED");
   }
   

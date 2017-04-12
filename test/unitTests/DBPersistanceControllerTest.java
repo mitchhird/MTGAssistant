@@ -6,18 +6,17 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import models.cardModels.Card;
-import models.cardModels.Format;
-import models.deckModels.Deck;
-import models.deckModels.DeckCardDataObject;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import db.DBPersistanceController;
+import models.cardModels.Card;
+import models.cardModels.Format;
+import models.deckModels.Deck;
+import models.deckModels.DeckCardDataObject;
 import util.BaseTest;
 import util.Constants;
-import db.DBPersistanceController;
 
 // Tests For The DBPersistanceController Object
 public class DBPersistanceControllerTest extends BaseTest {

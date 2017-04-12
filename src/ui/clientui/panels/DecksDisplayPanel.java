@@ -111,7 +111,7 @@ public class DecksDisplayPanel extends DeckDisplayPanelBase {
 
     i++;
     addComponentToPanel(new JLabel("Status:"), 0, i, 1, 1, 0f, 0f);
-    addComponentToPanel(statusLabel, 1, i, 1, 1, 1.0f, 0f);
+    addComponentToPanel(statusLabel, 1, i, 3, 1, 1.0f, 0f);
     
     i++;
     addComponentToPanel(applyOnlineButton, 0, i, 2, 1, 1.0f, 0.0f);
@@ -133,8 +133,6 @@ public class DecksDisplayPanel extends DeckDisplayPanelBase {
       @Override
       public void actionPerformed(ActionEvent e) {
         populateLocal();
-        editDeckButton.setEnabled(deckComboBox.getModel().getSize() != 0);
-        deleteDeckButton.setEnabled(deckComboBox.getModel().getSize() != 0);
       }
     });
     
@@ -198,6 +196,9 @@ public class DecksDisplayPanel extends DeckDisplayPanelBase {
       clientApp.deleteDeckFromSystem(incomingDeck);
       deckComboBox.removeItemAt(selectedIndex);
       statusLabel.setText("Removed Deck (" + incomingDeck.getDeckName() + ") from system");
+      
+      editDeckButton.setEnabled(deckComboBox.getModel().getSize() != 0);
+      deleteDeckButton.setEnabled(deckComboBox.getModel().getSize() != 0);
     }
   }
   
@@ -234,5 +235,12 @@ public class DecksDisplayPanel extends DeckDisplayPanelBase {
   @Override
   protected DBPersistanceController getDBController() {
     return clientApp.getDbController();
+  }
+  
+  @Override
+  protected void populateDeckDetails() {
+    super.populateDeckDetails();
+    editDeckButton.setEnabled(deckComboBox.getModel().getSize() != 0);
+    deleteDeckButton.setEnabled(deckComboBox.getModel().getSize() != 0);
   }
 }
