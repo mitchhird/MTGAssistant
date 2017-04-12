@@ -4,10 +4,15 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JTable;
 
+import app.MTGAssistantClient;
 import models.tableModels.FormatStatisticsModel;
 import util.MTGHelper;
-import app.MTGAssistantClient;
 
+/**
+ * Format Statistics Table That Is Responsible For Showing The Cards When The User Hovers Over Them
+ * 
+ * @author Mitchell
+ */
 public class CardDisplayingFormatJTable extends JTable{
   private FormatStatisticsModel tableModel;
   private final MTGAssistantClient client;

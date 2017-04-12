@@ -38,7 +38,8 @@ public abstract class DBTool {
     }
     return returnVal;
   }
-  
+
+  // Returns A List From The Database Entry That Is Common Separated
   protected List<String> getListFromDBEntry (String dbEntry) {
     List<String> returnVal = new ArrayList<String>();
     StringTokenizer st = new StringTokenizer(dbEntry, ",");

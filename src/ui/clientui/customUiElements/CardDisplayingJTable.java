@@ -8,6 +8,10 @@ import models.cardModels.Card;
 import models.tableModels.DeckContentsTableModel;
 import util.MTGHelper;
 
+/**
+ * Table that is responsible for popping up card items when they are hovered over
+ * @author Mitchell
+ */
 public class CardDisplayingJTable extends JTable {
   private final DeckContentsTableModel tableModel;
   

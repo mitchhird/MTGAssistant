@@ -6,6 +6,10 @@ import javax.swing.table.AbstractTableModel;
 
 import models.statisticModels.FormatStatCardDO;
 
+/**
+ * Table model That Contains All Of The Data That Will Be Used Within The Format Statistics Model
+ * @author Mitchell
+ */
 public class FormatStatisticsModel extends AbstractTableModel {
   private final List<FormatStatCardDO> listToRender;
   public FormatStatisticsModel(List<FormatStatCardDO> listToRender) {

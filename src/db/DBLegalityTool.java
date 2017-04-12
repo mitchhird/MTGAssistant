@@ -12,6 +12,16 @@ import util.MTGHelper;
 import util.JSONConvertTools.JSONCard;
 import util.JSONConvertTools.JSONLegality;
 
+/**
+ * DBTool that is responsible for performing all legality based operations. Includes the following:
+ *    --- Legality Checks
+ *    --- Banned List Checks For Particular Formats
+ *    --- Restricted List Checks For Particular Formats
+ *    --- Validity Checks For Particular Formats
+ *    
+ * @author Mitchell
+ *
+ */
 public class DBLegalityTool extends DBTool {
 
   private static String LEGAL_TABLE_CREATE = "CREATE TABLE IF NOT EXISTS LEGAL_TABLE (CARD_ID varchar (" + DB_CHAR_COLUMN_LIMIT + ")," 

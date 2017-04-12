@@ -15,6 +15,7 @@ public class CardDisplayingJList extends JList<Card> {
 
   private static final long serialVersionUID = 1L;
 
+  // Default Constructor For The Card Displaying List
   public CardDisplayingJList() {
     super();
   }

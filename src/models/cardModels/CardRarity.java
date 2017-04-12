@@ -1,5 +1,9 @@
 package models.cardModels;
 
+/**
+ * Enumeration representing all of the available types that are within the MTG game
+ * @author Mitchell
+ */
 public enum CardRarity {
   BASIC_LAND,
   COMMON,

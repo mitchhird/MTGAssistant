@@ -1,9 +1,13 @@
 package models.deckModels;
 
-import models.cardModels.Card;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import models.cardModels.Card;
+
+/**
+ * Card object that is used for the manual deserialization and reserialization process
+ * @author Mitchell
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DeckCardDataObject {
   protected Card cardInDeck;

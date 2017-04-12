@@ -39,13 +39,14 @@ public class DBPersistanceController {
   private List<DBTool> databaseTools;
   private static DBPersistanceController instance;
 
+  // Default Constructor For The Class. Loads The Client DB By Default
   private DBPersistanceController() {
     initDatabase(Constants.CLIENT_DB);
     initTools();
     createTablesIfNeeded();
   }
   
-  // Default Constructor
+  // Constructor When Another DB Is Requested
   private DBPersistanceController(String dbName) {
     initDatabase(dbName);
     initTools();
@@ -105,6 +106,7 @@ public class DBPersistanceController {
     }
   }
 
+  // Returns An SQL Injection Safe Statement For Use
   public PreparedStatement getStatement(String statementToExecute) throws SQLException {
     return database.prepareStatement(statementToExecute);
   }
