@@ -4,7 +4,7 @@
   router="FAN">  
   <class id="1" language="java" name="models.validatorModels.ValidatorFactory" project="MTGAssistant" 
     file="/MTGAssistant/src/models/validatorModels/ValidatorFactory.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="780" y="102"/>    
+    <position height="-1" width="-1" x="641" y="105"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -13,7 +13,7 @@
   </class>  
   <class id="2" language="java" name="models.validatorModels.SingletonDeckValidator" project="MTGAssistant" 
     file="/MTGAssistant/src/models/validatorModels/SingletonDeckValidator.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="946" y="464"/>    
+    <position height="-1" width="-1" x="845" y="446"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -22,7 +22,7 @@
   </class>  
   <class id="3" language="java" name="models.validatorModels.DeckValidator" project="MTGAssistant" 
     file="/MTGAssistant/src/models/validatorModels/DeckValidator.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="769" y="257"/>    
+    <position height="-1" width="-1" x="646" y="259"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -31,7 +31,7 @@
   </class>  
   <class id="4" language="java" name="models.validatorModels.ConstructedDeckValidator" project="MTGAssistant" 
     file="/MTGAssistant/src/models/validatorModels/ConstructedDeckValidator.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="638" y="464"/>    
+    <position height="-1" width="-1" x="484" y="446"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
