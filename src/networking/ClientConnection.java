@@ -87,7 +87,7 @@ public class ClientConnection extends Observable {
   }
   
   // Sends A Command Over To The Server And Waits Until A Response Is Returned
-  protected String quote(NetworkingCommands command, String... args) {
+  protected synchronized String quote(NetworkingCommands command, String... args) {
     String baseCommand = command.name();
     for (String s : args) {
       baseCommand += Constants.DELIMITER + s;
@@ -96,7 +96,7 @@ public class ClientConnection extends Observable {
   }
 
   // Sends A Command To The Server
-  private String sendAndRecieveCommand(String baseCommand) {
+  private synchronized String sendAndRecieveCommand(String baseCommand) {
     if (isConnectedToServer()) {
       try {
         writer.write(baseCommand + "\n");

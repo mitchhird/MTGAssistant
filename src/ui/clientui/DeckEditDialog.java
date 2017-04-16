@@ -9,8 +9,8 @@ import javax.swing.JTabbedPane;
 import models.deckModels.Deck;
 import ui.clientui.panels.DeckAddCardPanel;
 import ui.clientui.panels.DeckRemoveCardPanel;
-import ui.clientui.panels.IndividualDeckPanel;
 import ui.shared.ImageManager;
+import ui.shared.IndividualDeckPanel;
 import ui.shared.UIDialogBase;
 import util.Constants;
 

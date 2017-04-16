@@ -11,7 +11,6 @@ import javax.swing.JLabel;
 
 import models.cardModels.Format;
 import models.deckModels.Deck;
-import ui.clientui.panels.IndividualDeckPanel;
 import db.DBPersistanceController;
 
 /**
